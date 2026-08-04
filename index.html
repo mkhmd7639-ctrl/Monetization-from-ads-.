@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل الربح الحقيقي من الإعلانات والأسئله</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #000;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 450px;
+            margin: 10px auto;
+            background: #ffffff;
+            padding: 15px;
+        }
+        .header-title {
+            color: #1b5e20;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .main-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: right;
+        }
+        .btn-green {
+            background-color: #8bc34a;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-green:hover {
+            background-color: #7cb342;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .welcome-text {
+            text-align: right;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+        .user-highlight {
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        /* تصميم الشريط: النسبة في اليسار والشريط الأخضر يبدأ من أقصى اليمين */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            border: 2px solid #8bc34a;
+            border-radius: 4px;
+            margin-top: 25px;
+            height: 40px;
+            background: #fff;
+            overflow: hidden;
+            flex-direction: row; /* النسبة يسار والأخضر يمتد من اليمين */
+        }
+        .progress-text {
+            width: 80px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            color: #000;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f9f9;
+            border-left: 2px solid #8bc34a;
+            flex-shrink: 0;
+        }
+        .progress-bar-wrapper {
+            width: calc(100% - 80px);
+            height: 100%;
+            background: #fff;
+            direction: rtl; /* لضمان بدء التعبئة من اليمين */
+            display: flex;
+            justify-content: flex-start;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #8bc34a;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        /* تصميم المحفظة والأسئلة */
+        .wallet-box {
+            background: #1e293b;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .question-box {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .option-btn {
+            background: #e2e8f0;
+            color: #000;
+            border: 1px solid #cbd5e1;
+            margin: 8px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .option-btn:hover {
+            background: #cbd5e1;
+        }
+        .withdraw-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* تصميم مكان الإعلانات */
+        .ad-banner {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            color: #475569;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="form-section">
+            <div style="font-size: 24px; margin-bottom: 5px;">🌐</div>
+            <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
+            <div class="main-title">سجل الآن</div>
+            <hr style="border: 0; border-top: 1px solid #8bc34a; margin-bottom: 15px;">
+            
+            <p style="font-weight: bold; margin-bottom: 15px;">الرجاء إدخال البيانات المطلوبة للتسجيل:</p>
+            <input type="text" id="user-name" class="input-box" placeholder="الاسم الثلاثي">
+            <input type="tel" id="user-phone" class="input-box" placeholder="رقم الهاتف (واتساب)">
+            <button type="button" class="btn-green" onclick="startProcess()">بدء التسجيل</button>
+        </div>
+
+        <div id="content-section" class="hidden">
+            <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
+            <div class="main-title">سجل الآن</div>
+            <hr style="border: 0; border-top: 1px solid #8bc34a; margin-bottom: 15px;">
+
+            <div class="welcome-text">
+                أهلاً :<br>
+                <span id="display-name" class="user-highlight"></span><br>
+                تهانينا لك , ستصلك رسالة على رقم هاتفك بعد إتمام التعليمات ادناه :
+            </div>
+
+            <div class="welcome-text" style="font-size: 15px;">
+                <b>1 -</b> إضغط على زر "مساهمة" الموجود في الأسفل وساهم معنا بإرسال الرابط الى <b>15 صديقاً أو 5 مجموعات على الواتساب.</b><br>
+                <b>2 -</b> ستصلك رسالة تلقائيا بعد امتلاء شريط التحقق الأخضر بالأسفل.<br>
+                <b>3 -</b> قم بإبراز الرسالة التي ستصلك في النهاية لمكان التسليم .
+            </div>
+
+            <a id="whatsapp-link" href="#" target="_blank" style="display:none;"></a>
+            <button type="button" class="btn-green" onclick="shareWhatsApp()">مساهمة</button>
+
+            <div class="progress-container">
+                <div id="progress-percentage" class="progress-text">0%</div>
+                <div class="progress-bar-wrapper">
+                    <div id="progress-fill" class="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="hidden">
+            <div class="wallet-box">
+                <div>المحفظة: $<span id="balance">0.00</span></div>
+                <button type="button" class="withdraw-btn" onclick="tryWithdraw()">سحب الأرباح</button>
+            </div>
+
+            <div class="header-title" style="margin-bottom: 10px;">مسابقة الأسئلة والأرباح</div>
+
+            <div class="ad-banner">
+                📢 [مكان إعلان ترويجي أو بانر إعلاني هنا]
+            </div>
+
+            <div class="question-box" id="question-text">جارِ تحميل السؤال...</div>
+            <div id="options-container"></div>
+
+            <div class="ad-banner" style="margin-top: 20px;">
+                💡 [إعلان ممول / AdSense هنا]
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let progress = 0;
+        let userBalance = 0.00;
+        let isCounting = false;
+
+        const questions = [
+            { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
+            { q: "كم عدد ركعات صلاة المغرب؟", options: ["ركعتان", "ثلاث ركعات", "أربع ركعات", "ركعة واحدة"], correct: 1 },
+            { q: "أي كوكب يسمى الكوكب الأحمر؟", options: ["المريخ", "الزهرة", "المشتري", "زحل"], correct: 0 },
+            { q: "ما هو أكبر بحر في العالم؟", options: ["البحر الأحمر", "البحر المتوسط", "بحر قزوين", "البحر الأسود"], correct: 2 },
+            { q: "كم عدد سور القرآن الكريم؟", options: ["114 سورة", "113 سورة", "115 سورة", "120 سورة"], correct: 0 }
+        ];
+
+        let currentQuestion = 0;
+
+        window.onload = function() {
+            let savedName = localStorage.getItem('userName');
+            if (savedName) {
+                document.getElementById('display-name').innerText = savedName;
+                document.getElementById('form-section').classList.add('hidden');
+                document.getElementById('content-section').classList.remove('hidden');
+            }
+        };
+
+        function startProcess() {
+            let nameField = document.getElementById('user-name');
+            let phoneField = document.getElementById('user-phone');
+
+            if (!nameField || !phoneField) return;
+
+            let name = nameField.value.trim();
+            let phone = phoneField.value.trim();
+
+            if (name === "" || phone === "") {
+                alert("الرجاء إدخال الاسم ورقم الهاتف بشكل صحيح.");
+                return;
+            }
+
+            localStorage.setItem('userName', name);
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('form-section').classList.add('hidden');
+            document.getElementById('content-section').classList.remove('hidden');
+        }
+
+        function shareWhatsApp() {
+            if (isCounting) return;
+            isCounting = true;
+
+            // توليد رابط حقيقي تماماً يوجه للموقع الحالي مع رسالة المشاركة
+            let siteUrl = window.location.href;
+            let message = "شارك في مسابقة سجل الربح الحقيقي من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط: " + siteUrl;
+            let whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+            
+            let link = document.getElementById('whatsapp-link');
+            link.href = whatsappUrl;
+            link.click();
+
+            // الانتظار لمدة 5 ثوانٍ ثم تحريك الشريط تدريجياً من اليمين
+            setTimeout(() => {
+                if (progress < 100) {
+                    progress += 20; 
+                    if (progress > 100) progress = 100;
+
+                    document.getElementById('progress-fill').style.width = progress + '%';
+                    document.getElementById('progress-percentage').innerText = progress + '%';
+                }
+
+                isCounting = false;
+
+                if (progress >= 100) {
+                    setTimeout(() => {
+                        document.getElementById('content-section').classList.add('hidden');
+                        document.getElementById('quiz-section').classList.remove('hidden');
+                        loadQuestion();
+                    }, 500);
+                }
+            }, 5000);
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                currentQuestion = 0;
+            }
+            let qData = questions[currentQuestion];
+            document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
+            
+            let optionsHtml = '';
+            qData.options.forEach((opt, index) => {
+                optionsHtml += `<button type="button" class="option-btn" onclick="checkAnswer(${index}, ${qData.correct})">${opt}</button>`;
+            });
+            document.getElementById('options-container').innerHTML = optionsHtml;
+        }
+
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                userBalance += 2.00;
+                alert("إجابة صحيحة! تم إضافة $2.00 إلى محفظتك.");
+            } else {
+                alert("إجابة خاطئة! حظ أوفر في المرة القادمة.");
+            }
+            currentQuestion++;
+            document.getElementById('balance').innerText = userBalance.toFixed(2);
+            loadQuestion();
+        }
+
+        function tryWithdraw() {
+            if (userBalance >= 50.00) {
+                alert("مبروك! لقد وصلت للحد الأدنى للسحب.");
+            } else {
+                alert("عذراً، لم تصل إلى الحد الأدنى للسحب (تحتاج إلى $50.00 على الأقل). استمر في الإجابة لزيادة رصيدك!");
+            }
+        }
+    </script>
+</body>
+</html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen</title>
+  </head>
+  <body>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
