@@ -1,1 +1,122 @@
-د
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة شبكة الطوفان نت</title>
+    <!-- تضمين مكتبة EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f7f6;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 95%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>مسابقة شبكة الطوفان نت</h2>
+    
+    <!-- خطوة إدخال الإيميل وإرسال الرمز -->
+    <div id="step-email">
+        <p>أدخل بريدك الإلكتروني لاستلام رمز التحقق:</p>
+        <input type="email" id="user-email" placeholder="example@gmail.com" required>
+        <button onclick="sendOTPCode()">إرسال رمز التحقق</button>
+    </div>
+
+    <!-- خطوة إدخال الرمز وتأكيد المشاركة -->
+    <div id="step-verify" class="hidden">
+        <p>تم إرسال الرمز إلى بريدك، أدخله هنا:</p>
+        <input type="text" id="entered-otp" placeholder="أدخل الرمز المكون من أرقام" maxlength="6">
+        <button onclick="verifyOTPCode()">تأكيد الرمز والمشاركة</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+   // تهيئة EmailJS باستخدام الـ Public Key الخاص بك
+   (function(){
+      emailjs.init("fZag-1wa6YZsRJKeb");
+   })();
+
+   let generatedOTP = "";
+
+   // دالة إرسال الرمز
+   function sendOTPCode() {
+       const email = document.getElementById("user-email").value.trim();
+       
+       if(!email) {
+           alert("الرجاء إدخال البريد الإلكتروني بشكل صحيح!");
+           return;
+       }
+
+       // توليد رمز عشوائي مكون من 5 أرقام
+       generatedOTP = Math.floor(10000 + Math.random() * 90000).toString();
+
+       var templateParams = {
+           email: email,          
+           pass_code: generatedOTP 
+       };
+
+       // استخدام الـ Service ID الجديد والـ Template ID الخاص بك
+       emailjs.send('service_wpecg0t', 'template_t6xzhot', templateParams)
+          .then(function(response) {
+              alert('تم إرسال رمز التحقق إلى بريدك بنجاح!');
+              // اخفاء قسم الإيميل وإظهار قسم التحقق
+              document.getElementById("step-email").classList.add("hidden");
+              document.getElementById("step-verify").classList.remove("hidden");
+          }, function(error) {
+              console.log('فشل الإرسال:', error);
+              alert('حدث خطأ أثناء الإرسال، تأكد من الاتصال بالإنترنت.');
+          });
+   }
+
+   // دالة التحقق من الرمز المدخل
+   function verifyOTPCode() {
+       const userInput = document.getElementById("entered-otp").value.trim();
+
+       if(userInput === generatedOTP) {
+           alert('مبروك! تم التحقق بنجاح وتم تسجيلك في المسابقة.');
+           location.reload(); 
+       } else {
+           alert('رمز التحقق غير صحيح، حاول مرة أخرى.');
+       }
+   }
+</script>
+
+</body>
+</html>
