@@ -258,7 +258,7 @@
     .btn-download { background: #dcfce7; color: #16a34a; }
     .btn-download:hover { background: #bbf7d0; }
     
-    /* زر الحذف الخاص بالأدمن */
+    /* زر الحذف الخاص بالأدمن (مخفي افتراضياً ولا يظهر إلا عند فتح الجلسة) */
     .btn-delete { background: #fee2e2; color: var(--danger); flex: 0.6; display: none; }
     .btn-delete:hover { background: #fecaca; }
 
@@ -365,7 +365,7 @@
           <button class="back-btn" onclick="goBackToSubSections()"><i class="fa-solid fa-arrow-right"></i> رجوع للأقسام</button>
         </div>
 
-        <!-- لوحة التحكم السرية للأدمن ميثاق -->
+        <!-- لوحة التحكم السرية للأدمن ميثاق (تظهر فقط عند تسجيل الجلسة) -->
         <div class="form-card" id="adminAcademicForm" style="display: none;">
           <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع كتاب جديد (خاص بالمطور ميثاق)</h3>
           <form id="academicForm" onsubmit="addAcademicItem(event)">
@@ -458,7 +458,9 @@
     let selectedGrade = "";
     let selectedCategory = ""; 
     let selectedCategoryName = "";
-    let isAdminLoggedIn = false;
+    
+    // فحص جلسة الأدمن المؤقتة (تنتهي فور إغلاق المتصفح أو التطبيق)
+    let isAdminLoggedIn = sessionStorage.getItem('methaq_admin_session') === 'active';
 
     let db;
     let academicData = [];
@@ -467,7 +469,7 @@
       { name: "محمد أحمد", text: "مكتبة إلكترونية جبارة، تصميم فخم جداً ومرتبة، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
     ];
 
-    // تهيئة قاعدة البيانات الداخلية الضخمة (IndexedDB) لحفظ الملفات مهما بلغ حجمها
+    // تهيئة قاعدة البيانات الداخلية الضخمة (IndexedDB) للملفات الكبيرة جداً
     const request = indexedDB.open("MethaqLibraryDB", 1);
     
     request.onerror = function(event) {
@@ -508,6 +510,9 @@
     window.onload = function() {
       renderGrades();
       renderFeedbacks();
+      if (isAdminLoggedIn) {
+        document.getElementById('adminAcademicForm').style.display = 'block';
+      }
     };
 
     function toggleSettingsMenu() {
@@ -517,13 +522,18 @@
 
     function promptAdminLogin() {
       toggleSettingsMenu();
+      if (isAdminLoggedIn) {
+        alert("أنت مسجل دخول بالفعل بصفتك الأدمن.");
+        return;
+      }
       const code = prompt("أدخل رمز لوحة الإدارة السري:");
       if (code === "mythaq") {
         isAdminLoggedIn = true;
+        sessionStorage.setItem('methaq_admin_session', 'active'); // حفظ الجلسة حتى إغلاق المتصفح فقط
         document.getElementById('adminAcademicForm').style.display = 'block';
         renderAcademicBooks();
         renderCulturalBooks();
-        alert("مرحباً بك يا ميثاق! تم تفعيل صلاحيات الأدمن وحذف الكتب بنجاح.");
+        alert("مرحباً بك يا ميثاق! تم فتح جلسة الأدمن بنجاح.");
       } else if (code !== null) {
         alert("الرمز غير صحيح!");
       }
@@ -547,7 +557,9 @@
     function goBackToGrades() {
       document.getElementById('viewSubSections').style.display = 'none';
       document.getElementById('viewGrades').style.display = 'block';
-      document.getElementById('adminAcademicForm').style.display = 'none';
+      if(!isAdminLoggedIn) {
+        document.getElementById('adminAcademicForm').style.display = 'none';
+      }
     }
 
     function openCategory(catKey, catName) {
@@ -712,7 +724,7 @@
       request.onsuccess = function() {
         loadAllBooks();
         document.getElementById(formId).reset();
-        if(formId === 'academicForm') {
+        if(formId === 'academicForm' && !isAdminLoggedIn) {
           document.getElementById('adminAcademicForm').style.display = 'none';
         }
         alert('تم رفع وحفظ الكتاب بنجاح تام يا ميثاق!');
@@ -723,7 +735,6 @@
       };
     }
 
-    // دالة الحذف الشاملة مع رسالة التأكيد
     function deleteBook(id) {
       if (confirm("هل أنت متأكد من عملية الحذف؟")) {
         const transaction = db.transaction(["books"], "readwrite");
