@@ -19,9 +19,9 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 50px; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
 
-    /* شاشة الترحيب المتحركة */
+    /* شاشة الترحيب المتحركة (4 ثوانٍ) */
     #splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -50,10 +50,60 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      cursor: pointer;
     }
     header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
     header p { font-size: 0.9rem; opacity: 0.9; }
+
+    /* زر الإعدادات العائم بالركن */
+    .settings-fab {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background: var(--accent);
+      color: white;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      z-index: 1000;
+      transition: transform 0.2s;
+    }
+    .settings-fab:hover { transform: scale(1.1); }
+
+    /* قائمة الإعدادات المنبثقة */
+    .settings-menu {
+      position: fixed;
+      bottom: 90px;
+      left: 25px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      width: 230px;
+      display: none;
+      z-index: 1000;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .settings-item {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .settings-item:hover { background: #f8fafc; }
+    .settings-item i { color: var(--accent); }
 
     .container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
 
@@ -152,7 +202,7 @@
     .btn-view { background: #e0f2fe; color: #0284c7; }
     .btn-download { background: #dcfce7; color: #16a34a; }
 
-    /* النماذج السرية للتحكم */
+    /* لوحة التحكم السرية للمدير */
     .form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border); }
     .form-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.2rem; }
     .form-group { margin-bottom: 15px; }
@@ -171,15 +221,29 @@
 </head>
 <body>
 
-  <!-- شاشة ترحيب متحركة لمدة 4 ثوانٍ -->
+  <!-- شاشة الترحيب المتحركة -->
   <div id="splash-screen">
     <div class="splash-icon"><i class="fa-solid fa-book-bookmark"></i></div>
     <div class="splash-title">مكتبة ميثاق محمد الإلكترونية</div>
-    <div class="splash-sub">جاري تجهيز المنصة التعليمية والشاملة...</div>
+    <div class="splash-sub">جاري تحميل المنصة بكل فخامة...</div>
   </div>
 
-  <!-- هيدر المكتبة (اضغط عليه مرتين لتفتح لوحة الإضافة السرية) -->
-  <header ondblclick="toggleAdminPanel()">
+  <!-- زر الإعدادات العائم بالركن -->
+  <div class="settings-fab" onclick="toggleSettingsMenu()">
+    <i class="fa-solid fa-gear"></i>
+  </div>
+
+  <!-- القائمة المنسدلة للإعدادات -->
+  <div class="settings-menu" id="settingsMenu">
+    <a href="https://wa.me/967784327056" target="_blank" class="settings-item">
+      <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem; color: #25d366;"></i> تواصل مع المطور
+    </a>
+    <div class="settings-item" onclick="promptAdminLogin()">
+      <i class="fa-solid fa-lock-keyhole"></i> لوحة الإدارة (أدمن)
+    </div>
+  </div>
+
+  <header>
     <h1>📖 مكتبة ميثاق محمد الإلكترونية</h1>
     <p>منصة التعليم، الكتب المدرسية، والمراجع الشاملة</p>
   </header>
@@ -218,9 +282,9 @@
         </div>
       </div>
 
-      <!-- لوحة التحكم السرية لميثاق (رفع ملف الـ PDF واختيار الغلاف مباشرة) -->
+      <!-- لوحة التحكم السرية للمدير (تظهر فقط بعد إدخال رمز mythaq الصحيح) -->
       <div class="form-card" id="adminAcademicForm" style="display: none; border: 2.5px dashed var(--accent);">
-        <h3>🔐 لوحة التحكم الخاصة بالمطور (رفع كتاب وطني PDF)</h3>
+        <h3>🔐 لوحة التحكم الخاصة بالمطور (إضافة كتاب دراسي)</h3>
         <form onsubmit="addAcademicItem(event)">
           <div class="form-group">
             <label>الصف المستهدف</label>
@@ -256,11 +320,11 @@
             </select>
           </div>
           <div class="form-group">
-            <label>وصف مختصر</label>
-            <textarea id="acadDesc" rows="2" placeholder="أضف وصفاً للمحتوى..."></textarea>
+            <label>وصف مختصر (اختياري)</label>
+            <textarea id="acadDesc" rows="2" placeholder="أضف وصفاً للمحتوى إن وجد..."></textarea>
           </div>
           <div class="form-group">
-            <label>رابط صورة الغلاف (اختياري - أو اتركه فارغاً لشكل افتراضي)</label>
+            <label>رابط صورة الغلاف (اختياري)</label>
             <input type="url" id="acadCover" placeholder="https://example.com/cover.jpg">
           </div>
           <div class="form-group">
@@ -274,7 +338,7 @@
       <div class="books-grid" id="academicGrid"></div>
     </div>
 
-    <!-- 2. الكتب التاريخية والثقافية -->
+    <!-- 2. الكتب التاريخية والثقافية (متاحة للجميع مع حقول اختيارية) -->
     <div id="tab-cultural" class="tab-content">
       <div class="form-card">
         <h3>📤 مشاركة كتاب تاريخي أو ثقافي (متاح للجميع)</h3>
@@ -284,12 +348,16 @@
             <input type="text" id="cultTitle" required placeholder="مثال: مقدمة ابن خلدون">
           </div>
           <div class="form-group">
-            <label>اسم الكاتب / المؤلف</label>
-            <input type="text" id="cultAuthor" required placeholder="مثال: ابن خلدون">
+            <label>اسم الكاتب / المؤلف (اختياري)</label>
+            <input type="text" id="cultAuthor" placeholder="مثال: ابن خلدون">
           </div>
           <div class="form-group">
-            <label>نبذة أو تعليق حول الكتاب</label>
-            <textarea id="cultDesc" rows="3" required placeholder="اكتب نبذة مختصرة عن الكتاب..."></textarea>
+            <label>نبذة أو تعليق حول الكتاب (اختياري)</label>
+            <textarea id="cultDesc" rows="3" placeholder="اكتب نبذة مختصرة عن الكتاب إن أردت..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>رابط صورة الغلاف (اختياري)</label>
+            <input type="url" id="cultCover" placeholder="https://example.com/cover.jpg">
           </div>
           <div class="form-group">
             <label>اختر ملف الـ PDF الخاص بالكتاب:</label>
@@ -348,13 +416,23 @@
       renderFeedbacks();
     };
 
-    function toggleAdminPanel() {
-      const panel = document.getElementById('adminAcademicForm');
-      if (panel.style.display === 'none') {
+    // فتح وإغلاق قائمة الإعدادات العائمة
+    function toggleSettingsMenu() {
+      const menu = document.getElementById('settingsMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // التحقق من رمز الأدمن السري (mythaq)
+    function promptAdminLogin() {
+      toggleSettingsMenu();
+      const code = prompt("أدخل رمز لوحة الإدارة (الأدمن):");
+      if (code === "mythaq") {
+        const panel = document.getElementById('adminAcademicForm');
         panel.style.display = 'block';
         window.scrollTo({ top: 400, behavior: 'smooth' });
-      } else {
-        panel.style.display = 'none';
+        alert("مرحباً بك يا ميثاق! تم تفعيل لوحة الإدارة بنجاح.");
+      } else if (code !== null) {
+        alert("الرمز غير صحيح! لا يمكنك إضافة كتب دراسية.");
       }
     }
 
@@ -453,11 +531,11 @@
       }
       grid.innerHTML = culturalData.map(item => `
         <div class="book-card">
-          <div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>
+          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
           <div class="book-details">
             <div class="book-title">${item.title}</div>
-            <div class="book-meta">الكاتب: ${item.author}</div>
-            <div class="book-desc">${item.desc}</div>
+            <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
+            <div class="book-desc">${item.desc || 'بدون نبذة'}</div>
             <div class="book-actions">
               <a href="${item.pdf}" target="_blank" class="btn-action btn-view">معاينة PDF</a>
               <a href="${item.pdf}" download="${item.title}.pdf" class="btn-action btn-download">تنزيل</a>
@@ -485,6 +563,7 @@
           title: document.getElementById('cultTitle').value,
           author: document.getElementById('cultAuthor').value,
           desc: document.getElementById('cultDesc').value,
+          cover: document.getElementById('cultCover').value,
           pdf: base64Pdf
         };
         culturalData.push(newItem);
