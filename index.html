@@ -26,7 +26,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* شاشة الترحيب الفاخرة */
+    /* شاشة الترحيب المتحركة الفاخرة */
     #splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -49,7 +49,7 @@
     }
     @keyframes fadeOutSplash { to { opacity: 0; visibility: hidden; } }
     
-    /* الهيدر الأيقوني المذهل */
+    /* هيدر عصري فخم */
     header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
@@ -117,7 +117,6 @@
 
     .container { max-width: 1300px; margin: 45px auto; padding: 0 25px; flex: 1; width: 100%; }
 
-    /* شريط البحث الاحترافي */
     .search-bar-wrapper { position: relative; margin-bottom: 45px; }
     .search-bar {
       width: 100%;
@@ -134,7 +133,6 @@
     .search-bar:focus { border-color: var(--accent); box-shadow: 0 12px 30px rgba(249, 115, 22, 0.18); }
     .search-bar-wrapper i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.4rem; }
 
-    /* التبويبات الرئيسية */
     .main-tabs { display: flex; gap: 15px; margin-bottom: 45px; border-bottom: 3px solid var(--border); overflow-x: auto; padding-bottom: 5px; }
     .tab-link {
       padding: 16px 32px;
@@ -380,12 +378,12 @@
               <input type="text" id="acadTitle" required placeholder="مثال: كتاب الرياضيات الجزء الأول">
             </div>
             <div class="form-group">
-              <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+              <label>اختر صورة الغلاف من هاتفك:</label>
               <input type="file" id="acadCoverFile" accept="image/*">
             </div>
             <div class="form-group">
-              <label>رابط ملف الـ PDF (يدعم أي حجم كبير مهما بلغ):</label>
-              <input type="url" id="acadPdfUrl" required placeholder="https://example.com/large-book.pdf">
+              <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
+              <input type="file" id="acadFile" accept="application/pdf" required>
             </div>
             <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
           </form>
@@ -414,12 +412,12 @@
             <textarea id="cultDesc" rows="2" placeholder="اكتب نبذة مختصرة عن محتوى الكتاب..."></textarea>
           </div>
           <div class="form-group">
-            <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+            <label>اختر صورة الغلاف من هاتفك:</label>
             <input type="file" id="cultCoverFile" accept="image/*">
           </div>
           <div class="form-group">
-            <label>رابط ملف الـ PDF (يدعم أي حجم كبير):</label>
-            <input type="url" id="cultPdfUrl" required placeholder="https://example.com/large-book.pdf">
+            <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
+            <input type="file" id="cultFile" accept="application/pdf" required>
           </div>
           <button type="submit" class="submit-btn">نشر الكتاب في المكتبة الثقافية</button>
         </form>
@@ -466,8 +464,8 @@
     let selectedCategoryName = "";
     let isAdminLoggedIn = false; // حالة الأدمن
 
-    let academicData = JSON.parse(localStorage.getItem('methaq_academic_v2')) || [];
-    let culturalData = JSON.parse(localStorage.getItem('methaq_cultural_v2')) || [];
+    let academicData = JSON.parse(localStorage.getItem('methaq_academic')) || [];
+    let culturalData = JSON.parse(localStorage.getItem('methaq_cultural')) || [];
     let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [
       { name: "محمد أحمد", text: "مكتبة إلكترونية جبارة، تصميم فخم جداً ومرتبة، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
     ];
@@ -491,7 +489,7 @@
         document.getElementById('adminAcademicForm').style.display = 'block';
         renderAcademicBooks();
         renderCulturalBooks();
-        alert("مرحباً بك يا ميثاق! تم تفعيل صلاحيات الأدمن (حذف وإضافة الكتب) بنجاح.");
+        alert("مرحباً بك يا ميثاق! تم تفعيل صلاحيات الأدمن وحذف الكتب بنجاح.");
       } else if (code !== null) {
         alert("الرمز غير صحيح!");
       }
@@ -563,18 +561,26 @@
 
     function addAcademicItem(e) {
       e.preventDefault();
+      const pdfInput = document.getElementById('acadFile');
       const coverInput = document.getElementById('acadCoverFile');
-      const pdfUrl = document.getElementById('acadPdfUrl').value;
+
+      if (pdfInput.files.length === 0) {
+        alert('الرجاء اختيار ملف PDF!');
+        return;
+      }
+
+      const pdfFile = pdfInput.files[0];
+      const pdfBlobUrl = URL.createObjectURL(pdfFile);
       const title = document.getElementById('acadTitle').value;
 
       if (coverInput.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          saveAcademicBook(event.target.result, pdfUrl, title);
+          saveAcademicBook(event.target.result, pdfBlobUrl, title);
         };
         reader.readAsDataURL(coverInput.files[0]);
       } else {
-        saveAcademicBook("", pdfUrl, title);
+        saveAcademicBook("", pdfBlobUrl, title);
       }
     }
 
@@ -588,16 +594,18 @@
         pdf: pdfUrl
       };
       academicData.push(newItem);
-      localStorage.setItem('methaq_academic_v2', JSON.stringify(academicData));
+      localStorage.setItem('methaq_academic', JSON.stringify(academicData));
       renderAcademicBooks();
       document.getElementById('academicForm').reset();
+      document.getElementById('adminAcademicForm').style.display = 'none';
       alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
     }
 
+    // دالة حذف الكتاب الأكاديمي مع رسالة التأكيد
     function deleteAcademicBook(id) {
-      if(confirm("هل أنت متأكد من عملية الحذف؟")) {
+      if (confirm("هل أنت متأكد من عملية الحذف؟")) {
         academicData = academicData.filter(item => item.id !== id);
-        localStorage.setItem('methaq_academic_v2', JSON.stringify(academicData));
+        localStorage.setItem('methaq_academic', JSON.stringify(academicData));
         renderAcademicBooks();
         alert("تم حذف الكتاب بنجاح.");
       }
@@ -628,20 +636,29 @@
 
     function addCulturalBook(e) {
       e.preventDefault();
+      const pdfInput = document.getElementById('cultFile');
       const coverInput = document.getElementById('cultCoverFile');
-      const pdfUrl = document.getElementById('cultPdfUrl').value;
+
+      if (pdfInput.files.length === 0) {
+        alert('الرجاء اختيار ملف الـ PDF!');
+        return;
+      }
+
+      const pdfFile = pdfInput.files[0];
+      const pdfBlobUrl = URL.createObjectURL(pdfFile);
       const title = document.getElementById('cultTitle').value;
       const author = document.getElementById('cultAuthor').value;
-      const desc = document.getElementById('cultDesc').value;
+      const desc = document.getElementById('cultDesc5') ? document.getElementById('cultDesc5').value : (document.getElementById('cultDesc') ? document.getElementById('cultDesc').value : '');
 
-      if (coverInput.files.length > 0) {
+      const coverField = document.getElementById('cultCoverFile');
+      if (coverField.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          saveCulturalBook(event.target.result, pdfUrl, title, author, desc);
+          saveCulturalBook(event.target.result, pdfBlobUrl, title, author, desc);
         };
-        reader.readAsDataURL(coverInput.files[0]);
+        reader.readAsDataURL(coverField.files[0]);
       } else {
-        saveCulturalBook("", pdfUrl, title, author, desc);
+        saveCulturalBook("", pdfBlobUrl, title, author, desc);
       }
     }
 
@@ -655,16 +672,17 @@
         pdf: pdfUrl
       };
       culturalData.push(newItem);
-      localStorage.setItem('methaq_cultural_v2', JSON.stringify(culturalData));
+      localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
       renderCulturalBooks();
       document.getElementById('culturalForm').reset();
       alert('تم نشر الكتاب الثقافي بنجاح!');
     }
 
+    // دالة حذف الكتاب الثقافي مع رسالة التأكيد
     function deleteCulturalBook(id) {
-      if(confirm("هل أنت متأكد من عملية الحذف؟")) {
+      if (confirm("هل أنت متأكد من عملية الحذف؟")) {
         culturalData = culturalData.filter(item => item.id !== id);
-        localStorage.setItem('methaq_cultural_v2', JSON.stringify(culturalData));
+        localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
         renderCulturalBooks();
         alert("تم حذف الكتاب بنجاح.");
       }
