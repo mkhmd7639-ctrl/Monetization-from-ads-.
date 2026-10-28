@@ -5,39 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة ميثاق محمد الإلكترونية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
             --primary: #1e3d59;
+            --primary-hover: #172a3a;
+            --accent: #ff6e40;
             --bg: #f5f7fa;
             --card-bg: #ffffff;
             --text: #2b2b2b;
             --text-light: #666666;
             --border: #e2e8f0;
+            --error: #e74c3c;
+            --success: #2ecc71;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-        header { background: linear-gradient(135deg, var(--primary), #172a3a); color: white; padding: 25px 20px; text-align: center; }
-        .container { max-width: 500px; width: 90%; margin: 40px auto; background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); }
-        h2 { color: var(--primary); text-align: center; margin-bottom: 8px; font-size: 1.4rem; }
-        .subtitle { text-align: center; color: var(--text-light); font-size: 0.95rem; margin-bottom: 25px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; }
-        .input-group input { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-google { background-color: #ffffff; color: #444; border: 1.5px solid var(--border); }
-        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-light); font-size: 0.85rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-        .divider span { padding: 0 10px; }
+        
+        /* Header */
+        header { background: linear-gradient(135deg, var(--primary), #172a3a); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .user-nav { display: flex; align-items: center; gap: 12px; }
+        .user-name-tag { font-size: 0.9rem; background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; font-weight: 500; }
+        .btn-logout-sm { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: 0.2s; }
+        .btn-logout-sm:hover { opacity: 0.9; }
+
+        /* Main Wrapper for Auth */
+        .main-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-container { max-width: 420px; width: 100%; background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        
+        h2 { color: var(--primary); text-align: center; margin-bottom: 6px; font-size: 1.4rem; font-weight: 700; }
+        .subtitle { text-align: center; color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; }
+        
+        /* Tabs */
         .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
-        .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: 700; color: var(--text-light); }
+        .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: 700; color: var(--text-light); font-size: 0.85rem; transition: 0.2s; }
         .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+
+        /* Form elements */
         .form-content { display: none; }
         .form-content.active { display: block; }
-        .welcome-card { text-align: center; padding: 20px 0; }
-        .user-info { background: #f0f4f8; padding: 12px; border-radius: 8px; margin: 15px 0; word-break: break-all; }
-        .btn-logout { background-color: #e74c3c; color: white; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .input-group input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; transition: 0.2s; background: #fafafa; }
+        .input-group input:focus { border-color: var(--primary); background: #fff; }
+        
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; transition: 0.2s; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-google { background-color: #ffffff; color: #444; border: 1.5px solid var(--border); }
+        .btn-google:hover { background-color: #f8fafc; }
+        .btn-secondary { background-color: #f1f5f9; color: #334155; }
+        .btn-secondary:hover { background-color: #e2e8f0; }
+        
+        .divider { display: flex; align-items: center; text-align: center; margin: 18px 0; color: var(--text-light); font-size: 0.8rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+        .divider span { padding: 0 10px; }
+
+        /* Notification inline message */
+        .msg-box { padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; display: none; text-align: center; font-weight: 600; }
+        .msg-box.error { background: #fde8e8; color: var(--error); border: 1px solid #f8b4b4; }
+        .msg-box.success { background: #def7ec; color: var(--success); border: 1px solid #84e1bc; }
+
+        /* Library App Dashboard View */
+        .library-view { display: none; width: 100%; max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+        .welcome-banner { background: linear-gradient(135deg, var(--primary), #2b5876); color: white; padding: 25px; border-radius: 14px; margin-bottom: 25px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); }
+        .welcome-banner h1 { font-size: 1.5rem; margin-bottom: 8px; }
+        .welcome-banner p { font-size: 0.95rem; opacity: 0.9; }
+
+        .search-bar { width: 100%; margin-bottom: 30px; position: relative; }
+        .search-bar input { width: 100%; padding: 14px 45px 14px 20px; border-radius: 12px; border: 1px solid var(--border); outline: none; font-size: 1rem; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .search-bar i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.1rem; }
+        
+        .section-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .book-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: transform 0.2s, box-shadow 0.2s; }
+        .book-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .book-cover { height: 160px; background: linear-gradient(135deg, #2b5876, #4e4376); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.8rem; }
+        .book-info { padding: 15px; }
+        .book-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--primary); }
+        .book-author { font-size: 0.82rem; color: var(--text-light); margin-bottom: 12px; }
+        .btn-read { background: #f0f4f8; color: var(--primary); border: 1px solid var(--border); padding: 8px; border-radius: 6px; width: 100%; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .btn-read:hover { background: var(--primary); color: white; }
     </style>
 
     <script type="module">
@@ -46,6 +97,8 @@
             getAuth, 
             signInWithPopup, 
             GoogleAuthProvider, 
+            RecaptchaVerifier,
+            signInWithPhoneNumber,
             signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
             signOut,
@@ -65,31 +118,47 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        function showMessage(msg, isError = true) {
+            const box = document.getElementById('msg-box');
+            box.innerText = msg;
+            box.className = `msg-box ${isError ? 'error' : 'success'}`;
+            box.style.display = 'block';
+        }
+
+        function clearMessage() {
+            const box = document.getElementById('msg-box');
+            box.style.display = 'none';
+        }
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('auth-card').style.display = 'none';
-                document.getElementById('user-card').style.display = 'block';
-                document.getElementById('user-identity').innerText = user.displayName || user.email;
+                document.getElementById('auth-wrapper').style.display = 'none';
+                document.getElementById('library-view').style.display = 'block';
+                document.getElementById('user-nav').style.display = 'flex';
+                document.getElementById('user-name-tag').innerText = user.displayName || user.email || user.phoneNumber;
             } else {
-                document.getElementById('auth-card').style.display = 'block';
-                document.getElementById('user-card').style.display = 'none';
+                document.getElementById('auth-wrapper').style.display = 'flex';
+                document.getElementById('library-view').style.display = 'none';
+                document.getElementById('user-nav').style.display = 'none';
             }
         });
 
         window.loginWithGoogle = async () => {
+            clearMessage();
             try {
                 await signInWithPopup(auth, new GoogleAuthProvider());
             } catch (error) {
-                alert("خطأ في تسجيل الدخول عبر Google: " + error.message);
+                showMessage("خطأ في تسجيل الدخول عبر Google: " + error.message);
             }
         };
 
         window.handleEmailAuth = async (actionType) => {
+            clearMessage();
             const email = document.getElementById('email-input').value.trim();
             const password = document.getElementById('password-input').value;
 
             if (!email || !password) {
-                alert("يرجى كتابة البريد الإلكتروني وكلمة المرور بشكل صحيح!");
+                showMessage("يرجى كتابة البريد الإلكتروني وكلمة المرور!");
                 return;
             }
 
@@ -98,18 +167,50 @@
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    alert("تم إنشاء الحساب بنجاح وتم تسجيل دخولك!");
                 }
             } catch (error) {
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                    alert("هذا البريد غير مسجل مسبقاً، يرجى الضغط على زر 'إنشاء حساب جديد'.");
+                    showMessage("الحساب غير موجود، اضغط على زر 'إنشاء حساب جديد'.");
                 } else if (error.code === 'auth/email-already-in-use') {
-                    alert("هذا البريد مسجل بالفعل، اضغط على 'تسجيل الدخول'.");
+                    showMessage("هذا البريد مسجل مسبقاً، اضغط على 'تسجيل الدخول'.");
                 } else if (error.code === 'auth/weak-password') {
-                    alert("كلمة المرور ضعيفة، يجب أن تكون 6 أحرف أو أرقام على الأقل.");
+                    showMessage("كلمة المرور يجب أن تكون 6 أرقام/أحرف على الأقل.");
                 } else {
-                    alert("خطأ: " + error.message);
+                    showMessage("خطأ: " + error.message);
                 }
+            }
+        };
+
+        let confirmationResult = null;
+        window.sendOTP = async () => {
+            clearMessage();
+            const phoneNumber = document.getElementById('phone-input').value.trim();
+            if (!phoneNumber.startsWith('+')) {
+                showMessage("اكتب الرقم مسبوقاً بـ + والرمز الدولي (مثال: +967770000000)");
+                return;
+            }
+
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            }
+
+            try {
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+                document.getElementById('phone-step-1').style.display = 'none';
+                document.getElementById('phone-step-2').style.display = 'block';
+                showMessage("تم إرسال رمز التحقق بنجاح!", false);
+            } catch (error) {
+                showMessage("خطأ في إرسال الرمز: " + error.message);
+            }
+        };
+
+        window.verifyOTP = async () => {
+            clearMessage();
+            const otp = document.getElementById('otp-input').value;
+            try {
+                await confirmationResult.confirm(otp);
+            } catch (error) {
+                showMessage("رمز التحقق غير صحيح!");
             }
         };
 
@@ -118,40 +219,127 @@
 </head>
 <body>
     <header>
-        <h1>مكتبة ميثاق محمد الإلكترونية</h1>
+        <div class="logo">
+            <i class="fa-solid fa-book-open-reader"></i>
+            <span>مكتبة ميثاق محمد الإلكترونية</span>
+        </div>
+        <div class="user-nav" id="user-nav" style="display: none;">
+            <span class="user-name-tag" id="user-name-tag"></span>
+            <button class="btn-logout-sm" onclick="logout()">خروج</button>
+        </div>
     </header>
 
-    <div class="container">
-        <div id="auth-card">
-            <h2>مرحباً بك</h2>
-            <p class="subtitle">قم بتسجيل الدخول للوصول إلى محتوى المكتبة</p>
+    <!-- Auth View -->
+    <div class="main-wrapper" id="auth-wrapper">
+        <div class="auth-container">
+            <h2>تسجيل الدخول</h2>
+            <p class="subtitle">اختر الطريقة المفضلة للوصول للمكتبة</p>
 
-            <button class="btn btn-google" onclick="loginWithGoogle()">متابعة باستخدام Google</button>
+            <div id="msg-box" class="msg-box"></div>
 
-            <div class="divider"><span>أو بالبريد الإلكتروني</span></div>
+            <button class="btn btn-google" onclick="loginWithGoogle()">
+                <i class="fa-brands fa-google" style="color: #ea4335;"></i>
+                متابعة باستخدام Google
+            </button>
 
+            <div class="divider"><span>أو عبر خيارات أخرى</span></div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('email-tab', this)">البريد الإلكتروني</div>
+                <div class="tab" onclick="switchTab('phone-tab', this)">رقم الهاتف</div>
+            </div>
+
+            <!-- Email Auth -->
             <div id="email-tab" class="form-content active">
                 <div class="input-group">
                     <label>البريد الإلكتروني</label>
-                    <input type="email" id="email-input" placeholder="example@gmail.com">
+                    <input type="email" id="email-input" placeholder="name@example.com">
                 </div>
                 <div class="input-group">
                     <label>كلمة المرور</label>
                     <input type="password" id="password-input" placeholder="••••••••">
                 </div>
                 <button class="btn btn-primary" onclick="handleEmailAuth('login')">تسجيل الدخول</button>
-                <button class="btn" style="background:#e2e8f0; color:#333; margin-top: 8px;" onclick="handleEmailAuth('register')">إنشاء حساب جديد</button>
+                <button class="btn btn-secondary" onclick="handleEmailAuth('register')">إنشاء حساب جديد</button>
             </div>
-        </div>
 
-        <div id="user-card" style="display: none;">
-            <div class="welcome-card">
-                <h3>أهلاً وسهلاً بك في المكتبة!</h3>
-                <p>تم تسجيل دخولك بنجاح بواسطة:</p>
-                <div class="user-info" id="user-identity"></div>
-                <button class="btn btn-logout" onclick="logout()">تسجيل الخروج</button>
+            <!-- Phone Auth -->
+            <div id="phone-tab" class="form-content">
+                <div id="phone-step-1">
+                    <div class="input-group">
+                        <label>رقم الهاتف (مع الرمز الدولي)</label>
+                        <input type="tel" id="phone-input" placeholder="+967770000000">
+                    </div>
+                    <div id="recaptcha-container"></div>
+                    <button class="btn btn-primary" onclick="sendOTP()">إرسال كود التحقق SMS</button>
+                </div>
+                <div id="phone-step-2" style="display: none;">
+                    <div class="input-group">
+                        <label>أدخل رمز التحقق (OTP)</label>
+                        <input type="number" id="otp-input" placeholder="123456">
+                    </div>
+                    <button class="btn btn-primary" onclick="verifyOTP()">تأكيد الكود والدخول</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Library Main Dashboard View -->
+    <div class="library-view" id="library-view">
+        <div class="welcome-banner">
+            <h1>مرحباً بك في مكتبتك الإلكترونية</h1>
+            <p>تصفح أقسام الكتب، المراجع التقنية، والدروس البرمجية بكل سهولة ويسر.</p>
+        </div>
+
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="ابحث عن كتاب، مرجع، أو تخصص...">
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-book"></i> أقسام الكتب والمراجع</div>
+        <div class="books-grid">
+            <div class="book-card">
+                <div class="book-cover"><i class="fa-solid fa-code"></i></div>
+                <div class="book-info">
+                    <div class="book-title">أساسيات برمجة المواقع</div>
+                    <div class="book-author">HTML, CSS, JavaScript</div>
+                    <button class="btn-read">تصفح القسم</button>
+                </div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="book-info">
+                    <div class="book-title">دليل الشبكات والراوترات</div>
+                    <div class="book-author">MikroTik & Networks</div>
+                    <button class="btn-read">تصفح القسم</button>
+                </div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover" style="background: linear-gradient(135deg, #ff9966, #ff5e62);"><i class="fa-solid fa-square-root-variable"></i></div>
+                <div class="book-info">
+                    <div class="book-title">الرياضيات والمنطق</div>
+                    <div class="book-author">التعليم الأساسي والمناهج</div>
+                    <button class="btn-read">تصفح القسم</button>
+                </div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="book-info">
+                    <div class="book-title">تطبيقات الجوال والمنتجات</div>
+                    <div class="book-author">أدوات وبرمجيات أندرويد</div>
+                    <button class="btn-read">تصفح القسم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
 </body>
 </html>
