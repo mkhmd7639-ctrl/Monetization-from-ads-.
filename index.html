@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مكتبة ميثاق محمد الإلكترونية</title>
+  
+  <!-- تحسين محركات البحث SEO لتظهر في جوجل -->
+  <title>مكتبة ميثاق محمد الإلكترونية - بوابتك الأكاديمية الأولى للمتبة المدرسية والملخصات</title>
+  <meta name="description" content="مكتبة ميثاق محمد الإلكترونية - منصة تعليمية متكاملة لتصفح وتحميل الكتب المدرسية، الملازم، الملخصات، والأجوبة الوافية لجميع الصفوف الدراسية والكتب التاريخية والثقافية.">
+  <meta name="keywords" content="مكتبة ميثاق محمد, كتب مدرسية, ملخصات وافية, مناهج تعليمية, كتب تاريخية, مكتبة إلكترونية يمنية">
+  <meta name="author" content="ميثاق محمد صالح حموده">
+  
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -591,19 +597,19 @@
       }
     }
 
-    // دالة فتح أو تنزيل ملف الـ PDF بطريقة متوافقة تماماً مع التطبيقات والمتصفحات
-    function openPdfFile(blob) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        const a = document.createElement('a');
-        a.href = dataUrl;
+    // دالة فتح أو تنزيل ملف الـ PDF بالطريقة العادية والمستقرة
+    function openPdfFile(blob, title, actionType) {
+      const fileURL = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = fileURL;
+      if (actionType === 'download') {
+        a.download = `${title}.pdf`;
+      } else {
         a.target = '_blank';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      };
-      reader.readAsDataURL(blob);
+      }
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function renderAcademicBooks() {
@@ -616,8 +622,6 @@
       }
 
       grid.innerHTML = filtered.map(item => {
-        // نستخدم طريقة تخزين مؤقت آمنة للبيانات داخل التطبيق
-        const blobData = item.pdfBlob;
         return `
           <div class="book-card">
             ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
@@ -626,8 +630,8 @@
               <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
               ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
               <div class="book-actions">
-                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
+                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'view')" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'download')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'academic')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
@@ -697,8 +701,8 @@
               <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
               ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
               <div class="book-actions">
-                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
+                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'view')" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'download')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'cultural')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
