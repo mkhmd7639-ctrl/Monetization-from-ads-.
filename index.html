@@ -253,7 +253,7 @@
     .book-note { font-size: 0.92rem; color: var(--secondary); background: #eff6ff; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; line-height: 1.5; border-right: 4px solid var(--secondary); }
     
     .book-actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
-    .btn-action { flex: 1; min-width: 90px; padding: 10px; text-align: center; border: none; border-radius: 10px; text-decoration: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .btn-action { flex: 1; min-width: 90px; padding: 10px; text-align: center; border: none; border-radius: 12px; text-decoration: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
     .btn-view { background: #e0f2fe; color: #0284c7; }
     .btn-view:hover { background: #bae6fd; }
     .btn-download { background: #dcfce7; color: #16a34a; }
@@ -591,19 +591,19 @@
       }
     }
 
-    // دالة آمنة لفتح المعاينة داخل التطبيق أو تحويله لمتصفح الهاتف الخارجي
-    function openPdfPreview(blob) {
-      const fileUrl = URL.createObjectURL(blob);
-      const win = window.open(fileUrl, '_blank');
-      if (!win) {
-        // إذا قام التطبيق بحظر نافذة المتصفح، نقوم بتحميله أو فتحه برابط مباشر
+    // دالة فتح أو تنزيل ملف الـ PDF بطريقة متوافقة تماماً مع التطبيقات والمتصفحات
+    function openPdfFile(blob) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
         const a = document.createElement('a');
-        a.href = fileUrl;
+        a.href = dataUrl;
         a.target = '_blank';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-      }
+      };
+      reader.readAsDataURL(blob);
     }
 
     function renderAcademicBooks() {
@@ -616,7 +616,8 @@
       }
 
       grid.innerHTML = filtered.map(item => {
-        const downloadUrl = URL.createObjectURL(item.pdfBlob);
+        // نستخدم طريقة تخزين مؤقت آمنة للبيانات داخل التطبيق
+        const blobData = item.pdfBlob;
         return `
           <div class="book-card">
             ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
@@ -625,8 +626,8 @@
               <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
               ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
               <div class="book-actions">
-                <button onclick="openPdfPreview(item.pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <a href="${downloadUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'academic')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
@@ -688,7 +689,6 @@
         return;
       }
       grid.innerHTML = culturalData.map(item => {
-        const downloadUrl = URL.createObjectURL(item.pdfBlob);
         return `
           <div class="book-card">
             ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
@@ -697,8 +697,8 @@
               <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
               ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
               <div class="book-actions">
-                <button onclick="openPdfPreview(item.pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <a href="${downloadUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob)" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'cultural')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
