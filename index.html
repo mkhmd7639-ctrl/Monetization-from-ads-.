@@ -26,7 +26,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* شاشة الترحيب المتحركة الفاخرة */
+    /* شاشة الترحيب المتحركة */
     #splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -37,9 +37,9 @@
       justify-content: center;
       color: white;
       z-index: 99999;
-      animation: fadeOutSplash 0.8s ease 2.5s forwards;
+      animation: fadeOutSplash 0.8s ease 2.2s forwards;
     }
-    .splash-icon { font-size: 6rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 25px; filter: drop-shadow(0 10px 15px rgba(249,115,22,0.4)); }
+    .splash-icon { font-size: 6rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 25px; }
     .splash-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 12px; text-align: center; }
     .splash-sub { font-size: 1.25rem; opacity: 0.85; font-weight: 500; }
 
@@ -349,7 +349,7 @@
         </div>
       </div>
 
-      <!-- المستوى الثالث: عرض الكتب مع رفع الملف والصورة من الهاتف مباشرة وبأي حجم -->
+      <!-- المستوى الثالث: عرض الكتب مع رفع الملف والصورة بضمان عدم الاختلاط -->
       <div id="viewBooks" style="display: none;">
         <div class="nav-path">
           <span id="currentSectionTitle">قسم الكتب</span>
@@ -358,18 +358,18 @@
 
         <!-- لوحة التحكم السرية للمدير ميثاق -->
         <div class="form-card" id="adminAcademicForm" style="display: none;">
-          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع ملف كتاب جديد (خاص بالمطور ميثاق)</h3>
-          <form onsubmit="addAcademicItem(event)">
+          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع كتاب جديد (خاص بالمطور ميثاق)</h3>
+          <form id="academicForm" onsubmit="addAcademicItem(event)">
             <div class="form-group">
               <label>عنوان الكتاب أو الملخص</label>
               <input type="text" id="acadTitle" required placeholder="مثال: كتاب الرياضيات الجزء الأول">
             </div>
             <div class="form-group">
-              <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+              <label>اختر صورة الغلاف من هاتفك:</label>
               <input type="file" id="acadCoverFile" accept="image/*">
             </div>
             <div class="form-group">
-              <label>اختر ملف الـ PDF من هاتفك (يدعم حتى الملفات الكبيرة):</label>
+              <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
               <input type="file" id="acadFile" accept="application/pdf" required>
             </div>
             <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
@@ -385,7 +385,7 @@
     <div id="tab-cultural" class="tab-content">
       <div class="form-card" style="border-style: solid;">
         <h3><i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i> مشاركة كتاب تاريخي أو ثقافي (متاح للجميع)</h3>
-        <form onsubmit="addCulturalBook(event)">
+        <form id="culturalForm" onsubmit="addCulturalBook(event)">
           <div class="form-group">
             <label>عنوان الكتاب</label>
             <input type="text" id="cultTitle" required placeholder="مثال: مقدمة ابن خلدون">
@@ -399,11 +399,11 @@
             <textarea id="cultDesc" rows="2" placeholder="اكتب نبذة مختصرة عن محتوى الكتاب..."></textarea>
           </div>
           <div class="form-group">
-            <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+            <label>اختر صورة الغلاف من هاتفك:</label>
             <input type="file" id="cultCoverFile" accept="image/*">
           </div>
           <div class="form-group">
-            <label>اختر ملف الـ PDF من هاتفك:</label>
+            <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
             <input type="file" id="cultFile" accept="application/pdf" required>
           </div>
           <button type="submit" class="submit-btn">نشر الكتاب في المكتبة الثقافية</button>
@@ -418,7 +418,7 @@
     <div id="tab-feedback" class="tab-content">
       <div class="form-card" style="border-style: solid;">
         <h3><i class="fa-solid fa-comments" style="color: var(--accent);"></i> شاركنا رأيك أو انطباعك عن المكتبة</h3>
-        <form onsubmit="addFeedback(event)">
+        <form id="feedbackForm" onsubmit="addFeedback(event)">
           <div class="form-group">
             <label>اسمك الكريم</label>
             <input type="text" id="feedName" required placeholder="أدخل اسمك هنا">
@@ -540,7 +540,6 @@
       `).join('');
     }
 
-    // دالة لرفع ملف الـ PDF وصورة الغلاف مباشرة من الهاتف باستخدام تقنية الذاكرة المؤقتة (Blob URL)
     function addAcademicItem(e) {
       e.preventDefault();
       const pdfInput = document.getElementById('acadFile');
@@ -576,14 +575,8 @@
         pdf: pdfUrl
       };
       academicData.push(newItem);
-      
-      try {
-        localStorage.setItem('methaq_academic', JSON.stringify(academicData));
-      } catch (err) {
-        // إذا امتلأت الذاكرة المحلية، نقوم بحفظ البيانات الأساسية مع الحفاظ على الرابط المحلي النشط
-      }
-
       renderAcademicBooks();
+      document.getElementById('academicForm').reset();
       document.getElementById('adminAcademicForm').style.display = 'none';
       alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
     }
@@ -613,7 +606,7 @@
     function addCulturalBook(e) {
       e.preventDefault();
       const pdfInput = document.getElementById('cultFile');
-      const coverInput = document.getElementById('cultCoverFile');
+      const coverInput = document.getElementById('acadCoverFile');
 
       if (pdfInput.files.length === 0) {
         alert('الرجاء اختيار ملف الـ PDF!');
@@ -624,14 +617,15 @@
       const pdfBlobUrl = URL.createObjectURL(pdfFile);
       const title = document.getElementById('cultTitle').value;
       const author = document.getElementById('cultAuthor').value;
-      const desc = document.getElementById('cultDesc').value;
+      const desc = document.getElementById('cultDesc5') ? document.getElementById('cultDesc5').value : (document.getElementById('cultDesc') ? document.getElementById('cultDesc').value : '');
 
-      if (coverInput.files.length > 0) {
+      const coverField = document.getElementById('cultCoverFile');
+      if (coverField.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(event) {
           saveCulturalBook(event.target.result, pdfBlobUrl, title, author, desc);
         };
-        reader.readAsDataURL(coverInput.files[0]);
+        reader.readAsDataURL(coverField.files[0]);
       } else {
         saveCulturalBook("", pdfBlobUrl, title, author, desc);
       }
@@ -648,6 +642,7 @@
       };
       culturalData.push(newItem);
       renderCulturalBooks();
+      document.getElementById('culturalForm').reset();
       alert('تم نشر الكتاب الثقافي بنجاح!');
     }
 
@@ -672,7 +667,7 @@
       feedbackData.unshift(newFeed);
       localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
       renderFeedbacks();
-      e.target.reset();
+      document.getElementById('feedbackForm').reset();
       alert('شكراً لك على مشاركة رأيك الطيب!');
     }
 
