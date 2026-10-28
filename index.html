@@ -26,7 +26,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* شاشة الترحيب المتحركة الفاخرة */
+    /* شاشة الترحيب */
     #splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -40,7 +40,7 @@
       animation: fadeOutSplash 0.8s ease 2.2s forwards;
     }
     .splash-icon { font-size: 6.5rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 25px; filter: drop-shadow(0 10px 20px rgba(249,115,22,0.4)); }
-    .splash-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; }
+    .splash-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 12px; text-align: center; }
     .splash-sub { font-size: 1.25rem; opacity: 0.85; font-weight: 500; }
 
     @keyframes pulseFloat {
@@ -49,7 +49,7 @@
     }
     @keyframes fadeOutSplash { to { opacity: 0; visibility: hidden; } }
     
-    /* هيدر عصري فخم */
+    /* الهيدر */
     header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
@@ -63,7 +63,7 @@
       z-index: 1000;
       border-bottom: 3px solid rgba(249, 115, 22, 0.4);
     }
-    .header-title h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.4px; }
+    .header-title h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
     .header-title p { font-size: 0.92rem; opacity: 0.82; }
 
     .header-settings-btn {
@@ -78,11 +78,11 @@
       justify-content: center;
       font-size: 1.4rem;
       cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s ease;
     }
-    .header-settings-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg) scale(1.08); box-shadow: 0 0 15px rgba(249,115,22,0.6); }
+    .header-settings-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg) scale(1.08); }
 
-    /* قائمة الإعدادات المنسدلة */
+    /* قائمة الإعدادات */
     .settings-dropdown {
       position: absolute;
       top: 90px;
@@ -95,10 +95,7 @@
       z-index: 1100;
       border: 1px solid var(--border);
       overflow: hidden;
-      animation: fadeInDropdown 0.25s ease;
     }
-    @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
-    
     .settings-item {
       padding: 16px 20px;
       display: flex;
@@ -200,7 +197,7 @@
       font-weight: 900;
       color: var(--primary);
       font-size: 1.3rem;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s ease;
       box-shadow: var(--shadow);
     }
     .grade-box:hover {
@@ -224,7 +221,7 @@
       padding: 45px 35px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s ease;
       box-shadow: var(--shadow);
     }
     .sub-section-card:hover {
@@ -232,11 +229,11 @@
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
     }
-    .sub-section-icon { font-size: 4.5rem; color: var(--accent); margin-bottom: 22px; filter: drop-shadow(0 5px 10px rgba(249,115,22,0.3)); }
+    .sub-section-icon { font-size: 4.5rem; color: var(--accent); margin-bottom: 22px; }
     .sub-section-title { font-size: 1.6rem; font-weight: 900; color: var(--primary); margin-bottom: 12px; }
     .sub-section-desc { font-size: 1.05rem; color: var(--text-light); line-height: 1.6; }
 
-    /* كروت الكتب الفخمة */
+    /* كروت الكتب */
     .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 35px; margin-top: 40px; }
     .book-card {
       background: var(--card-bg);
@@ -246,7 +243,7 @@
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s ease;
     }
     .book-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(15, 23, 42, 0.15); }
     .book-cover { height: 240px; background: #e2e8f0; object-fit: cover; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 5rem; }
@@ -265,13 +262,12 @@
     .btn-delete { background: #fee2e2; color: var(--danger); flex: 0.6; display: none; }
     .btn-delete:hover { background: #fecaca; }
 
-    /* لوحة الإدارة السرية */
+    /* لوحة الإدارة */
     .form-card { background: white; padding: 45px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 45px; border: 3px dashed var(--accent); }
     .form-card h3 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; font-weight: 900; display: flex; align-items: center; gap: 12px; }
     .form-group { margin-bottom: 22px; }
     .form-group label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1.05rem; color: var(--primary); }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; transition: 0.3s; }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(15,23,42,0.1); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; }
     .form-group input[type="file"] { padding: 12px; background: white; cursor: pointer; }
     .submit-btn { background: var(--accent-gradient); color: white; border: none; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 1.15rem; font-weight: 900; width: 100%; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(249,115,22,0.3); }
     .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(249,115,22,0.4); }
@@ -286,7 +282,7 @@
 </head>
 <body>
 
-  <!-- شاشة الترحيب المتحركة -->
+  <!-- شاشة الترحيب -->
   <div id="splash-screen">
     <div class="splash-icon"><i class="fa-solid fa-graduation-cap"></i></div>
     <div class="splash-title">مكتبة ميثاق محمد الإلكترونية</div>
@@ -382,7 +378,7 @@
               <input type="file" id="acadCoverFile" accept="image/*">
             </div>
             <div class="form-group">
-              <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
+              <label>اختر ملف الـ PDF الحقيقي من هاتفك (يدعم أي حجم ضخم):</label>
               <input type="file" id="acadFile" accept="application/pdf" required>
             </div>
             <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
@@ -416,7 +412,7 @@
             <input type="file" id="cultCoverFile" accept="image/*">
           </div>
           <div class="form-group">
-            <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
+            <label>اختر ملف الـ PDF الحقيقي من هاتفك (يدعم أي حجم ضخم):</label>
             <input type="file" id="cultFile" accept="application/pdf" required>
           </div>
           <button type="submit" class="submit-btn">نشر الكتاب في المكتبة الثقافية</button>
@@ -462,17 +458,55 @@
     let selectedGrade = "";
     let selectedCategory = ""; 
     let selectedCategoryName = "";
-    let isAdminLoggedIn = false; // حالة الأدمن
+    let isAdminLoggedIn = false;
 
-    let academicData = JSON.parse(localStorage.getItem('methaq_academic')) || [];
-    let culturalData = JSON.parse(localStorage.getItem('methaq_cultural')) || [];
+    let db;
+    let academicData = [];
+    let culturalData = [];
     let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [
       { name: "محمد أحمد", text: "مكتبة إلكترونية جبارة، تصميم فخم جداً ومرتبة، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
     ];
 
+    // تهيئة قاعدة البيانات الداخلية الضخمة (IndexedDB) لحفظ الملفات مهما بلغ حجمها
+    const request = indexedDB.open("MethaqLibraryDB", 1);
+    
+    request.onerror = function(event) {
+      console.error("فشل فتح قاعدة البيانات الداخلية");
+    };
+
+    request.onupgradeneeded = function(event) {
+      db = event.target.result;
+      if (!db.objectStoreNames.contains("books")) {
+        db.createObjectStore("books", { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      loadAllBooks();
+    };
+
+    function loadAllBooks() {
+      const transaction = db.transaction(["books"], "readonly");
+      const store = transaction.objectStore("books");
+      const getAllRequest = store.getAll();
+
+      getAllRequest.onsuccess = function() {
+        const allBooks = getAllRequest.result;
+        academicData = allBooks.filter(b => b.type === 'academic');
+        culturalData = allBooks.filter(b => b.type === 'cultural');
+        
+        renderGrades();
+        renderCulturalBooks();
+        renderFeedbacks();
+        if(selectedGrade && selectedCategory) {
+          renderAcademicBooks();
+        }
+      };
+    }
+
     window.onload = function() {
       renderGrades();
-      renderCulturalBooks();
       renderFeedbacks();
     };
 
@@ -543,20 +577,23 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(item => `
-        <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
-          <div class="book-details">
-            <div class="book-title">${item.title}</div>
-            <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
-            <div class="book-actions">
-              <a href="${item.pdf}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
-              <a href="${item.pdf}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
-              ${isAdminLoggedIn ? `<button onclick="deleteAcademicBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
+      grid.innerHTML = filtered.map(item => {
+        const pdfUrl = URL.createObjectURL(item.pdfBlob);
+        return `
+          <div class="book-card">
+            ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
+            <div class="book-details">
+              <div class="book-title">${item.title}</div>
+              <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
+              <div class="book-actions">
+                <a href="${pdfUrl}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
+                <a href="${pdfUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function addAcademicItem(e) {
@@ -570,44 +607,32 @@
       }
 
       const pdfFile = pdfInput.files[0];
-      const pdfBlobUrl = URL.createObjectURL(pdfFile);
       const title = document.getElementById('acadTitle').value;
 
       if (coverInput.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          saveAcademicBook(event.target.result, pdfBlobUrl, title);
+          saveBookToDB({
+            id: Date.now(),
+            type: 'academic',
+            grade: selectedGrade,
+            category: selectedCategory,
+            title: title,
+            cover: event.target.result,
+            pdfBlob: pdfFile
+          }, 'academicForm');
         };
         reader.readAsDataURL(coverInput.files[0]);
       } else {
-        saveAcademicBook("", pdfBlobUrl, title);
-      }
-    }
-
-    function saveAcademicBook(coverData, pdfUrl, title) {
-      const newItem = {
-        id: Date.now(),
-        grade: selectedGrade,
-        category: selectedCategory,
-        title: title,
-        cover: coverData,
-        pdf: pdfUrl
-      };
-      academicData.push(newItem);
-      localStorage.setItem('methaq_academic', JSON.stringify(academicData));
-      renderAcademicBooks();
-      document.getElementById('academicForm').reset();
-      document.getElementById('adminAcademicForm').style.display = 'none';
-      alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
-    }
-
-    // دالة حذف الكتاب الأكاديمي مع رسالة التأكيد
-    function deleteAcademicBook(id) {
-      if (confirm("هل أنت متأكد من عملية الحذف؟")) {
-        academicData = academicData.filter(item => item.id !== id);
-        localStorage.setItem('methaq_academic', JSON.stringify(academicData));
-        renderAcademicBooks();
-        alert("تم حذف الكتاب بنجاح.");
+        saveBookToDB({
+          id: Date.now(),
+          type: 'academic',
+          grade: selectedGrade,
+          category: selectedCategory,
+          title: title,
+          cover: "",
+          pdfBlob: pdfFile
+        }, 'academicForm');
       }
     }
 
@@ -617,21 +642,24 @@
         grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700; font-size: 1.2rem;">لا توجد كتب ثقافية مرفوعة حالياً.</p>`;
         return;
       }
-      grid.innerHTML = culturalData.map(item => `
-        <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
-          <div class="book-details">
-            <div class="book-title">${item.title}</div>
-            <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
-            ${item.desc ? `<div style="font-size:0.95rem; color:var(--text-light); margin-bottom:15px; line-height:1.6;">${item.desc}</div>` : ''}
-            <div class="book-actions">
-              <a href="${item.pdf}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
-              <a href="${item.pdf}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
-              ${isAdminLoggedIn ? `<button onclick="deleteCulturalBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
+      grid.innerHTML = culturalData.map(item => {
+        const pdfUrl = URL.createObjectURL(item.pdfBlob);
+        return `
+          <div class="book-card">
+            ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
+            <div class="book-details">
+              <div class="book-title">${item.title}</div>
+              <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
+              ${item.desc ? `<div style="font-size:0.95rem; color:var(--text-light); margin-bottom:15px; line-height:1.6;">${item.desc}</div>` : ''}
+              <div class="book-actions">
+                <a href="${pdfUrl}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
+                <a href="${pdfUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function addCulturalBook(e) {
@@ -645,46 +673,67 @@
       }
 
       const pdfFile = pdfInput.files[0];
-      const pdfBlobUrl = URL.createObjectURL(pdfFile);
       const title = document.getElementById('cultTitle').value;
       const author = document.getElementById('cultAuthor').value;
-      const desc = document.getElementById('cultDesc5') ? document.getElementById('cultDesc5').value : (document.getElementById('cultDesc') ? document.getElementById('cultDesc').value : '');
+      const desc = document.getElementById('cultDesc').value;
 
-      const coverField = document.getElementById('cultCoverFile');
-      if (coverField.files.length > 0) {
+      if (coverInput.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          saveCulturalBook(event.target.result, pdfBlobUrl, title, author, desc);
+          saveBookToDB({
+            id: Date.now(),
+            type: 'cultural',
+            title: title,
+            author: author,
+            desc: desc,
+            cover: event.target.result,
+            pdfBlob: pdfFile
+          }, 'culturalForm');
         };
-        reader.readAsDataURL(coverField.files[0]);
+        reader.readAsDataURL(coverInput.files[0]);
       } else {
-        saveCulturalBook("", pdfBlobUrl, title, author, desc);
+        saveBookToDB({
+          id: Date.now(),
+          type: 'cultural',
+          title: title,
+          author: author,
+          desc: desc,
+          cover: "",
+          pdfBlob: pdfFile
+        }, 'culturalForm');
       }
     }
 
-    function saveCulturalBook(coverData, pdfUrl, title, author, desc) {
-      const newItem = {
-        id: Date.now(),
-        title: title,
-        author: author,
-        desc: desc,
-        cover: coverData,
-        pdf: pdfUrl
+    function saveBookToDB(bookObj, formId) {
+      const transaction = db.transaction(["books"], "readwrite");
+      const store = transaction.objectStore("books");
+      const request = store.put(bookObj);
+
+      request.onsuccess = function() {
+        loadAllBooks();
+        document.getElementById(formId).reset();
+        if(formId === 'academicForm') {
+          document.getElementById('adminAcademicForm').style.display = 'none';
+        }
+        alert('تم رفع وحفظ الكتاب بنجاح تام يا ميثاق!');
       };
-      culturalData.push(newItem);
-      localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
-      renderCulturalBooks();
-      document.getElementById('culturalForm').reset();
-      alert('تم نشر الكتاب الثقافي بنجاح!');
+
+      request.onerror = function() {
+        alert('حدث خطأ أثناء حفظ الكتاب في الذاكرة.');
+      };
     }
 
-    // دالة حذف الكتاب الثقافي مع رسالة التأكيد
-    function deleteCulturalBook(id) {
+    // دالة الحذف الشاملة مع رسالة التأكيد
+    function deleteBook(id) {
       if (confirm("هل أنت متأكد من عملية الحذف؟")) {
-        culturalData = culturalData.filter(item => item.id !== id);
-        localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
-        renderCulturalBooks();
-        alert("تم حذف الكتاب بنجاح.");
+        const transaction = db.transaction(["books"], "readwrite");
+        const store = transaction.objectStore("books");
+        const request = store.delete(id);
+
+        request.onsuccess = function() {
+          loadAllBooks();
+          alert("تم حذف الكتاب بنجاح.");
+        };
       }
     }
 
