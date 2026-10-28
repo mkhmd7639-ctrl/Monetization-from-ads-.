@@ -14,7 +14,6 @@
       --accent: #f97316;
       --accent-gradient: linear-gradient(135deg, #f97316, #ea580c);
       --danger: #ef4444;
-      --warning: #f59e0b;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #1e293b;
@@ -260,8 +259,8 @@
     .btn-download { background: #dcfce7; color: #16a34a; }
     .btn-download:hover { background: #bbf7d0; }
     
-    /* أزرار الأدمن (تعديل وحذف) */
-    .btn-edit { background: #fef3c7; color: dimgrey; color: #d97706; display: none; }
+    /* أزرار الأدمن */
+    .btn-edit { background: #fef3c7; color: #d97706; display: none; }
     .btn-edit:hover { background: #fde68a; }
     .btn-delete { background: #fee2e2; color: var(--danger); display: none; }
     .btn-delete:hover { background: #fecaca; }
@@ -403,7 +402,7 @@
 
     </div>
 
-    <!-- 2. الكتب التاريخية والثقافية (متاح للجميع مع ملاحظات اختيارية) -->
+    <!-- 2. الكتب التاريخية والثقافية -->
     <div id="tab-cultural" class="tab-content">
       <div class="form-card" style="border-style: solid;">
         <h3><i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i> مشاركة كتاب تاريخي أو ثقافي</h3>
@@ -481,7 +480,7 @@
       { id: 1, name: "محمد أحمد", text: "مكتبة إلكترونية مرتبطة ومنظمة جداً، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
     ];
 
-    const request = indexedDB.open("MethaqLibraryDB", 2);
+    const request = indexedDB.open("MethaqLibraryDB", 3);
     
     request.onerror = function(event) {
       console.error("فشل فتح قاعدة البيانات الداخلية");
@@ -592,6 +591,21 @@
       }
     }
 
+    // دالة آمنة لفتح المعاينة داخل التطبيق أو تحويله لمتصفح الهاتف الخارجي
+    function openPdfPreview(blob) {
+      const fileUrl = URL.createObjectURL(blob);
+      const win = window.open(fileUrl, '_blank');
+      if (!win) {
+        // إذا قام التطبيق بحظر نافذة المتصفح، نقوم بتحميله أو فتحه برابط مباشر
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }
+
     function renderAcademicBooks() {
       const grid = document.getElementById('academicGrid');
       const filtered = academicData.filter(item => item.grade === selectedGrade && item.category === selectedCategory);
@@ -602,7 +616,7 @@
       }
 
       grid.innerHTML = filtered.map(item => {
-        const pdfUrl = URL.createObjectURL(item.pdfBlob);
+        const downloadUrl = URL.createObjectURL(item.pdfBlob);
         return `
           <div class="book-card">
             ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
@@ -611,8 +625,8 @@
               <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
               ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
               <div class="book-actions">
-                <a href="${pdfUrl}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
-                <a href="${pdfUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                <button onclick="openPdfPreview(item.pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <a href="${downloadUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'academic')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
@@ -674,7 +688,7 @@
         return;
       }
       grid.innerHTML = culturalData.map(item => {
-        const pdfUrl = URL.createObjectURL(item.pdfBlob);
+        const downloadUrl = URL.createObjectURL(item.pdfBlob);
         return `
           <div class="book-card">
             ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
@@ -683,8 +697,8 @@
               <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
               ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
               <div class="book-actions">
-                <a href="${pdfUrl}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
-                <a href="${pdfUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
+                <button onclick="openPdfPreview(item.pdfBlob)" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+                <a href="${downloadUrl}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
                 ${isAdminLoggedIn ? `
                   <button onclick="editBook(${item.id}, 'cultural')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                   <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
@@ -757,7 +771,6 @@
       };
     }
 
-    // دالة تعديل الكتاب (العنوان والملاحظات)
     function editBook(id, type) {
       const allBooks = [...academicData, ...culturalData];
       const book = allBooks.find(b => b.id === id);
@@ -785,7 +798,6 @@
       };
     }
 
-    // دالة حذف الكتاب
     function deleteBook(id) {
       if (confirm("هل أنت متأكد من عملية الحذف؟")) {
         const transaction = db.transaction(["books"], "readwrite");
@@ -832,7 +844,6 @@
       alert('شكراً لك على مشاركة رأيك الطيب!');
     }
 
-    // دالة حذف التعليقات السلبية للأدمن
     function deleteFeedback(id) {
       if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
         feedbackData = feedbackData.filter(f => f.id !== id);
