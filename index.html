@@ -46,15 +46,12 @@
             getAuth, 
             signInWithPopup, 
             GoogleAuthProvider, 
-            RecaptchaVerifier,
-            signInWithPhoneNumber,
             signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
             signOut,
             onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // مفاتيح مشروعك الحقيقية والمدمجة بنجاح
         const firebaseConfig = {
             apiKey: "AIzaSyDzumyzrRWRF0RmINVV8v1DrEM6BVA2x44",
             authDomain: "methaq-library.firebaseapp.com",
@@ -72,7 +69,7 @@
             if (user) {
                 document.getElementById('auth-card').style.display = 'none';
                 document.getElementById('user-card').style.display = 'block';
-                document.getElementById('user-identity').innerText = user.displayName || user.email || user.phoneNumber;
+                document.getElementById('user-identity').innerText = user.displayName || user.email;
             } else {
                 document.getElementById('auth-card').style.display = 'block';
                 document.getElementById('user-card').style.display = 'none';
@@ -83,46 +80,36 @@
             try {
                 await signInWithPopup(auth, new GoogleAuthProvider());
             } catch (error) {
-                alert("خطأ: " + error.message);
+                alert("خطأ في تسجيل الدخول عبر Google: " + error.message);
             }
         };
 
-        window.handleEmailAuth = async (type) => {
-            const email = document.getElementById('email-input').value;
+        window.handleEmailAuth = async (actionType) => {
+            const email = document.getElementById('email-input').value.trim();
             const password = document.getElementById('password-input').value;
+
+            if (!email || !password) {
+                alert("يرجى كتابة البريد الإلكتروني وكلمة المرور بشكل صحيح!");
+                return;
+            }
+
             try {
-                if (type === 'login') {
+                if (actionType === 'login') {
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    alert("تم إنشاء الحساب بنجاح!");
+                    alert("تم إنشاء الحساب بنجاح وتم تسجيل دخولك!");
                 }
             } catch (error) {
-                alert("خطأ: " + error.message);
-            }
-        };
-
-        let confirmationResult = null;
-        window.sendOTP = async () => {
-            const phoneNumber = document.getElementById('phone-input').value;
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-            }
-            try {
-                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-                document.getElementById('phone-step-1').style.display = 'none';
-                document.getElementById('phone-step-2').style.display = 'block';
-                alert("تم إرسال رمز التحقق!");
-            } catch (error) {
-                alert("خطأ: " + error.message);
-            }
-        };
-
-        window.verifyOTP = async () => {
-            try {
-                await confirmationResult.confirm(document.getElementById('otp-input').value);
-            } catch (error) {
-                alert("رمز غير صحيح: " + error.message);
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    alert("هذا البريد غير مسجل مسبقاً، يرجى الضغط على زر 'إنشاء حساب جديد'.");
+                } else if (error.code === 'auth/email-already-in-use') {
+                    alert("هذا البريد مسجل بالفعل، اضغط على 'تسجيل الدخول'.");
+                } else if (error.code === 'auth/weak-password') {
+                    alert("كلمة المرور ضعيفة، يجب أن تكون 6 أحرف أو أرقام على الأقل.");
+                } else {
+                    alert("خطأ: " + error.message);
+                }
             }
         };
 
@@ -141,42 +128,19 @@
 
             <button class="btn btn-google" onclick="loginWithGoogle()">متابعة باستخدام Google</button>
 
-            <div class="divider"><span>أو طريقة أخرى</span></div>
-
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('email-tab', this)">البريد</div>
-                <div class="tab" onclick="switchTab('phone-tab', this)">رقم الهاتف</div>
-            </div>
+            <div class="divider"><span>أو بالبريد الإلكتروني</span></div>
 
             <div id="email-tab" class="form-content active">
                 <div class="input-group">
                     <label>البريد الإلكتروني</label>
-                    <input type="email" id="email-input" placeholder="example@mail.com">
+                    <input type="email" id="email-input" placeholder="example@gmail.com">
                 </div>
                 <div class="input-group">
                     <label>كلمة المرور</label>
                     <input type="password" id="password-input" placeholder="••••••••">
                 </div>
                 <button class="btn btn-primary" onclick="handleEmailAuth('login')">تسجيل الدخول</button>
-                <button class="btn" style="background:#eee; margin-top: 5px;" onclick="handleEmailAuth('register')">إنشاء حساب جديد</button>
-            </div>
-
-            <div id="phone-tab" class="form-content">
-                <div id="phone-step-1">
-                    <div class="input-group">
-                        <label>رقم الهاتف (بالصيغة الدولية مثل +967...)</label>
-                        <input type="tel" id="phone-input" placeholder="+967770000000">
-                    </div>
-                    <div id="recaptcha-container"></div>
-                    <button class="btn btn-primary" onclick="sendOTP()">إرسال رمز التحقق SMS</button>
-                </div>
-                <div id="phone-step-2" style="display: none;">
-                    <div class="input-group">
-                        <label>رمز التحقق (OTP)</label>
-                        <input type="number" id="otp-input" placeholder="123456">
-                    </div>
-                    <button class="btn btn-primary" onclick="verifyOTP()">تأكيد الكود</button>
-                </div>
+                <button class="btn" style="background:#e2e8f0; color:#333; margin-top: 8px;" onclick="handleEmailAuth('register')">إنشاء حساب جديد</button>
             </div>
         </div>
 
@@ -189,14 +153,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-        }
-    </script>
 </body>
 </html>
