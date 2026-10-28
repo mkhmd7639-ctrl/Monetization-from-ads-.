@@ -9,86 +9,89 @@
   
   <style>
     :root {
-      --primary: #0f172a;
-      --secondary: #1e3d59;
-      --accent: #ff6e40;
+      --primary: #0b1329;
+      --secondary: #1e3a8a;
+      --accent: #f97316;
+      --accent-gradient: linear-gradient(135deg, #f97316, #ea580c);
       --success: #10b981;
-      --bg: #f8fafc;
+      --bg: #f1f5f9;
       --card-bg: #ffffff;
-      --text: #334155;
-      --border: #e2e8f0;
-      --shadow: 0 10.5px 25px rgba(0,0,0,0.06);
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #cbd5e1;
+      --shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* شاشة الترحيب المتحركة الفخمة */
+    /* شاشة الترحيب المتحركة الفاخرة */
     #splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, #0f172a, #1e3d59, #2563eb);
+      background: radial-gradient(circle, #1e3a8a 0%, #0b1329 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: white;
-      z-index: 9999;
+      z-index: 99999;
       animation: fadeOutSplash 0.8s ease 2.5s forwards;
     }
-    .splash-icon { font-size: 5.5rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 20px; }
-    .splash-title { font-size: 2.4rem; font-weight: 900; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; }
-    .splash-sub { font-size: 1.2rem; opacity: 0.9; }
+    .splash-icon { font-size: 6rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 25px; filter: drop-shadow(0 10px 15px rgba(249,115,22,0.4)); }
+    .splash-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 12px; text-align: center; }
+    .splash-sub { font-size: 1.25rem; opacity: 0.85; font-weight: 500; }
 
     @keyframes pulseFloat {
       0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-15px) scale(1.08); }
+      100% { transform: translateY(-18px) scale(1.06); }
     }
     @keyframes fadeOutSplash { to { opacity: 0; visibility: hidden; } }
     
-    /* الهيدر العصري المطور */
+    /* هيدر عصري فخم */
     header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
-      padding: 22px 30px;
+      padding: 24px 35px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      box-shadow: 0 10px 25px rgba(11, 19, 41, 0.2);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
     }
-    .header-title h1 { font-size: 1.5rem; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
-    .header-title p { font-size: 0.85rem; opacity: 0.82; }
+    .header-title h1 { font-size: 1.65rem; font-weight: 900; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
+    .header-title p { font-size: 0.9rem; opacity: 0.8; }
 
     .header-settings-btn {
-      background: rgba(255,255,255,0.12);
-      border: 1.5px solid rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
       color: white;
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
-    .header-settings-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
+    .header-settings-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg) scale(1.05); }
 
-    /* قائمة الإعدادات المنسدلة الاحترافية */
+    /* قائمة الإعدادات المنسدلة */
     .settings-dropdown {
       position: absolute;
-      top: 80px;
-      left: 25px;
+      top: 85px;
+      left: 30px;
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.22);
-      width: 250px;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+      width: 260px;
       display: none;
-      z-index: 1000;
+      z-index: 1100;
       border: 1px solid var(--border);
       overflow: hidden;
       animation: fadeInDropdown 0.25s ease;
@@ -96,65 +99,68 @@
     @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
     
     .settings-item {
-      padding: 15px 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       color: var(--primary);
       text-decoration: none;
       border-bottom: 1px solid var(--border);
       cursor: pointer;
       transition: 0.25s;
     }
-    .settings-item:hover { background: #f1f5f9; color: var(--accent); }
-    .settings-item i { font-size: 1.3rem; }
+    .settings-item:hover { background: #f8fafc; color: var(--accent); padding-right: 25px; }
+    .settings-item i { font-size: 1.4rem; }
 
-    .container { max-width: 1200px; margin: 35px auto; padding: 0 20px; }
+    .container { max-width: 1250px; margin: 40px auto; padding: 0 25px; flex: 1; width: 100%; }
 
+    .search-bar-wrapper { position: relative; margin-bottom: 40px; }
     .search-bar {
       width: 100%;
-      padding: 16px 20px 16px 50px;
-      border-radius: 35px;
-      border: 1.5px solid var(--border);
-      font-size: 1.05rem;
-      margin-bottom: 35px;
+      padding: 18px 25px 18px 55px;
+      border-radius: 40px;
+      border: 2px solid var(--border);
+      font-size: 1.1rem;
       outline: none;
       box-shadow: var(--shadow);
       background: white;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      font-weight: 600;
     }
-    .search-bar:focus { border-color: var(--accent); box-shadow: 0 6px 22px rgba(255,110,64,0.18); }
+    .search-bar:focus { border-color: var(--accent); box-shadow: 0 10px 25px rgba(249, 115, 22, 0.15); }
+    .search-bar-wrapper i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.3rem; }
 
-    .main-tabs { display: flex; gap: 12px; margin-bottom: 35px; border-bottom: 2px solid var(--border); overflow-x: auto; padding-bottom: 5px; }
+    .main-tabs { display: flex; gap: 15px; margin-bottom: 40px; border-bottom: 2.5px solid var(--border); overflow-x: auto; padding-bottom: 5px; }
     .tab-link {
-      padding: 14px 28px;
+      padding: 16px 30px;
       cursor: pointer;
       font-weight: 800;
-      color: #64748b;
-      border-bottom: 3.5px solid transparent;
+      color: var(--text-light);
+      border-bottom: 4px solid transparent;
       white-space: nowrap;
-      font-size: 1.1rem;
-      transition: 0.3s;
+      font-size: 1.15rem;
+      transition: all 0.3s ease;
+      border-radius: 14px 14px 0 0;
     }
-    .tab-link.active { color: var(--primary); border-bottom-color: var(--accent); background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
+    .tab-link.active { color: var(--primary); border-bottom-color: var(--accent); background: white; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* مسار التنقل (Breadcrumbs) المتطور */
+    /* مسار التنقل */
     .nav-path {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
       font-weight: 900;
       color: var(--primary);
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       background: white;
-      padding: 15px 25px;
-      border-radius: 14px;
+      padding: 18px 30px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
     }
@@ -162,110 +168,110 @@
       background: var(--secondary);
       color: white;
       border: none;
-      padding: 9px 18px;
-      border-radius: 10px;
+      padding: 10px 20px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       font-weight: 800;
-      transition: 0.25s;
+      transition: all 0.25s ease;
     }
-    .back-btn:hover { background: var(--primary); transform: translateX(-3px); }
+    .back-btn:hover { background: var(--primary); transform: translateX(-4px); }
 
-    /* شبكة الصفوف الدراسية الفخمة */
+    /* شبكة الصفوف */
     .grades-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 22px;
     }
     .grade-box {
       background: white;
       border: 2px solid var(--border);
-      padding: 35px 20px;
-      border-radius: 18px;
+      padding: 40px 20px;
+      border-radius: var(--radius);
       text-align: center;
       cursor: pointer;
       font-weight: 900;
       color: var(--primary);
-      font-size: 1.2rem;
-      transition: 0.3s;
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
       box-shadow: var(--shadow);
     }
     .grade-box:hover {
       background: linear-gradient(135deg, var(--secondary), var(--primary));
       color: white;
       border-color: transparent;
-      transform: translateY(-6px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(11, 19, 41, 0.25);
     }
 
-    /* الأقسام الثلاثة الداخلية لكل صف (جزء 1، جزء 2، ملخصات) */
+    /* الأقسام الثلاثة الداخلية */
     .sub-sections-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 25px;
     }
     .sub-section-card {
       background: white;
       border: 2px solid var(--border);
-      border-radius: 18px;
-      padding: 35px;
+      border-radius: var(--radius);
+      padding: 40px 30px;
       text-align: center;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
       box-shadow: var(--shadow);
     }
     .sub-section-card:hover {
       border-color: var(--accent);
-      transform: translateY(-6px);
-      box-shadow: 0 15px 35px rgba(255,110,64,0.18);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
     }
-    .sub-section-icon { font-size: 3.5rem; color: var(--accent); margin-bottom: 18px; }
-    .sub-section-title { font-size: 1.4rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
-    .sub-section-desc { font-size: 0.95rem; color: #64748b; line-height: 1.6; }
+    .sub-section-icon { font-size: 4rem; color: var(--accent); margin-bottom: 20px; }
+    .sub-section-title { font-size: 1.5rem; font-weight: 900; color: var(--primary); margin-bottom: 12px; }
+    .sub-section-desc { font-size: 1rem; color: var(--text-light); line-height: 1.6; }
 
-    /* كروت الكتب الاحترافية */
-    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; margin-top: 30px; }
+    /* كروت الكتب */
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-top: 35px; }
     .book-card {
       background: var(--card-bg);
-      border-radius: 16px;
+      border-radius: var(--radius);
       overflow: hidden;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: all 0.3s ease;
     }
-    .book-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
-    .book-cover { height: 210px; background: #e2e8f0; object-fit: cover; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 4rem; }
-    .book-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-    .book-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 12px; color: var(--primary); }
-    .book-meta { font-size: 0.88rem; color: #64748b; margin-bottom: 15px; font-weight: 700; }
+    .book-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .book-cover { height: 230px; background: #e2e8f0; object-fit: cover; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 4.5rem; }
+    .book-details { padding: 22px; flex-grow: 1; display: flex; flex-direction: column; }
+    .book-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; color: var(--primary); line-height: 1.4; }
+    .book-meta { font-size: 0.92rem; color: var(--text-light); margin-bottom: 18px; font-weight: 700; }
     .book-actions { display: flex; gap: 12px; margin-top: auto; }
-    .btn-action { flex: 1; padding: 11px; text-align: center; border: none; border-radius: 10px; text-decoration: none; font-size: 0.92rem; font-weight: 800; cursor: pointer; transition: 0.25s; }
+    .btn-action { flex: 1; padding: 12px; text-align: center; border: none; border-radius: 12px; text-decoration: none; font-size: 0.98rem; font-weight: 800; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-view { background: #e0f2fe; color: #0284c7; }
     .btn-view:hover { background: #bae6fd; }
     .btn-download { background: #dcfce7; color: #16a34a; }
     .btn-download:hover { background: #bbf7d0; }
 
-    /* لوحة الإدارة السرية للأدمن */
-    .form-card { background: white; padding: 35px; border-radius: 18px; box-shadow: var(--shadow); margin-bottom: 35px; border: 3px dashed var(--accent); }
-    .form-card h3 { color: var(--primary); margin-bottom: 22px; font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 800; font-size: 0.95rem; color: var(--primary); }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 18px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1.02rem; outline: none; background: #fafafa; transition: 0.3s; }
-    .form-group input[type="file"] { padding: 10px; background: white; cursor: pointer; }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(30,61,89,0.1); }
-    .submit-btn { background: var(--secondary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 900; width: 100%; transition: 0.3s; }
-    .submit-btn:hover { background: var(--primary); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+    /* لوحة الإدارة السرية */
+    .form-card { background: white; padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 40px; border: 3px dashed var(--accent); }
+    .form-card h3 { color: var(--primary); margin-bottom: 25px; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; gap: 12px; }
+    .form-group { margin-bottom: 22px; }
+    .form-group label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1rem; color: var(--primary); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; }
+    .form-group input[type="file"] { padding: 12px; background: white; cursor: pointer; }
+    .submit-btn { background: var(--accent-gradient); color: white; border: none; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 1.15rem; font-weight: 900; width: 100%; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(249,115,22,0.3); }
+    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(249,115,22,0.4); }
 
-    /* قسم التعليقات والزوار */
-    .comments-section { margin-top: 30px; }
-    .comment-card { background: white; padding: 22px; border-radius: 16px; margin-bottom: 18px; border-right: 6px solid var(--accent); border: 1.5px solid var(--border); box-shadow: var(--shadow); }
-    .comment-author { font-weight: 900; color: var(--primary); font-size: 1.1rem; }
-    .comment-date { font-size: 0.8rem; color: #94a3b8; margin-top: 8px; }
+    .comments-section { margin-top: 35px; }
+    .comment-card { background: white; padding: 25px; border-radius: var(--radius); margin-bottom: 20px; border-right: 6px solid var(--accent); border: 1.5px solid var(--border); box-shadow: var(--shadow); }
+    .comment-author { font-weight: 900; color: var(--primary); font-size: 1.15rem; }
+    .comment-date { font-size: 0.85rem; color: var(--text-light); margin-top: 10px; }
+
+    footer { text-align: center; padding: 25px; color: var(--text-light); font-size: 0.95rem; border-top: 1px solid var(--border); background: white; margin-top: auto; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -274,13 +280,13 @@
   <div id="splash-screen">
     <div class="splash-icon"><i class="fa-solid fa-graduation-cap"></i></div>
     <div class="splash-title">مكتبة ميثاق محمد الإلكترونية</div>
-    <div class="splash-sub">جاري إطلاق المنصة التعليمية الفخمة والمبتكرة...</div>
+    <div class="splash-sub">بوابتك الأكاديمية الأولى للمراجع والكتب المدرسية</div>
   </div>
 
   <header>
     <div class="header-title">
       <h1><i class="fa-solid fa-book-open-reader" style="color: var(--accent);"></i> مكتبة ميثاق محمد الإلكترونية</h1>
-      <p>بوابتك الأكاديمية الشاملة للكتب والملخصات المدرسية</p>
+      <p>منصة التعليم، الكتب المدرسية والمراجع الشاملة</p>
     </div>
     
     <div style="position: relative;">
@@ -288,10 +294,9 @@
         <i class="fa-solid fa-gear"></i>
       </div>
 
-      <!-- قائمة الإعدادات المنسدلة -->
       <div class="settings-dropdown" id="settingsDropdown">
         <a href="https://wa.me/967784327056" target="_blank" class="settings-item">
-          <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.5rem;"></i> تواصل مع المطور
+          <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.6rem;"></i> تواصل مع المطور
         </a>
         <div class="settings-item" onclick="promptAdminLogin()">
           <i class="fa-solid fa-lock" style="color: var(--accent);"></i> لوحة الإدارة (الأدمن)
@@ -301,24 +306,27 @@
   </header>
 
   <div class="container">
-    <input type="text" class="search-bar" placeholder="ابحث عن كتاب، مرجع، أو ملخص في أرشيف المكتبة..." onkeyup="searchBooks(this.value)">
+    <div class="search-bar-wrapper">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" class="search-bar" placeholder="ابحث عن كتاب، مرجع، أو ملخص..." onkeyup="searchBooks(this.value)">
+    </div>
 
     <div class="main-tabs">
-      <div class="tab-link active" onclick="switchTab('academic', event)">🏫 الأقسام الأكاديمية النظامية</div>
-      <div class="tab-link" onclick="switchTab('cultural', event)">📚 الكتب التاريخية والثقافية</div>
-      <div class="tab-link" onclick="switchTab('feedback', event)">💬 آراء وانطباعات الزوار</div>
+      <div class="tab-link active" onclick="switchTab('academic', event)"><i class="fa-solid fa-school"></i> الأقسام الأكاديمية</div>
+      <div class="tab-link" onclick="switchTab('cultural', event)"><i class="fa-solid fa-book-bookmark"></i> الكتب التاريخية والثقافية</div>
+      <div class="tab-link" onclick="switchTab('feedback', event)"><i class="fa-solid fa-comments"></i> آراء وانطباعات الزوار</div>
     </div>
 
     <!-- 1. الأقسام الدراسية -->
     <div id="tab-academic" class="tab-content active">
       
-      <!-- المستوى الأول: شبكة الصفوف الدراسية -->
+      <!-- المستوى الأول: شبكة الصفوف -->
       <div id="viewGrades">
-        <div class="section-subtitle" style="margin-bottom: 22px; font-weight: 900; color: var(--primary); font-size: 1.35rem;"><i class="fa-solid fa-layer-group"></i> اختر الصف الدراسي المطلوب:</div>
+        <div class="section-subtitle" style="margin-bottom: 25px; font-weight: 900; color: var(--primary); font-size: 1.4rem;"><i class="fa-solid fa-layer-group"></i> اختر الصف الدراسي المطلوب:</div>
         <div class="grades-grid" id="gradesContainer"></div>
       </div>
 
-      <!-- المستوى الثاني: الأقسام الثلاثة داخل الصف (جزء 1، جزء 2، ملخصات) -->
+      <!-- المستوى الثاني: الأقسام الثلاثة -->
       <div id="viewSubSections" style="display: none;">
         <div class="nav-path">
           <span>الصف الحالي: <span id="currentGradeTitle" style="color: var(--accent);"></span></span>
@@ -328,23 +336,23 @@
         <div class="sub-sections-grid">
           <div class="sub-section-card" onclick="openCategory('part1', 'الكتاب الدراسي (الجزء الأول)')">
             <div class="sub-section-icon"><i class="fa-solid fa-book"></i></div>
-            <div class="sub-section-title">الكتاب الدراسي (الجزء الأول)</div>
-            <div class="sub-section-desc">تصفح ورفع الكتب الرسمية المقررة للفصل الدراسي الأول بكل سلاسة واحترافية.</div>
+            <div class="sub-section-title">الجزء الأول</div>
+            <div class="sub-section-desc">تصفح ورفع كتب الفصل الدراسي الأول.</div>
           </div>
           <div class="sub-section-card" onclick="openCategory('part2', 'الكتاب الدراسي (الجزء الثاني)')">
             <div class="sub-section-icon"><i class="fa-solid fa-book-open"></i></div>
-            <div class="sub-section-title">الكتاب الدراسي (الجزء الثاني)</div>
-            <div class="sub-section-desc">تصفح ورفع الكتب الرسمية المقررة للفصل الدراسي الثاني بكل دقة ويسر.</div>
+            <div class="sub-section-title">الجزء الثاني</div>
+            <div class="sub-section-desc">تصفح ورفع كتب الفصل الدراسي الثاني.</div>
           </div>
           <div class="sub-section-card" onclick="openCategory('notes', 'الملخصات والأجوبة الوافية')">
             <div class="sub-section-icon"><i class="fa-solid fa-file-invoice"></i></div>
             <div class="sub-section-title">الملخصات والوافيات</div>
-            <div class="sub-section-desc">تصفح ورفع أقوى الملخصات، الحلول النموذجية، والأجوبة الشاملة للمنهاج.</div>
+            <div class="sub-section-desc">تصفح ورفع أقوى الملخصات والحلول النموذجية.</div>
           </div>
         </div>
       </div>
 
-      <!-- المستوى الثالث: عرض الكتب داخل القسم مع نموذج الرفع الخاص بميثاق -->
+      <!-- المستوى الثالث: عرض الكتب مع لوحة رفع الملفات والصور الحقيقية -->
       <div id="viewBooks" style="display: none;">
         <div class="nav-path">
           <span id="currentSectionTitle">قسم الكتب</span>
@@ -353,18 +361,18 @@
 
         <!-- لوحة التحكم السرية للمدير ميثاق -->
         <div class="form-card" id="adminAcademicForm" style="display: none;">
-          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> لوحة إدارة المحتوى الأكاديمي (مخصصة للمطور ميثاق)</h3>
+          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> إضافة كتاب جديد لهذا القسم (خاص بالمطور ميثاق)</h3>
           <form onsubmit="addAcademicItem(event)">
             <div class="form-group">
-              <label>عنوان الكتاب أو الملخص</label>
+              <label>عنوان الكتاب</label>
               <input type="text" id="acadTitle" required placeholder="مثال: كتاب الرياضيات الجزء الأول">
             </div>
             <div class="form-group">
-              <label>رابط صورة الغلاف (اختياري)</label>
-              <input type="url" id="acadCover" placeholder="https://example.com/cover.jpg">
+              <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+              <input type="file" id="acadCoverFile" accept="image/*">
             </div>
             <div class="form-group">
-              <label>اختر ملف الـ PDF من جهازك:</label>
+              <label>اختر ملف الـ PDF من هاتفك:</label>
               <input type="file" id="acadFile" accept="application/pdf" required>
             </div>
             <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
@@ -394,18 +402,18 @@
             <textarea id="cultDesc" rows="2" placeholder="اكتب نبذة مختصرة عن محتوى الكتاب..."></textarea>
           </div>
           <div class="form-group">
-            <label>رابط صورة الغلاف (اختياري)</label>
-            <input type="url" id="cultCover" placeholder="https://example.com/cover.jpg">
+            <label>اختر صورة الغلاف من هاتفك (اختياري):</label>
+            <input type="file" id="cultCoverFile" accept="image/*">
           </div>
           <div class="form-group">
-            <label>اختر ملف الـ PDF الخاص بالكتاب:</label>
+            <label>اختر ملف الـ PDF من هاتفك:</label>
             <input type="file" id="cultFile" accept="application/pdf" required>
           </div>
           <button type="submit" class="submit-btn">نشر الكتاب في المكتبة الثقافية</button>
         </form>
       </div>
 
-      <h3 style="margin: 35px 0 20px 0; color: var(--primary); font-size: 1.4rem; font-weight: 900;"><i class="fa-solid fa-bookmark" style="color: var(--accent);"></i> أرشيف الكتب التاريخية والثقافية</h3>
+      <h3 style="margin: 40px 0 20px 0; color: var(--primary); font-size: 1.5rem; font-weight: 900;"><i class="fa-solid fa-bookmark" style="color: var(--accent);"></i> أرشيف الكتب التاريخية والثقافية</h3>
       <div class="books-grid" id="culturalGrid"></div>
     </div>
 
@@ -431,6 +439,10 @@
 
   </div>
 
+  <footer>
+    جميع الحقوق محفوظة © 2026 - مكتبة ميثاق محمد الإلكترونية
+  </footer>
+
   <script>
     const grades = [
       "الصف الأول", "الصف الثاني", "الصف الثالث", "الصف الرابع", "الصف الخامس", "الصف السادس",
@@ -444,7 +456,7 @@
     let academicData = JSON.parse(localStorage.getItem('methaq_academic')) || [];
     let culturalData = JSON.parse(localStorage.getItem('methaq_cultural')) || [];
     let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [
-      { name: "محمد أحمد", text: "مكتبة إلكترونية جبارة ومرتبة جداً، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
+      { name: "محمد أحمد", text: "مكتبة إلكترونية جبارة، تصميم فخم جداً ومرتبة، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
     ];
 
     window.onload = function() {
@@ -473,7 +485,7 @@
     function renderGrades() {
       const container = document.getElementById('gradesContainer');
       container.innerHTML = grades.map(g => 
-        `<div class="grade-box" onclick="selectGrade('${g}')"><i class="fa-solid fa-book-bookmark" style="display:block; font-size:2.2rem; margin-bottom:12px; color:var(--accent);"></i>${g}</div>`
+        `<div class="grade-box" onclick="selectGrade('${g}')"><i class="fa-solid fa-book-bookmark" style="display:block; font-size:2.5rem; margin-bottom:15px; color:var(--accent);"></i>${g}</div>`
       ).join('');
     }
 
@@ -512,13 +524,13 @@
       const filtered = academicData.filter(item => item.grade === selectedGrade && item.category === selectedCategory);
       
       if(filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 50px; font-weight: 700; font-size: 1.1rem;">لا توجد كتب مرفوعة في هذا القسم حتى الآن.</p>`;
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700; font-size: 1.2rem;">لا توجد كتب مرفوعة في هذا القسم حتى الآن.</p>`;
         return;
       }
 
       grid.innerHTML = filtered.map(item => `
         <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
+          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
           <div class="book-details">
             <div class="book-title">${item.title}</div>
             <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
@@ -531,49 +543,66 @@
       `).join('');
     }
 
+    // دالة لرفع ملف الـ PDF وصورة الغلاف مباشرة من الهاتف بجودة عالية
     function addAcademicItem(e) {
       e.preventDefault();
-      const fileInput = document.getElementById('acadFile');
-      if (fileInput.files.length === 0) {
+      const pdfInput = document.getElementById('acadFile');
+      const coverInput = document.getElementById('acadCoverFile');
+
+      if (pdfInput.files.length === 0) {
         alert('الرجاء اختيار ملف PDF!');
         return;
       }
 
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-      
-      reader.onload = function(event) {
-        const newItem = {
-          id: Date.now(),
-          grade: selectedGrade,
-          category: selectedCategory,
-          title: document.getElementById('acadTitle').value,
-          cover: document.getElementById('acadCover').value,
-          pdf: event.target.result
-        };
-        academicData.push(newItem);
-        localStorage.setItem('methaq_academic', JSON.stringify(academicData));
-        renderAcademicBooks();
-        e.target.reset();
-        alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
+      const pdfFile = pdfInput.files[0];
+      const coverFile = coverInput.files.length > 0 ? coverInput.files[0] : null;
+
+      const readerPdf = new FileReader();
+      readerPdf.onload = function(eventPdf) {
+        const pdfData = eventPdf.target.result;
+
+        if (coverFile) {
+          const readerCover = new FileReader();
+          readerCover.onload = function(eventCover) {
+            saveAcademicBook(eventCover.target.result, pdfData);
+          };
+          readerCover.readAsDataURL(coverFile);
+        } else {
+          saveAcademicBook("", pdfData);
+        }
       };
-      
-      reader.readAsDataURL(file);
+      readerPdf.readAsDataURL(pdfFile);
+    }
+
+    function saveAcademicBook(coverData, pdfData) {
+      const newItem = {
+        id: Date.now(),
+        grade: selectedGrade,
+        category: selectedCategory,
+        title: document.getElementById('acadTitle').value,
+        cover: coverData,
+        pdf: pdfData
+      };
+      academicData.push(newItem);
+      localStorage.setItem('methaq_academic', JSON.stringify(academicData));
+      renderAcademicBooks();
+      document.getElementById('adminAcademicForm').style.display = 'none';
+      alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
     }
 
     function renderCulturalBooks() {
       const grid = document.getElementById('culturalGrid');
       if(culturalData.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 50px; font-weight: 700; font-size: 1.1rem;">لا توجد كتب ثقافية مرفوعة حالياً.</p>`;
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700; font-size: 1.2rem;">لا توجد كتب ثقافية مرفوعة حالياً.</p>`;
         return;
       }
       grid.innerHTML = culturalData.map(item => `
         <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
+          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
           <div class="book-details">
             <div class="book-title">${item.title}</div>
             <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
-            ${item.desc ? `<div style="font-size:0.9rem; color:#64748b; margin-bottom:15px; line-height:1.5;">${item.desc}</div>` : ''}
+            ${item.desc ? `<div style="font-size:0.95rem; color:var(--text-light); margin-bottom:15px; line-height:1.6;">${item.desc}</div>` : ''}
             <div class="book-actions">
               <a href="${item.pdf}" target="_blank" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</a>
               <a href="${item.pdf}" download="${item.title}.pdf" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</a>
@@ -585,32 +614,47 @@
 
     function addCulturalBook(e) {
       e.preventDefault();
-      const fileInput = document.getElementById('cultFile');
-      if (fileInput.files.length === 0) {
+      const pdfInput = document.getElementById('cultFile');
+      const coverInput = document.getElementById('cultCoverFile');
+
+      if (pdfInput.files.length === 0) {
         alert('الرجاء اختيار ملف الـ PDF!');
         return;
       }
 
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+      const pdfFile = pdfInput.files[0];
+      const coverFile = coverInput.files.length > 0 ? coverInput.files[0] : null;
 
-      reader.onload = function(event) {
-        const newItem = {
-          id: Date.now(),
-          title: document.getElementById('cultTitle').value,
-          author: document.getElementById('cultAuthor').value,
-          desc: document.getElementById('cultDesc').value,
-          cover: document.getElementById('cultCover').value,
-          pdf: event.target.result
-        };
-        culturalData.push(newItem);
-        localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
-        renderCulturalBooks();
-        e.target.reset();
-        alert('تم نشر الكتاب الثقافي بنجاح!');
+      const readerPdf = new FileReader();
+      readerPdf.onload = function(eventPdf) {
+        const pdfData = eventPdf.target.result;
+
+        if (coverFile) {
+          const readerCover = new FileReader();
+          readerCover.onload = function(eventCover) {
+            saveCulturalBook(eventCover.target.result, pdfData);
+          };
+          readerCover.readAsDataURL(coverFile);
+        } else {
+          saveCulturalBook("", pdfData);
+        }
       };
+      readerPdf.readAsDataURL(pdfFile);
+    }
 
-      reader.readAsDataURL(file);
+    function saveCulturalBook(coverData, pdfData) {
+      const newItem = {
+        id: Date.now(),
+        title: document.getElementById('cultTitle').value,
+        author: document.getElementById('cultAuthor').value,
+        desc: document.getElementById('cultDesc').value,
+        cover: coverData,
+        pdf: pdfData
+      };
+      culturalData.push(newItem);
+      localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
+      renderCulturalBooks();
+      alert('تم نشر الكتاب الثقافي بنجاح!');
     }
 
     function renderFeedbacks() {
@@ -618,7 +662,7 @@
       listContainer.innerHTML = feedbackData.map(f => `
         <div class="comment-card">
           <div class="comment-author">${f.name}</div>
-          <div style="margin: 10px 0; color: var(--text); line-height:1.6;">${f.text}</div>
+          <div style="margin: 12px 0; color: var(--text); line-height:1.7;">${f.text}</div>
           <div class="comment-date"><i class="fa-regular fa-calendar"></i> ${f.date}</div>
         </div>
       `).join('');
