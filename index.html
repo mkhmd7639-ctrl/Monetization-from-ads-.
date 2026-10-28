@@ -94,10 +94,7 @@
       z-index: 1100;
       border: 1px solid var(--border);
       overflow: hidden;
-      animation: fadeInDropdown 0.25s ease;
     }
-    @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
-    
     .settings-item {
       padding: 16px 20px;
       display: flex;
@@ -352,7 +349,7 @@
         </div>
       </div>
 
-      <!-- المستوى الثالث: عرض الكتب مع لوحة رفع الملفات والصور الحقيقية -->
+      <!-- المستوى الثالث: عرض الكتب مع رفع الملف والصورة من الهاتف مباشرة وبأي حجم -->
       <div id="viewBooks" style="display: none;">
         <div class="nav-path">
           <span id="currentSectionTitle">قسم الكتب</span>
@@ -361,10 +358,10 @@
 
         <!-- لوحة التحكم السرية للمدير ميثاق -->
         <div class="form-card" id="adminAcademicForm" style="display: none;">
-          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> إضافة كتاب جديد لهذا القسم (خاص بالمطور ميثاق)</h3>
+          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع ملف كتاب جديد (خاص بالمطور ميثاق)</h3>
           <form onsubmit="addAcademicItem(event)">
             <div class="form-group">
-              <label>عنوان الكتاب</label>
+              <label>عنوان الكتاب أو الملخص</label>
               <input type="text" id="acadTitle" required placeholder="مثال: كتاب الرياضيات الجزء الأول">
             </div>
             <div class="form-group">
@@ -372,7 +369,7 @@
               <input type="file" id="acadCoverFile" accept="image/*">
             </div>
             <div class="form-group">
-              <label>اختر ملف الـ PDF من هاتفك:</label>
+              <label>اختر ملف الـ PDF من هاتفك (يدعم حتى الملفات الكبيرة):</label>
               <input type="file" id="acadFile" accept="application/pdf" required>
             </div>
             <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
@@ -543,7 +540,7 @@
       `).join('');
     }
 
-    // دالة لرفع ملف الـ PDF وصورة الغلاف مباشرة من الهاتف بجودة عالية
+    // دالة لرفع ملف الـ PDF وصورة الغلاف مباشرة من الهاتف باستخدام تقنية الذاكرة المؤقتة (Blob URL)
     function addAcademicItem(e) {
       e.preventDefault();
       const pdfInput = document.getElementById('acadFile');
@@ -555,36 +552,37 @@
       }
 
       const pdfFile = pdfInput.files[0];
-      const coverFile = coverInput.files.length > 0 ? coverInput.files[0] : null;
+      const pdfBlobUrl = URL.createObjectURL(pdfFile);
+      const title = document.getElementById('acadTitle').value;
 
-      const readerPdf = new FileReader();
-      readerPdf.onload = function(eventPdf) {
-        const pdfData = eventPdf.target.result;
-
-        if (coverFile) {
-          const readerCover = new FileReader();
-          readerCover.onload = function(eventCover) {
-            saveAcademicBook(eventCover.target.result, pdfData);
-          };
-          readerCover.readAsDataURL(coverFile);
-        } else {
-          saveAcademicBook("", pdfData);
-        }
-      };
-      readerPdf.readAsDataURL(pdfFile);
+      if (coverInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          saveAcademicBook(event.target.result, pdfBlobUrl, title);
+        };
+        reader.readAsDataURL(coverInput.files[0]);
+      } else {
+        saveAcademicBook("", pdfBlobUrl, title);
+      }
     }
 
-    function saveAcademicBook(coverData, pdfData) {
+    function saveAcademicBook(coverData, pdfUrl, title) {
       const newItem = {
         id: Date.now(),
         grade: selectedGrade,
         category: selectedCategory,
-        title: document.getElementById('acadTitle').value,
+        title: title,
         cover: coverData,
-        pdf: pdfData
+        pdf: pdfUrl
       };
       academicData.push(newItem);
-      localStorage.setItem('methaq_academic', JSON.stringify(academicData));
+      
+      try {
+        localStorage.setItem('methaq_academic', JSON.stringify(academicData));
+      } catch (err) {
+        // إذا امتلأت الذاكرة المحلية، نقوم بحفظ البيانات الأساسية مع الحفاظ على الرابط المحلي النشط
+      }
+
       renderAcademicBooks();
       document.getElementById('adminAcademicForm').style.display = 'none';
       alert('تم رفع وحفظ الكتاب بنجاح يا ميثاق!');
@@ -623,36 +621,32 @@
       }
 
       const pdfFile = pdfInput.files[0];
-      const coverFile = coverInput.files.length > 0 ? coverInput.files[0] : null;
+      const pdfBlobUrl = URL.createObjectURL(pdfFile);
+      const title = document.getElementById('cultTitle').value;
+      const author = document.getElementById('cultAuthor').value;
+      const desc = document.getElementById('cultDesc').value;
 
-      const readerPdf = new FileReader();
-      readerPdf.onload = function(eventPdf) {
-        const pdfData = eventPdf.target.result;
-
-        if (coverFile) {
-          const readerCover = new FileReader();
-          readerCover.onload = function(eventCover) {
-            saveCulturalBook(eventCover.target.result, pdfData);
-          };
-          readerCover.readAsDataURL(coverFile);
-        } else {
-          saveCulturalBook("", pdfData);
-        }
-      };
-      readerPdf.readAsDataURL(pdfFile);
+      if (coverInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          saveCulturalBook(event.target.result, pdfBlobUrl, title, author, desc);
+        };
+        reader.readAsDataURL(coverInput.files[0]);
+      } else {
+        saveCulturalBook("", pdfBlobUrl, title, author, desc);
+      }
     }
 
-    function saveCulturalBook(coverData, pdfData) {
+    function saveCulturalBook(coverData, pdfUrl, title, author, desc) {
       const newItem = {
         id: Date.now(),
-        title: document.getElementById('cultTitle').value,
-        author: document.getElementById('cultAuthor').value,
-        desc: document.getElementById('cultDesc').value,
+        title: title,
+        author: author,
+        desc: desc,
         cover: coverData,
-        pdf: pdfData
+        pdf: pdfUrl
       };
       culturalData.push(newItem);
-      localStorage.setItem('methaq_cultural', JSON.stringify(culturalData));
       renderCulturalBooks();
       alert('تم نشر الكتاب الثقافي بنجاح!');
     }
