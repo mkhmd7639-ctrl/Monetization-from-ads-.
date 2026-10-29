@@ -3,319 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- تحسين محركات البحث SEO لتظهر في جوجل -->
-  <title>مكتبة ميثاق محمد الإلكترونية - بوابتك الأكاديمية الأولى للمتبة المدرسية والملخصات</title>
-  <meta name="description" content="مكتبة ميثاق محمد الإلكترونية - منصة تعليمية متكاملة لتصفح وتحميل الكتب المدرسية، الملازم، الملخصات، والأجوبة الوافية لجميع الصفوف الدراسية والكتب التاريخية والثقافية.">
-  <meta name="keywords" content="مكتبة ميثاق محمد, كتب مدرسية, ملخصات وافية, مناهج تعليمية, كتب تاريخية, مكتبة إلكترونية يمنية">
-  <meta name="author" content="ميثاق محمد صالح حموده">
-  
+  <title>مكتبة ميثاق محمد الإلكترونية</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     :root {
-      --primary: #0f172a;
-      --secondary: #1e3a8a;
-      --accent: #f97316;
+      --primary: #0f172a; --secondary: #1e3a8a; --accent: #f97316;
       --accent-gradient: linear-gradient(135deg, #f97316, #ea580c);
-      --danger: #ef4444;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --text-light: #64748b;
-      --border: #e2e8f0;
-      --shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.08);
-      --radius: 20px;
+      --danger: #ef4444; --bg: #f8fafc; --card-bg: #ffffff;
+      --text: #1e293b; --text-light: #64748b; --border: #e2e8f0;
+      --shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.08); --radius: 20px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* شاشة الترحيب */
-    #splash-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle, #1e3a8a 0%, #0f172a 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      z-index: 99999;
-      animation: fadeOutSplash 0.8s ease 2.2s forwards;
-    }
-    .splash-icon { font-size: 6.5rem; color: var(--accent); animation: pulseFloat 1.5s infinite alternate; margin-bottom: 25px; }
-    .splash-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 12px; text-align: center; }
-    .splash-sub { font-size: 1.25rem; opacity: 0.85; font-weight: 500; }
-
-    @keyframes pulseFloat {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-18px) scale(1.06); }
-    }
-    @keyframes fadeOutSplash { to { opacity: 0; visibility: hidden; } }
-    
-    /* الهيدر */
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 25px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 3px solid rgba(249, 115, 22, 0.4);
-    }
+    header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid rgba(249, 115, 22, 0.4); }
     .header-title h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
-    .header-title p { font-size: 0.92rem; opacity: 0.82; }
-
-    .header-settings-btn {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      cursor: pointer;
-      transition: all 0.35s ease;
-    }
-    .header-settings-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg) scale(1.08); }
-
-    /* القائمة المنسدلة */
-    .settings-dropdown {
-      position: absolute;
-      top: 90px;
-      left: 35px;
-      background: white;
-      border-radius: var(--radius);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      width: 270px;
-      display: none;
-      z-index: 1100;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .settings-item {
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-weight: 800;
-      font-size: 1rem;
-      color: var(--primary);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: 0.25s;
-    }
-    .settings-item:hover { background: #f8fafc; color: var(--accent); padding-right: 25px; }
-    .settings-item i { font-size: 1.4rem; }
-
+    .header-settings-btn { background: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.3); color: white; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: 0.35s; }
+    .settings-dropdown { position: absolute; top: 90px; left: 35px; background: white; border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 270px; display: none; z-index: 1100; border: 1px solid var(--border); overflow: hidden; }
+    .settings-item { padding: 16px 20px; display: flex; align-items: center; gap: 14px; font-weight: 800; color: var(--primary); text-decoration: none; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.25s; }
+    .settings-item:hover { background: #f8fafc; color: var(--accent); }
     .container { max-width: 1300px; margin: 45px auto; padding: 0 25px; flex: 1; width: 100%; }
-
     .search-bar-wrapper { position: relative; margin-bottom: 45px; }
-    .search-bar {
-      width: 100%;
-      padding: 20px 25px 20px 60px;
-      border-radius: 45px;
-      border: 2px solid var(--border);
-      font-size: 1.15rem;
-      outline: none;
-      box-shadow: var(--shadow);
-      background: white;
-      transition: all 0.3s ease;
-      font-weight: 600;
-    }
-    .search-bar:focus { border-color: var(--accent); box-shadow: 0 12px 30px rgba(249, 115, 22, 0.18); }
+    .search-bar { width: 100%; padding: 20px 25px 20px 60px; border-radius: 45px; border: 2px solid var(--border); font-size: 1.15rem; outline: none; box-shadow: var(--shadow); background: white; font-weight: 600; }
     .search-bar-wrapper i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.4rem; }
-
     .main-tabs { display: flex; gap: 15px; margin-bottom: 45px; border-bottom: 3px solid var(--border); overflow-x: auto; padding-bottom: 5px; }
-    .tab-link {
-      padding: 16px 32px;
-      cursor: pointer;
-      font-weight: 800;
-      color: var(--text-light);
-      border-bottom: 4.5px solid transparent;
-      white-space: nowrap;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      border-radius: 16px 16px 0 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .tab-link { padding: 16px 32px; cursor: pointer; font-weight: 800; color: var(--text-light); border-bottom: 4.5px solid transparent; white-space: nowrap; font-size: 1.2rem; border-radius: 16px 16px 0 0; display: flex; align-items: center; gap: 10px; }
     .tab-link.active { color: var(--primary); border-bottom-color: var(--accent); background: white; box-shadow: 0 -6px 20px rgba(0,0,0,0.04); }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* مسار التنقل */
-    .nav-path {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 35px;
-      font-weight: 900;
-      color: var(--primary);
-      font-size: 1.35rem;
-      background: white;
-      padding: 20px 30px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-    .back-btn {
-      background: var(--secondary);
-      color: white;
-      border: none;
-      padding: 10px 22px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 0.98rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      transition: all 0.25s ease;
-    }
-    .back-btn:hover { background: var(--primary); transform: translateX(-4px); }
-
-    /* شبكة الصفوف */
-    .grades-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 25px;
-    }
-    .grade-box {
-      background: white;
-      border: 2px solid var(--border);
-      padding: 45px 20px;
-      border-radius: var(--radius);
-      text-align: center;
-      cursor: pointer;
-      font-weight: 900;
-      color: var(--primary);
-      font-size: 1.3rem;
-      transition: all 0.35s ease;
-      box-shadow: var(--shadow);
-    }
-    .grade-box:hover {
-      background: linear-gradient(135deg, var(--secondary), var(--primary));
-      color: white;
-      border-color: transparent;
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
-    }
-
-    /* الأقسام الأربعة الداخلية */
-    .sub-sections-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-    }
-    .sub-section-card {
-      background: white;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 35px 25px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.35s ease;
-      box-shadow: var(--shadow);
-    }
-    .sub-section-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
-    }
+    .tab-content { display: none; } .tab-content.active { display: block; }
+    .nav-path { display: flex; align-items: center; justify-content: space-between; margin-bottom: 35px; font-weight: 900; color: var(--primary); font-size: 1.35rem; background: white; padding: 20px 30px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { background: var(--secondary); color: white; border: none; padding: 10px 22px; border-radius: 12px; cursor: pointer; font-size: 0.98rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .grades-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+    .grade-box { background: white; border: 2px solid var(--border); padding: 45px 20px; border-radius: var(--radius); text-align: center; cursor: pointer; font-weight: 900; color: var(--primary); font-size: 1.3rem; box-shadow: var(--shadow); transition: 0.35s; }
+    .grade-box:hover { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border-color: transparent; transform: translateY(-8px); }
+    .sub-sections-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+    .sub-section-card { background: white; border: 2px solid var(--border); border-radius: var(--radius); padding: 35px 25px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.35s; }
+    .sub-section-card:hover { border-color: var(--accent); transform: translateY(-8px); }
     .sub-section-icon { font-size: 3.5rem; color: var(--accent); margin-bottom: 18px; }
-    .sub-section-title { font-size: 1.35rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
-    .sub-section-desc { font-size: 0.95rem; color: var(--text-light); line-height: 1.5; }
-
-    /* كروت الكتب */
+    .sub-section-title { font-size: 1.35rem; font-weight: 900; color: var(--primary); }
     .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 35px; margin-top: 40px; }
-    .book-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      transition: all 0.35s ease;
-    }
-    .book-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(15, 23, 42, 0.15); }
+    .book-card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; }
     .book-cover { height: 240px; background: #e2e8f0; object-fit: cover; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 5rem; }
     .book-details { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
-    .book-title { font-size: 1.35rem; font-weight: 900; margin-bottom: 8px; color: var(--primary); line-height: 1.4; }
+    .book-title { font-size: 1.35rem; font-weight: 900; margin-bottom: 8px; color: var(--primary); }
     .book-meta { font-size: 0.9rem; color: var(--text-light); margin-bottom: 12px; font-weight: 700; }
-    .book-note { font-size: 0.92rem; color: var(--secondary); background: #eff6ff; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; line-height: 1.5; border-right: 4px solid var(--secondary); }
-    
+    .book-note { font-size: 0.92rem; color: var(--secondary); background: #eff6ff; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; border-right: 4px solid var(--secondary); }
     .book-actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
-    .btn-action { flex: 1; min-width: 90px; padding: 10px; text-align: center; border: none; border-radius: 12px; text-decoration: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .btn-action { flex: 1; min-width: 90px; padding: 10px; text-align: center; border: none; border-radius: 12px; text-decoration: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
     .btn-view { background: #e0f2fe; color: #0284c7; }
-    .btn-view:hover { background: #bae6fd; }
     .btn-download { background: #dcfce7; color: #16a34a; }
-    .btn-download:hover { background: #bbf7d0; }
-    
-    /* أزرار الأدمن */
-    .btn-edit { background: #fef3c7; color: #d97706; display: none; }
-    .btn-edit:hover { background: #fde68a; }
     .btn-delete { background: #fee2e2; color: var(--danger); display: none; }
-    .btn-delete:hover { background: #fecaca; }
-
-    /* لوحة الإدارة */
     .form-card { background: white; padding: 45px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 45px; border: 3px dashed var(--accent); }
-    .form-card h3 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; font-weight: 900; display: flex; align-items: center; gap: 12px; }
+    .form-card h3 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; font-weight: 900; }
     .form-group { margin-bottom: 22px; }
-    .form-group label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1.05rem; color: var(--primary); }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; }
-    .form-group input[type="file"] { padding: 12px; background: white; cursor: pointer; }
-    .submit-btn { background: var(--accent-gradient); color: white; border: none; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 1.15rem; font-weight: 900; width: 100%; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(249,115,22,0.3); }
-    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(249,115,22,0.4); }
-
+    .form-group label { display: block; margin-bottom: 10px; font-weight: 800; color: var(--primary); }
+    .form-group input, .form-group textarea { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; }
+    .submit-btn { background: var(--accent-gradient); color: white; border: none; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 1.15rem; font-weight: 900; width: 100%; box-shadow: 0 10px 20px rgba(249,115,22,0.3); }
     .comments-section { margin-top: 40px; }
     .comment-card { background: white; padding: 25px; border-radius: var(--radius); margin-bottom: 20px; border-right: 6px solid var(--accent); border: 1.5px solid var(--border); box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: flex-start; }
     .comment-author { font-weight: 900; color: var(--primary); font-size: 1.2rem; }
-    .comment-date { font-size: 0.88rem; color: var(--text-light); margin-top: 8px; }
-
-    footer { text-align: center; padding: 30px; color: var(--text-light); font-size: 1rem; border-top: 1px solid var(--border); background: white; margin-top: auto; font-weight: 700; }
+    footer { text-align: center; padding: 30px; color: var(--text-light); font-weight: 700; background: white; margin-top: auto; border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
 
-  <!-- شاشة الترحيب -->
-  <div id="splash-screen">
-    <div class="splash-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-    <div class="splash-title">مكتبة ميثاق محمد الإلكترونية</div>
-    <div class="splash-sub">بوابتك الأكاديمية الأولى للمراجع والكتب المدرسية</div>
-  </div>
-
   <header>
     <div class="header-title">
       <h1><i class="fa-solid fa-book-open-reader" style="color: var(--accent);"></i> مكتبة ميثاق محمد الإلكترونية</h1>
-      <p>منصة التعليم، الكتب المدرسية والمراجع الشاملة</p>
+      <p>منصة التعليم والكتب المدرسية والمراجع</p>
     </div>
-    
     <div style="position: relative;">
-      <div class="header-settings-btn" onclick="toggleSettingsMenu()">
-        <i class="fa-solid fa-gear"></i>
-      </div>
-
+      <div class="header-settings-btn" onclick="toggleSettingsMenu()"><i class="fa-solid fa-gear"></i></div>
       <div class="settings-dropdown" id="settingsDropdown">
-        <a href="https://wa.me/967784327056" target="_blank" class="settings-item">
-          <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.6rem;"></i> تواصل مع المطور
-        </a>
-        <div class="settings-item" onclick="promptAdminLogin()">
-          <i class="fa-solid fa-lock" style="color: var(--accent);"></i> لوحة الإدارة (الأدمن)
-        </div>
+        <a href="https://wa.me/967784327056" target="_blank" class="settings-item"><i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.6rem;"></i> تواصل مع المطور</a>
+        <div class="settings-item" onclick="promptAdminLogin()"><i class="fa-solid fa-lock" style="color: var(--accent);"></i> لوحة الإدارة</div>
       </div>
     </div>
   </header>
@@ -328,237 +88,114 @@
 
     <div class="main-tabs">
       <div class="tab-link active" onclick="switchTab('academic', event)"><i class="fa-solid fa-school"></i> الأقسام الأكاديمية</div>
-      <div class="tab-link" onclick="switchTab('cultural', event)"><i class="fa-solid fa-book-bookmark"></i> الكتب التاريخية والثقافية</div>
-      <div class="tab-link" onclick="switchTab('feedback', event)"><i class="fa-solid fa-comments"></i> آراء وانطباعات الزوار</div>
+      <div class="tab-link" onclick="switchTab('cultural', event)"><i class="fa-solid fa-book-bookmark"></i> الكتب التاريخية والفلسفية</div>
+      <div class="tab-link" onclick="switchTab('feedback', event)"><i class="fa-solid fa-comments"></i> آراء الزوار</div>
     </div>
 
-    <!-- 1. الأقسام الدراسية -->
     <div id="tab-academic" class="tab-content active">
-      
-      <!-- المستوى الأول: شبكة الصفوف -->
       <div id="viewGrades">
-        <div class="section-subtitle" style="margin-bottom: 25px; font-weight: 900; color: var(--primary); font-size: 1.45rem;"><i class="fa-solid fa-layer-group"></i> اختر الصف الدراسي المطلوب:</div>
+        <div style="margin-bottom: 25px; font-weight: 900; color: var(--primary); font-size: 1.45rem;"><i class="fa-solid fa-layer-group"></i> اختر الصف الدراسي:</div>
         <div class="grades-grid" id="gradesContainer"></div>
       </div>
 
-      <!-- المستوى الثاني: الأقسام الأربعة -->
       <div id="viewSubSections" style="display: none;">
         <div class="nav-path">
           <span>الصف الحالي: <span id="currentGradeTitle" style="color: var(--accent);"></span></span>
-          <button class="back-btn" onclick="goBackToGrades()"><i class="fa-solid fa-arrow-right"></i> رجوع للصفوف</button>
+          <button class="back-btn" onclick="goBackToGrades()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
         </div>
-
         <div class="sub-sections-grid">
-          <div class="sub-section-card" onclick="openCategory('part1', 'الكتاب الدراسي (الجزء الأول)')">
-            <div class="sub-section-icon"><i class="fa-solid fa-book"></i></div>
-            <div class="sub-section-title">الكتاب الدراسي (الجزء الأول)</div>
-            <div class="sub-section-desc">تصفح ورفع كتب الفصل الدراسي الأول.</div>
-          </div>
-          <div class="sub-section-card" onclick="openCategory('part2', 'الكتاب الدراسي (الجزء الثاني)')">
-            <div class="sub-section-icon"><i class="fa-solid fa-book-open"></i></div>
-            <div class="sub-section-title">الكتاب الدراسي (الجزء الثاني)</div>
-            <div class="sub-section-desc">تصفح ورفع كتب الفصل الدراسي الثاني.</div>
-          </div>
-          <div class="sub-section-card" onclick="openCategory('notes1', 'ملخصات والوافيات للجزء الأول')">
-            <div class="sub-section-icon"><i class="fa-solid fa-file-invoice"></i></div>
-            <div class="sub-section-title">ملخصات والوافيات للجزء الأول</div>
-            <div class="sub-section-desc">تصفح ورفع ملخصات وحلول الجزء الأول.</div>
-          </div>
-          <div class="sub-section-card" onclick="openCategory('notes2', 'ملخصات والوافيات للجزء الثاني')">
-            <div class="sub-section-icon"><i class="fa-solid fa-file-lines"></i></div>
-            <div class="sub-section-title">ملخصات والوافيات للجزء الثاني</div>
-            <div class="sub-section-desc">تصفح ورفع ملخصات وحلول الجزء الثاني.</div>
-          </div>
+          <div class="sub-section-card" onclick="openCategory('part1', 'الكتاب الدراسي (الجزء الأول)')"><div class="sub-section-icon"><i class="fa-solid fa-book"></i></div><div class="sub-section-title">الكتاب الدراسي (الجزء الأول)</div></div>
+          <div class="sub-section-card" onclick="openCategory('part2', 'الكتاب الدراسي (الجزء الثاني)')"><div class="sub-section-icon"><i class="fa-solid fa-book-open"></i></div><div class="sub-section-title">الكتاب الدراسي (الجزء الثاني)</div></div>
+          <div class="sub-section-card" onclick="openCategory('notes1', 'ملخصات الجزء الأول')"><div class="sub-section-icon"><i class="fa-solid fa-file-invoice"></i></div><div class="sub-section-title">ملخصات الجزء الأول</div></div>
+          <div class="sub-section-card" onclick="openCategory('notes2', 'ملخصات الجزء الثاني')"><div class="sub-section-icon"><i class="fa-solid fa-file-lines"></i></div><div class="sub-section-title">ملخصات الجزء الثاني</div></div>
         </div>
       </div>
 
-      <!-- المستوى الثالث: عرض الكتب الأكاديمية -->
       <div id="viewBooks" style="display: none;">
         <div class="nav-path">
           <span id="currentSectionTitle">قسم الكتب</span>
-          <button class="back-btn" onclick="goBackToSubSections()"><i class="fa-solid fa-arrow-right"></i> رجوع للأقسام</button>
+          <button class="back-btn" onclick="goBackToSubSections()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
         </div>
 
-        <!-- لوحة التحكم للأدمن -->
         <div class="form-card" id="adminAcademicForm" style="display: none;">
-          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع كتاب جديد (خاص بالمطور ميثاق)</h3>
+          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع كتاب جديد</h3>
           <form id="academicForm" onsubmit="addAcademicItem(event)">
-            <div class="form-group">
-              <label>عنوان الكتاب أو الملخص</label>
-              <input type="text" id="acadTitle" required placeholder="مثال: كتاب الرياضيات الجزء الأول">
-            </div>
-            <div class="form-group">
-              <label>ملاحظات الكتاب (اختياري)</label>
-              <textarea id="acadNote" rows="2" placeholder="اكتب أي ملاحظة أو تنبيه حول هذا الكتاب..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>اختر صورة الغلاف من هاتفك:</label>
-              <input type="file" id="acadCoverFile" accept="image/*">
-            </div>
-            <div class="form-group">
-              <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
-              <input type="file" id="acadFile" accept="application/pdf" required>
-            </div>
-            <button type="submit" class="submit-btn">رفع وحفظ الكتاب في هذا القسم</button>
+            <div class="form-group"><label>عنوان الكتاب</label><input type="text" id="acadTitle" required placeholder="مثال: الرياضيات"></div>
+            <div class="form-group"><label>ملاحظات (اختياري)</label><textarea id="acadNote" rows="2"></textarea></div>
+            <div class="form-group"><label>صورة الغلاف (اختياري):</label><input type="file" id="acadCoverFile" accept="image/*"></div>
+            <div class="form-group"><label>ملف الـ PDF الحقيقي:</label><input type="file" id="acadFile" accept="application/pdf" required></div>
+            <button type="submit" class="submit-btn">رفع وحفظ الكتاب</button>
           </form>
         </div>
-
         <div class="books-grid" id="academicGrid"></div>
       </div>
-
     </div>
 
-    <!-- 2. الكتب التاريخية والثقافية -->
     <div id="tab-cultural" class="tab-content">
       <div class="form-card" style="border-style: solid;">
-        <h3><i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i> مشاركة كتاب تاريخي أو ثقافي</h3>
+        <h3><i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i> مشاركة كتاب (تاريخي، فلسفي، ثقافي)</h3>
         <form id="culturalForm" onsubmit="addCulturalBook(event)">
-          <div class="form-group">
-            <label>عنوان الكتاب</label>
-            <input type="text" id="cultTitle" required placeholder="مثال: مقدمة ابن خلدون">
-          </div>
-          <div class="form-group">
-            <label>اسم الكاتب / المؤلف (اختياري)</label>
-            <input type="text" id="cultAuthor" placeholder="مثال: ابن خلدون">
-          </div>
-          <div class="form-group">
-            <label>ملاحظات الكتاب أو نبذة مختصرة (اختياري)</label>
-            <textarea id="cultDesc" rows="2" placeholder="اكتب ملاحظة أو نبذة عن الكتاب..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>اختر صورة الغلاف من هاتفك:</label>
-            <input type="file" id="cultCoverFile" accept="image/*">
-          </div>
-          <div class="form-group">
-            <label>اختر ملف الـ PDF الحقيقي من هاتفك:</label>
-            <input type="file" id="cultFile" accept="application/pdf" required>
-          </div>
-          <button type="submit" class="submit-btn">نشر الكتاب في المكتبة الثقافية</button>
+          <div class="form-group"><label>عنوان الكتاب</label><input type="text" id="cultTitle" required placeholder="مثال: مقدمة ابن خلدون"></div>
+          <div class="form-group"><label>اسم المؤلف</label><input type="text" id="cultAuthor" placeholder="مثال: ابن خلدون"></div>
+          <div class="form-group"><label>نبذة أو تصنيف الكتاب</label><textarea id="cultDesc" rows="2" placeholder="تصنيف الكتاب أو نبذة..."></textarea></div>
+          <div class="form-group"><label>صورة الغلاف (اختياري):</label><input type="file" id="cultCoverFile" accept="image/*"></div>
+          <div class="form-group"><label>ملف الـ PDF الحقيقي:</label><input type="file" id="cultFile" accept="application/pdf" required></div>
+          <button type="submit" class="submit-btn">نشر الكتاب في الأرشيف</button>
         </form>
       </div>
-
-      <h3 style="margin: 45px 0 20px 0; color: var(--primary); font-size: 1.6rem; font-weight: 900;"><i class="fa-solid fa-bookmark" style="color: var(--accent);"></i> أرشيف الكتب التاريخية والثقافية</h3>
+      <h3 style="margin: 45px 0 20px 0; color: var(--primary); font-size: 1.6rem; font-weight: 900;">أرشيف الكتب التاريخية والفلسفية والثقافية</h3>
       <div class="books-grid" id="culturalGrid"></div>
     </div>
 
-    <!-- 3. آراء الزوار -->
     <div id="tab-feedback" class="tab-content">
       <div class="form-card" style="border-style: solid;">
-        <h3><i class="fa-solid fa-comments" style="color: var(--accent);"></i> شاركنا رأيك أو انطباعك عن المكتبة</h3>
+        <h3><i class="fa-solid fa-comments" style="color: var(--accent);"></i> شاركنا رأيك</h3>
         <form id="feedbackForm" onsubmit="addFeedback(event)">
-          <div class="form-group">
-            <label>اسمك الكريم</label>
-            <input type="text" id="feedName" required placeholder="أدخل اسمك هنا">
-          </div>
-          <div class="form-group">
-            <label>تعليقك أو رسالتك</label>
-            <textarea id="feedText" rows="3" required placeholder="كيف وجدت تجربة التصفح داخل المكتبة؟"></textarea>
-          </div>
-          <button type="submit" class="submit-btn">إرسال التعليق للمنصة</button>
+          <div class="form-group"><label>اسمك</label><input type="text" id="feedName" required></div>
+          <div class="form-group"><label>تعليقك</label><textarea id="feedText" rows="3" required></textarea></div>
+          <button type="submit" class="submit-btn">إرسال</button>
         </form>
       </div>
-
       <div class="comments-section" id="feedbackList"></div>
     </div>
-
   </div>
 
-  <footer>
-    جميع الحقوق محفوظة © 2026 - مكتبة ميثاق محمد الإلكترونية
-  </footer>
+  <footer>جميع الحقوق محفوظة © 2026 - مكتبة ميثاق محمد الإلكترونية</footer>
 
   <script>
-    const grades = [
-      "الصف الأول", "الصف الثاني", "الصف الثالث", "الصف الرابع", "الصف الخامس", "الصف السادس",
-      "الصف السابع", "الصف الثامن", "الصف التاسع", "أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"
-    ];
-
-    let selectedGrade = "";
-    let selectedCategory = ""; 
-    let selectedCategoryName = "";
-    
+    const grades = ["الصف الأول", "الصف الثاني", "الصف الثالث", "الصف الرابع", "الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"];
+    let selectedGrade = "", selectedCategory = "", selectedCategoryName = "";
     let isAdminLoggedIn = sessionStorage.getItem('methaq_admin_session') === 'active';
-
-    let db;
-    let academicData = [];
-    let culturalData = [];
-    let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [
-      { id: 1, name: "محمد أحمد", text: "مكتبة إلكترونية مرتبطة ومنظمة جداً، بارك الله في جهودك يا ميثاق!", date: "2026-10-28" }
-    ];
-
-    const request = indexedDB.open("MethaqLibraryDB", 3);
     
-    request.onerror = function(event) {
-      console.error("فشل فتح قاعدة البيانات الداخلية");
-    };
+    // نظام تخزين مباشر وقوي معتمد على المصفوفة المحلية المباشرة (Local JSON Storage with Base64)
+    let booksData = JSON.parse(localStorage.getItem('methaq_pure_books_v3')) || [];
+    let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [{ id: 1, name: "محمد أحمد", text: "مكتبة ممتازة يا ميثاق!", date: "2026-10-28" }];
 
-    request.onupgradeneeded = function(event) {
-      db = event.target.result;
-      if (!db.objectStoreNames.contains("books")) {
-        db.createObjectStore("books", { keyPath: "id" });
-      }
-    };
-
-    request.onsuccess = function(event) {
-      db = event.target.result;
-      loadAllBooks();
-    };
-
-    function loadAllBooks() {
-      const transaction = db.transaction(["books"], "readonly");
-      const store = transaction.objectStore("books");
-      const getAllRequest = store.getAll();
-
-      getAllRequest.onsuccess = function() {
-        const allBooks = getAllRequest.result;
-        academicData = allBooks.filter(b => b.type === 'academic');
-        culturalData = allBooks.filter(b => b.type === 'cultural');
-        
-        renderGrades();
-        renderCulturalBooks();
-        renderFeedbacks();
-        if(selectedGrade && selectedCategory) {
-          renderAcademicBooks();
-        }
-      };
-    }
-
-    window.onload = function() {
-      renderGrades();
-      renderFeedbacks();
-      if (isAdminLoggedIn) {
-        document.getElementById('adminAcademicForm').style.display = 'block';
-      }
+    window.onload = () => {
+      renderGrades(); renderCulturalBooks(); renderFeedbacks();
+      if (isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'block';
     };
 
     function toggleSettingsMenu() {
-      const dropdown = document.getElementById('settingsDropdown');
-      dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+      const d = document.getElementById('settingsDropdown');
+      d.style.display = (d.style.display === 'block') ? 'none' : 'block';
     }
 
     function promptAdminLogin() {
       toggleSettingsMenu();
-      if (isAdminLoggedIn) {
-        alert("أنت مسجل دخول بالفعل بصفتك الأدمن.");
-        return;
-      }
-      const code = prompt("أدخل رمز لوحة الإدارة السري:");
+      if (isAdminLoggedIn) return alert("أنت مسجل دخول بالفعل.");
+      const code = prompt("أدخل رمز لوحة الإدارة:");
       if (code === "mythaq") {
         isAdminLoggedIn = true;
         sessionStorage.setItem('methaq_admin_session', 'active');
         document.getElementById('adminAcademicForm').style.display = 'block';
-        renderAcademicBooks();
-        renderCulturalBooks();
-        renderFeedbacks();
-        alert("مرحباً بك يا ميثاق! تم تفعيل صلاحيات التعديل والحذف بنجاح.");
-      } else if (code !== null) {
-        alert("الرمز غير صحيح!");
-      }
+        renderAcademicBooks(); renderCulturalBooks(); renderFeedbacks();
+        alert("تم تفعيل صلاحيات الأدمن بنجاح.");
+      } else if (code !== null) alert("الرمز غير صحيح!");
     }
 
     function renderGrades() {
-      const container = document.getElementById('gradesContainer');
-      container.innerHTML = grades.map(g => 
+      document.getElementById('gradesContainer').innerHTML = grades.map(g => 
         `<div class="grade-box" onclick="selectGrade('${g}')"><i class="fa-solid fa-book-bookmark" style="display:block; font-size:2.8rem; margin-bottom:15px; color:var(--accent);"></i>${g}</div>`
       ).join('');
     }
@@ -574,14 +211,11 @@
     function goBackToGrades() {
       document.getElementById('viewSubSections').style.display = 'none';
       document.getElementById('viewGrades').style.display = 'block';
-      if(!isAdminLoggedIn) {
-        document.getElementById('adminAcademicForm').style.display = 'none';
-      }
+      if(!isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
     }
 
     function openCategory(catKey, catName) {
-      selectedCategory = catKey;
-      selectedCategoryName = catName;
+      selectedCategory = catKey; selectedCategoryName = catName;
       document.getElementById('currentSectionTitle').innerText = `${selectedGrade} - ${catName}`;
       document.getElementById('viewSubSections').style.display = 'none';
       document.getElementById('viewBooks').style.display = 'block';
@@ -592,269 +226,192 @@
     function goBackToSubSections() {
       document.getElementById('viewBooks').style.display = 'none';
       document.getElementById('viewSubSections').style.display = 'block';
-      if(!isAdminLoggedIn) {
-        document.getElementById('adminAcademicForm').style.display = 'none';
+      if(!isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
+    }
+
+    // المعاينة المطلقة المباشرة: تفتح بيانات Base64 الخاصة بالمعرف المحدد حصرياً ودون تداخل كاش
+    function openSpecificPdf(bookId) {
+      const book = booksData.find(b => b.id === bookId);
+      if (book && book.pdfData) {
+        try {
+          const a = document.createElement('a');
+          a.href = book.pdfData;
+          a.target = '_blank';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } catch(e) {
+          alert("تعذر فتح المعاينة المباشرة.");
+        }
+      } else {
+        alert("الملف غير موجود.");
       }
     }
 
-    // دالة فتح أو تنزيل ملف الـ PDF بالطريقة العادية والمستقرة
-    function openPdfFile(blob, title, actionType) {
-      const fileURL = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = fileURL;
-      if (actionType === 'download') {
+    function downloadSpecificPdf(bookId, title) {
+      const book = booksData.find(b => b.id === bookId);
+      if (book && book.pdfData) {
+        const a = document.createElement('a');
+        a.href = book.pdfData;
         a.download = `${title}.pdf`;
-      } else {
-        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
     }
 
     function renderAcademicBooks() {
       const grid = document.getElementById('academicGrid');
-      const filtered = academicData.filter(item => item.grade === selectedGrade && item.category === selectedCategory);
-      
+      const filtered = booksData.filter(item => item.type === 'academic' && item.grade === selectedGrade && item.category === selectedCategory);
       if(filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700; font-size: 1.2rem;">لا توجد كتب مرفوعة في هذا القسم حتى الآن.</p>`;
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700;">لا توجد كتب مرفوعة في هذا القسم.</p>`;
         return;
       }
-
-      grid.innerHTML = filtered.map(item => {
-        return `
-          <div class="book-card">
-            ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
-            <div class="book-details">
-              <div class="book-title">${item.title}</div>
-              <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
-              ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
-              <div class="book-actions">
-                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'view')" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <button type="button" onclick="openPdfFile(academicData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'download')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
-                ${isAdminLoggedIn ? `
-                  <button onclick="editBook(${item.id}, 'academic')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
-                  <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
-                ` : ''}
-              </div>
+      grid.innerHTML = filtered.map(item => `
+        <div class="book-card">
+          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
+          <div class="book-details">
+            <div class="book-title">${item.title}</div>
+            <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
+            ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
+            <div class="book-actions">
+              <button type="button" onclick="openSpecificPdf(${item.id})" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+              <button type="button" onclick="downloadSpecificPdf(${item.id}, '${item.title}')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
+              ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
             </div>
           </div>
-        `;
-      }).join('');
+        </div>
+      `).join('');
     }
 
     function addAcademicItem(e) {
       e.preventDefault();
-      const pdfInput = document.getElementById('acadFile');
-      const coverInput = document.getElementById('acadCoverFile');
-
-      if (pdfInput.files.length === 0) {
-        alert('الرجاء اختيار ملف PDF!');
-        return;
-      }
-
-      const pdfFile = pdfInput.files[0];
-      const title = document.getElementById('acadTitle').value;
-      const note = document.getElementById('acadNote').value;
-
-      if (coverInput.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          saveBookToDB({
-            id: Date.now(),
-            type: 'academic',
-            grade: selectedGrade,
-            category: selectedCategory,
-            title: title,
-            note: note,
-            cover: event.target.result,
-            pdfBlob: pdfFile
+      const file = document.getElementById('acadFile').files[0];
+      const cover = document.getElementById('acadCoverFile').files[0];
+      if (!file) return alert('الرجاء اختيار ملف PDF!');
+      
+      const reader = new FileReader();
+      reader.onload = evt => {
+        const base64Pdf = evt.target.result;
+        const bookId = Date.now() + Math.floor(Math.random() * 100000000);
+        
+        if (cover) {
+          const cReader = new FileReader();
+          cReader.onload = cevt => {
+            saveBookObj({
+              id: bookId, type: 'academic', grade: selectedGrade, category: selectedCategory,
+              title: document.getElementById('acadTitle').value, note: document.getElementById('acadNote').value,
+              cover: cevt.target.result, pdfData: base64Pdf
+            }, 'academicForm');
+          };
+          cReader.readAsDataURL(cover);
+        } else {
+          saveBookObj({
+            id: bookId, type: 'academic', grade: selectedGrade, category: selectedCategory,
+            title: document.getElementById('acadTitle').value, note: document.getElementById('acadNote').value,
+            cover: "", pdfData: base64Pdf
           }, 'academicForm');
-        };
-        reader.readAsDataURL(coverInput.files[0]);
-      } else {
-        saveBookToDB({
-          id: Date.now(),
-          type: 'academic',
-          grade: selectedGrade,
-          category: selectedCategory,
-          title: title,
-          note: note,
-          cover: "",
-          pdfBlob: pdfFile
-        }, 'academicForm');
-      }
+        }
+      };
+      reader.readAsDataURL(file);
     }
 
     function renderCulturalBooks() {
       const grid = document.getElementById('culturalGrid');
-      if(culturalData.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700; font-size: 1.2rem;">لا توجد كتب ثقافية مرفوعة حالياً.</p>`;
+      const filtered = booksData.filter(item => item.type === 'cultural');
+      if(filtered.length === 0) {
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700;">لا توجد كتب تاريخية أو فلسفية مرفوعة حتى الآن.</p>`;
         return;
       }
-      grid.innerHTML = culturalData.map(item => {
-        return `
-          <div class="book-card">
-            ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف الكتاب">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
-            <div class="book-details">
-              <div class="book-title">${item.title}</div>
-              <div class="book-meta">الكاتب: ${item.author || 'غير محدد'}</div>
-              ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
-              <div class="book-actions">
-                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'view')" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-                <button type="button" onclick="openPdfFile(culturalData.find(b => b.id === ${item.id}).pdfBlob, '${item.title}', 'download')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
-                ${isAdminLoggedIn ? `
-                  <button onclick="editBook(${item.id}, 'cultural')" class="btn-action btn-edit" style="display:flex;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
-                  <button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>
-                ` : ''}
-              </div>
+      grid.innerHTML = filtered.map(item => `
+        <div class="book-card">
+          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
+          <div class="book-details">
+            <div class="book-title">${item.title}</div>
+            <div class="book-meta">المؤلف: ${item.author || 'غير محدد'}</div>
+            ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
+            <div class="book-actions">
+              <button type="button" onclick="openSpecificPdf(${item.id})" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
+              <button type="button" onclick="downloadSpecificPdf(${item.id}, '${item.title}')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
+              ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
             </div>
           </div>
-        `;
-      }).join('');
+        </div>
+      `).join('');
     }
 
     function addCulturalBook(e) {
       e.preventDefault();
-      const pdfInput = document.getElementById('cultFile');
-      const coverInput = document.getElementById('cultCoverFile');
+      const file = document.getElementById('cultFile').files[0];
+      const cover = document.getElementById('cultCoverFile').files[0];
+      if (!file) return alert('الرجاء اختيار ملف PDF!');
 
-      if (pdfInput.files.length === 0) {
-        alert('الرجاء اختيار ملف الـ PDF!');
-        return;
-      }
-
-      const pdfFile = pdfInput.files[0];
-      const title = document.getElementById('cultTitle').value;
-      const author = document.getElementById('cultAuthor').value;
-      const desc = document.getElementById('cultDesc').value;
-
-      if (coverInput.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          saveBookToDB({
-            id: Date.now(),
-            type: 'cultural',
-            title: title,
-            author: author,
-            desc: desc,
-            cover: event.target.result,
-            pdfBlob: pdfFile
+      const reader = new FileReader();
+      reader.onload = evt => {
+        const base64Pdf = evt.target.result;
+        const bookId = Date.now() + Math.floor(Math.random() * 100000000);
+        
+        if (cover) {
+          const cReader = new FileReader();
+          cReader.onload = cevt => {
+            saveBookObj({
+              id: bookId, type: 'cultural',
+              title: document.getElementById('cultTitle').value, author: document.getElementById('cultAuthor').value,
+              desc: document.getElementById('cultDesc').value, cover: cevt.target.result, pdfData: base64Pdf
+            }, 'culturalForm');
+          };
+          cReader.readAsDataURL(cover);
+        } else {
+          saveBookObj({
+            id: bookId, type: 'cultural',
+            title: document.getElementById('cultTitle').value, author: document.getElementById('cultAuthor').value,
+            desc: document.getElementById('cultDesc').value, cover: "", pdfData: base64Pdf
           }, 'culturalForm');
-        };
-        reader.readAsDataURL(coverInput.files[0]);
-      } else {
-        saveBookToDB({
-          id: Date.now(),
-          type: 'cultural',
-          title: title,
-          author: author,
-          desc: desc,
-          cover: "",
-          pdfBlob: pdfFile
-        }, 'culturalForm');
-      }
-    }
-
-    function saveBookToDB(bookObj, formId) {
-      const transaction = db.transaction(["books"], "readwrite");
-      const store = transaction.objectStore("books");
-      const request = store.put(bookObj);
-
-      request.onsuccess = function() {
-        loadAllBooks();
-        document.getElementById(formId).reset();
-        if(formId === 'academicForm' && !isAdminLoggedIn) {
-          document.getElementById('adminAcademicForm').style.display = 'none';
         }
-        alert('تم رفع وحفظ الكتاب بنجاح تام!');
       };
-
-      request.onerror = function() {
-        alert('حدث خطأ أثناء حفظ الكتاب في الذاكرة.');
-      };
+      reader.readAsDataURL(file);
     }
 
-    function editBook(id, type) {
-      const allBooks = [...academicData, ...culturalData];
-      const book = allBooks.find(b => b.id === id);
-      if(!book) return;
-
-      const newTitle = prompt("تعديل عنوان الكتاب:", book.title);
-      if (newTitle === null) return;
-
-      const currentNote = book.note || book.desc || "";
-      const newNote = prompt("تعديل ملاحظات الكتاب:", currentNote);
-      if (newNote === null) return;
-
-      book.title = newTitle;
-      if (type === 'academic') {
-        book.note = newNote;
-      } else {
-        book.desc = newNote;
-      }
-
-      const transaction = db.transaction(["books"], "readwrite");
-      const store = transaction.objectStore("books");
-      store.put(book).onsuccess = function() {
-        loadAllBooks();
-        alert("تم تحديث وتعديل بيانات الكتاب بنجاح.");
-      };
+    function saveBookObj(obj, formId) {
+      booksData.unshift(obj);
+      localStorage.setItem('methaq_pure_books_v3', JSON.stringify(booksData));
+      renderAcademicBooks();
+      renderCulturalBooks();
+      document.getElementById(formId).reset();
+      if(formId === 'academicForm' && !isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
+      alert('تم رفع وحفظ الكتاب بنجاح تام وثابت!');
     }
 
     function deleteBook(id) {
-      if (confirm("هل أنت متأكد من عملية الحذف؟")) {
-        const transaction = db.transaction(["books"], "readwrite");
-        const store = transaction.objectStore("books");
-        const request = store.delete(id);
-
-        request.onsuccess = function() {
-          loadAllBooks();
-          alert("تم حذف الكتاب بنجاح.");
-        };
+      if (confirm("هل أنت متأكد من الحذف؟")) {
+        booksData = booksData.filter(b => b.id !== id);
+        localStorage.setItem('methaq_pure_books_v3', JSON.stringify(booksData));
+        renderAcademicBooks();
+        renderCulturalBooks();
+        alert("تم الحذف بنجاح.");
       }
     }
 
     function renderFeedbacks() {
-      const listContainer = document.getElementById('feedbackList');
-      if(feedbackData.length === 0) {
-        listContainer.innerHTML = `<p style="text-align: center; color: var(--text-light); padding: 40px; font-weight: 700;">لا توجد تعليقات حالياً.</p>`;
-        return;
-      }
-      listContainer.innerHTML = feedbackData.map(f => `
+      document.getElementById('feedbackList').innerHTML = feedbackData.map(f => `
         <div class="comment-card">
-          <div>
-            <div class="comment-author">${f.name}</div>
-            <div style="margin: 10px 0; color: var(--text); line-height:1.7;">${f.text}</div>
-            <div class="comment-date"><i class="fa-regular fa-calendar"></i> ${f.date}</div>
-          </div>
-          ${isAdminLoggedIn ? `<button onclick="deleteFeedback(${f.id})" class="btn-action btn-delete" style="flex:unset; padding: 8px 14px; display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
+          <div><div class="comment-author">${f.name}</div><div style="margin: 10px 0;">${f.text}</div><div style="font-size: 0.85rem; color: var(--text-light);">${f.date}</div></div>
+          ${isAdminLoggedIn ? `<button onclick="deleteFeedback(${f.id})" class="btn-action btn-delete" style="flex:unset; padding: 8px 14px; display:flex;"><i class="fa-solid fa-trash"></i></button>` : ''}
         </div>
       `).join('');
     }
 
     function addFeedback(e) {
       e.preventDefault();
-      const newFeed = {
-        id: Date.now(),
-        name: document.getElementById('feedName').value,
-        text: document.getElementById('feedText').value,
-        date: new Date().toISOString().split('T')[0]
-      };
-      feedbackData.unshift(newFeed);
+      feedbackData.unshift({ id: Date.now(), name: document.getElementById('feedName').value, text: document.getElementById('feedText').value, date: new Date().toISOString().split('T')[0] });
       localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
-      renderFeedbacks();
-      document.getElementById('feedbackForm').reset();
-      alert('شكراً لك على مشاركة رأيك الطيب!');
+      renderFeedbacks(); document.getElementById('feedbackForm').reset(); alert('شكراً لك!');
     }
 
     function deleteFeedback(id) {
-      if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
-        feedbackData = feedbackData.filter(f => f.id !== id);
-        localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
-        renderFeedbacks();
-        alert("تم حذف التعليق بنجاح.");
-      }
+      feedbackData = feedbackData.filter(f => f.id !== id);
+      localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
+      renderFeedbacks();
     }
 
     function switchTab(tabId, event) {
