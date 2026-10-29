@@ -1,433 +1,127 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مكتبة ميثاق محمد الإلكترونية</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #0f172a; --secondary: #1e3a8a; --accent: #f97316;
-      --accent-gradient: linear-gradient(135deg, #f97316, #ea580c);
-      --danger: #ef4444; --bg: #f8fafc; --card-bg: #ffffff;
-      --text: #1e293b; --text-light: #64748b; --border: #e2e8f0;
-      --shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.08); --radius: 20px;
+import streamlit as st
+import re
+import hashlib
+import random
+
+st.set_page_config(page_title="أداة المدافع الذكية", page_icon="⚡", layout="centered")
+
+# تصميم الواجهة بالألوان والجماليات
+st.markdown("""
+    <style>
+    .main {
+        background-color: #0e1117;
+        color: #ffffff;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid rgba(249, 115, 22, 0.4); }
-    .header-title h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
-    .header-settings-btn { background: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.3); color: white; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: 0.35s; }
-    .settings-dropdown { position: absolute; top: 90px; left: 35px; background: white; border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 270px; display: none; z-index: 1100; border: 1px solid var(--border); overflow: hidden; }
-    .settings-item { padding: 16px 20px; display: flex; align-items: center; gap: 14px; font-weight: 800; color: var(--primary); text-decoration: none; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.25s; }
-    .settings-item:hover { background: #f8fafc; color: var(--accent); }
-    .container { max-width: 1300px; margin: 45px auto; padding: 0 25px; flex: 1; width: 100%; }
-    .search-bar-wrapper { position: relative; margin-bottom: 45px; }
-    .search-bar { width: 100%; padding: 20px 25px 20px 60px; border-radius: 45px; border: 2px solid var(--border); font-size: 1.15rem; outline: none; box-shadow: var(--shadow); background: white; font-weight: 600; }
-    .search-bar-wrapper i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.4rem; }
-    .main-tabs { display: flex; gap: 15px; margin-bottom: 45px; border-bottom: 3px solid var(--border); overflow-x: auto; padding-bottom: 5px; }
-    .tab-link { padding: 16px 32px; cursor: pointer; font-weight: 800; color: var(--text-light); border-bottom: 4.5px solid transparent; white-space: nowrap; font-size: 1.2rem; border-radius: 16px 16px 0 0; display: flex; align-items: center; gap: 10px; }
-    .tab-link.active { color: var(--primary); border-bottom-color: var(--accent); background: white; box-shadow: 0 -6px 20px rgba(0,0,0,0.04); }
-    .tab-content { display: none; } .tab-content.active { display: block; }
-    .nav-path { display: flex; align-items: center; justify-content: space-between; margin-bottom: 35px; font-weight: 900; color: var(--primary); font-size: 1.35rem; background: white; padding: 20px 30px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .back-btn { background: var(--secondary); color: white; border: none; padding: 10px 22px; border-radius: 12px; cursor: pointer; font-size: 0.98rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
-    .grades-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-    .grade-box { background: white; border: 2px solid var(--border); padding: 45px 20px; border-radius: var(--radius); text-align: center; cursor: pointer; font-weight: 900; color: var(--primary); font-size: 1.3rem; box-shadow: var(--shadow); transition: 0.35s; }
-    .grade-box:hover { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border-color: transparent; transform: translateY(-8px); }
-    .sub-sections-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-    .sub-section-card { background: white; border: 2px solid var(--border); border-radius: var(--radius); padding: 35px 25px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.35s; }
-    .sub-section-card:hover { border-color: var(--accent); transform: translateY(-8px); }
-    .sub-section-icon { font-size: 3.5rem; color: var(--accent); margin-bottom: 18px; }
-    .sub-section-title { font-size: 1.35rem; font-weight: 900; color: var(--primary); }
-    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 35px; margin-top: 40px; }
-    .book-card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; }
-    .book-cover { height: 240px; background: #e2e8f0; object-fit: cover; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 5rem; }
-    .book-details { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
-    .book-title { font-size: 1.35rem; font-weight: 900; margin-bottom: 8px; color: var(--primary); }
-    .book-meta { font-size: 0.9rem; color: var(--text-light); margin-bottom: 12px; font-weight: 700; }
-    .book-note { font-size: 0.92rem; color: var(--secondary); background: #eff6ff; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; border-right: 4px solid var(--secondary); }
-    .book-actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
-    .btn-action { flex: 1; min-width: 90px; padding: 10px; text-align: center; border: none; border-radius: 12px; text-decoration: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-    .btn-view { background: #e0f2fe; color: #0284c7; }
-    .btn-download { background: #dcfce7; color: #16a34a; }
-    .btn-delete { background: #fee2e2; color: var(--danger); display: none; }
-    .form-card { background: white; padding: 45px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 45px; border: 3px dashed var(--accent); }
-    .form-card h3 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; font-weight: 900; }
-    .form-group { margin-bottom: 22px; }
-    .form-group label { display: block; margin-bottom: 10px; font-weight: 800; color: var(--primary); }
-    .form-group input, .form-group textarea { width: 100%; padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; font-size: 1.05rem; outline: none; background: #fafafa; }
-    .submit-btn { background: var(--accent-gradient); color: white; border: none; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 1.15rem; font-weight: 900; width: 100%; box-shadow: 0 10px 20px rgba(249,115,22,0.3); }
-    .comments-section { margin-top: 40px; }
-    .comment-card { background: white; padding: 25px; border-radius: var(--radius); margin-bottom: 20px; border-right: 6px solid var(--accent); border: 1.5px solid var(--border); box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: flex-start; }
-    .comment-author { font-weight: 900; color: var(--primary); font-size: 1.2rem; }
-    footer { text-align: center; padding: 30px; color: var(--text-light); font-weight: 700; background: white; margin-top: auto; border-top: 1px solid var(--border); }
-  </style>
-</head>
-<body>
+    .stButton>button {
+        width: 100%;
+        background-color: #ff4b4b;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        padding: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-  <header>
-    <div class="header-title">
-      <h1><i class="fa-solid fa-book-open-reader" style="color: var(--accent);"></i> مكتبة ميثاق محمد الإلكترونية</h1>
-      <p>منصة التعليم والكتب المدرسية والمراجع</p>
-    </div>
-    <div style="position: relative;">
-      <div class="header-settings-btn" onclick="toggleSettingsMenu()"><i class="fa-solid fa-gear"></i></div>
-      <div class="settings-dropdown" id="settingsDropdown">
-        <a href="https://wa.me/967784327056" target="_blank" class="settings-item"><i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.6rem;"></i> تواصل مع المطور</a>
-        <div class="settings-item" onclick="promptAdminLogin()"><i class="fa-solid fa-lock" style="color: var(--accent);"></i> لوحة الإدارة</div>
-      </div>
-    </div>
-  </header>
+st.title("⚡ أداة المدافع الرقمية المتكاملة")
+st.write("مرحباً بك! هذا تطبيق متعدد المهام مبني بلغة بايثون ومصمم ليتحول إلى تطبيق جوال.")
 
-  <div class="container">
-    <div class="search-bar-wrapper">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" class="search-bar" placeholder="ابحث عن كتاب، مرجع، أو ملخص..." onkeyup="searchBooks(this.value)">
-    </div>
+# القائمة الجانبية لاختيار الأداة
+option = st.sidebar.selectbox(
+    "اختر الخدمة المطلوبة:",
+    ("فحص قوة كلمة المرور", "استخراج الروابط من النص", "مولد النصوص والتشفير", "حاسبة رقمية سريعة")
+)
 
-    <div class="main-tabs">
-      <div class="tab-link active" onclick="switchTab('academic', event)"><i class="fa-solid fa-school"></i> الأقسام الأكاديمية</div>
-      <div class="tab-link" onclick="switchTab('cultural', event)"><i class="fa-solid fa-book-bookmark"></i> الكتب التاريخية والفلسفية</div>
-      <div class="tab-link" onclick="switchTab('feedback', event)"><i class="fa-solid fa-comments"></i> آراء الزوار</div>
-    </div>
+st.markdown("---")
 
-    <div id="tab-academic" class="tab-content active">
-      <div id="viewGrades">
-        <div style="margin-bottom: 25px; font-weight: 900; color: var(--primary); font-size: 1.45rem;"><i class="fa-solid fa-layer-group"></i> اختر الصف الدراسي:</div>
-        <div class="grades-grid" id="gradesContainer"></div>
-      </div>
-
-      <div id="viewSubSections" style="display: none;">
-        <div class="nav-path">
-          <span>الصف الحالي: <span id="currentGradeTitle" style="color: var(--accent);"></span></span>
-          <button class="back-btn" onclick="goBackToGrades()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
-        </div>
-        <div class="sub-sections-grid">
-          <div class="sub-section-card" onclick="openCategory('part1', 'الكتاب الدراسي (الجزء الأول)')"><div class="sub-section-icon"><i class="fa-solid fa-book"></i></div><div class="sub-section-title">الكتاب الدراسي (الجزء الأول)</div></div>
-          <div class="sub-section-card" onclick="openCategory('part2', 'الكتاب الدراسي (الجزء الثاني)')"><div class="sub-section-icon"><i class="fa-solid fa-book-open"></i></div><div class="sub-section-title">الكتاب الدراسي (الجزء الثاني)</div></div>
-          <div class="sub-section-card" onclick="openCategory('notes1', 'ملخصات الجزء الأول')"><div class="sub-section-icon"><i class="fa-solid fa-file-invoice"></i></div><div class="sub-section-title">ملخصات الجزء الأول</div></div>
-          <div class="sub-section-card" onclick="openCategory('notes2', 'ملخصات الجزء الثاني')"><div class="sub-section-icon"><i class="fa-solid fa-file-lines"></i></div><div class="sub-section-title">ملخصات الجزء الثاني</div></div>
-        </div>
-      </div>
-
-      <div id="viewBooks" style="display: none;">
-        <div class="nav-path">
-          <span id="currentSectionTitle">قسم الكتب</span>
-          <button class="back-btn" onclick="goBackToSubSections()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
-        </div>
-
-        <div class="form-card" id="adminAcademicForm" style="display: none;">
-          <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> رفع كتاب جديد</h3>
-          <form id="academicForm" onsubmit="addAcademicItem(event)">
-            <div class="form-group"><label>عنوان الكتاب</label><input type="text" id="acadTitle" required placeholder="مثال: الرياضيات"></div>
-            <div class="form-group"><label>ملاحظات (اختياري)</label><textarea id="acadNote" rows="2"></textarea></div>
-            <div class="form-group"><label>صورة الغلاف (اختياري):</label><input type="file" id="acadCoverFile" accept="image/*"></div>
-            <div class="form-group"><label>ملف الـ PDF الحقيقي:</label><input type="file" id="acadFile" accept="application/pdf" required></div>
-            <button type="submit" class="submit-btn">رفع وحفظ الكتاب</button>
-          </form>
-        </div>
-        <div class="books-grid" id="academicGrid"></div>
-      </div>
-    </div>
-
-    <div id="tab-cultural" class="tab-content">
-      <div class="form-card" style="border-style: solid;">
-        <h3><i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i> مشاركة كتاب (تاريخي، فلسفي، ثقافي)</h3>
-        <form id="culturalForm" onsubmit="addCulturalBook(event)">
-          <div class="form-group"><label>عنوان الكتاب</label><input type="text" id="cultTitle" required placeholder="مثال: مقدمة ابن خلدون"></div>
-          <div class="form-group"><label>اسم المؤلف</label><input type="text" id="cultAuthor" placeholder="مثال: ابن خلدون"></div>
-          <div class="form-group"><label>نبذة أو تصنيف الكتاب</label><textarea id="cultDesc" rows="2" placeholder="تصنيف الكتاب أو نبذة..."></textarea></div>
-          <div class="form-group"><label>صورة الغلاف (اختياري):</label><input type="file" id="cultCoverFile" accept="image/*"></div>
-          <div class="form-group"><label>ملف الـ PDF الحقيقي:</label><input type="file" id="cultFile" accept="application/pdf" required></div>
-          <button type="submit" class="submit-btn">نشر الكتاب في الأرشيف</button>
-        </form>
-      </div>
-      <h3 style="margin: 45px 0 20px 0; color: var(--primary); font-size: 1.6rem; font-weight: 900;">أرشيف الكتب التاريخية والفلسفية والثقافية</h3>
-      <div class="books-grid" id="culturalGrid"></div>
-    </div>
-
-    <div id="tab-feedback" class="tab-content">
-      <div class="form-card" style="border-style: solid;">
-        <h3><i class="fa-solid fa-comments" style="color: var(--accent);"></i> شاركنا رأيك</h3>
-        <form id="feedbackForm" onsubmit="addFeedback(event)">
-          <div class="form-group"><label>اسمك</label><input type="text" id="feedName" required></div>
-          <div class="form-group"><label>تعليقك</label><textarea id="feedText" rows="3" required></textarea></div>
-          <button type="submit" class="submit-btn">إرسال</button>
-        </form>
-      </div>
-      <div class="comments-section" id="feedbackList"></div>
-    </div>
-  </div>
-
-  <footer>جميع الحقوق محفوظة © 2026 - مكتبة ميثاق محمد الإلكترونية</footer>
-
-  <script>
-    const grades = ["الصف الأول", "الصف الثاني", "الصف الثالث", "الصف الرابع", "الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "أول ثانوي", "ثاني ثانوي", "ثالث ثانوي"];
-    let selectedGrade = "", selectedCategory = "", selectedCategoryName = "";
-    let isAdminLoggedIn = sessionStorage.getItem('methaq_admin_session') === 'active';
+# 1. أداة فحص قوة كلمة المرور
+if option == "فحص قوة كلمة المرور":
+    st.subheader("🔒 فحص أمان كلمة المرور")
+    password = st.text_input("أدخل كلمة المرور لفحصها:", type="password")
     
-    // نظام تخزين مباشر وقوي معتمد على المصفوفة المحلية المباشرة (Local JSON Storage with Base64)
-    let booksData = JSON.parse(localStorage.getItem('methaq_pure_books_v3')) || [];
-    let feedbackData = JSON.parse(localStorage.getItem('methaq_feedback')) || [{ id: 1, name: "محمد أحمد", text: "مكتبة ممتازة يا ميثاق!", date: "2026-10-28" }];
-
-    window.onload = () => {
-      renderGrades(); renderCulturalBooks(); renderFeedbacks();
-      if (isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'block';
-    };
-
-    function toggleSettingsMenu() {
-      const d = document.getElementById('settingsDropdown');
-      d.style.display = (d.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function promptAdminLogin() {
-      toggleSettingsMenu();
-      if (isAdminLoggedIn) return alert("أنت مسجل دخول بالفعل.");
-      const code = prompt("أدخل رمز لوحة الإدارة:");
-      if (code === "mythaq") {
-        isAdminLoggedIn = true;
-        sessionStorage.setItem('methaq_admin_session', 'active');
-        document.getElementById('adminAcademicForm').style.display = 'block';
-        renderAcademicBooks(); renderCulturalBooks(); renderFeedbacks();
-        alert("تم تفعيل صلاحيات الأدمن بنجاح.");
-      } else if (code !== null) alert("الرمز غير صحيح!");
-    }
-
-    function renderGrades() {
-      document.getElementById('gradesContainer').innerHTML = grades.map(g => 
-        `<div class="grade-box" onclick="selectGrade('${g}')"><i class="fa-solid fa-book-bookmark" style="display:block; font-size:2.8rem; margin-bottom:15px; color:var(--accent);"></i>${g}</div>`
-      ).join('');
-    }
-
-    function selectGrade(grade) {
-      selectedGrade = grade;
-      document.getElementById('currentGradeTitle').innerText = grade;
-      document.getElementById('viewGrades').style.display = 'none';
-      document.getElementById('viewSubSections').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function goBackToGrades() {
-      document.getElementById('viewSubSections').style.display = 'none';
-      document.getElementById('viewGrades').style.display = 'block';
-      if(!isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
-    }
-
-    function openCategory(catKey, catName) {
-      selectedCategory = catKey; selectedCategoryName = catName;
-      document.getElementById('currentSectionTitle').innerText = `${selectedGrade} - ${catName}`;
-      document.getElementById('viewSubSections').style.display = 'none';
-      document.getElementById('viewBooks').style.display = 'block';
-      renderAcademicBooks();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function goBackToSubSections() {
-      document.getElementById('viewBooks').style.display = 'none';
-      document.getElementById('viewSubSections').style.display = 'block';
-      if(!isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
-    }
-
-    // المعاينة المطلقة المباشرة: تفتح بيانات Base64 الخاصة بالمعرف المحدد حصرياً ودون تداخل كاش
-    function openSpecificPdf(bookId) {
-      const book = booksData.find(b => b.id === bookId);
-      if (book && book.pdfData) {
-        try {
-          const a = document.createElement('a');
-          a.href = book.pdfData;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        } catch(e) {
-          alert("تعذر فتح المعاينة المباشرة.");
-        }
-      } else {
-        alert("الملف غير موجود.");
-      }
-    }
-
-    function downloadSpecificPdf(bookId, title) {
-      const book = booksData.find(b => b.id === bookId);
-      if (book && book.pdfData) {
-        const a = document.createElement('a');
-        a.href = book.pdfData;
-        a.download = `${title}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-    }
-
-    function renderAcademicBooks() {
-      const grid = document.getElementById('academicGrid');
-      const filtered = booksData.filter(item => item.type === 'academic' && item.grade === selectedGrade && item.category === selectedCategory);
-      if(filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700;">لا توجد كتب مرفوعة في هذا القسم.</p>`;
-        return;
-      }
-      grid.innerHTML = filtered.map(item => `
-        <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover"><i class="fa-solid fa-book-open"></i></div>`}
-          <div class="book-details">
-            <div class="book-title">${item.title}</div>
-            <div class="book-meta">${selectedGrade} • ${selectedCategoryName}</div>
-            ${item.note ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.note}</div>` : ''}
-            <div class="book-actions">
-              <button type="button" onclick="openSpecificPdf(${item.id})" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-              <button type="button" onclick="downloadSpecificPdf(${item.id}, '${item.title}')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
-              ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function addAcademicItem(e) {
-      e.preventDefault();
-      const file = document.getElementById('acadFile').files[0];
-      const cover = document.getElementById('acadCoverFile').files[0];
-      if (!file) return alert('الرجاء اختيار ملف PDF!');
-      
-      const reader = new FileReader();
-      reader.onload = evt => {
-        const base64Pdf = evt.target.result;
-        const bookId = Date.now() + Math.floor(Math.random() * 100000000);
+    if password:
+        score = 0
+        feedback = []
         
-        if (cover) {
-          const cReader = new FileReader();
-          cReader.onload = cevt => {
-            saveBookObj({
-              id: bookId, type: 'academic', grade: selectedGrade, category: selectedCategory,
-              title: document.getElementById('acadTitle').value, note: document.getElementById('acadNote').value,
-              cover: cevt.target.result, pdfData: base64Pdf
-            }, 'academicForm');
-          };
-          cReader.readAsDataURL(cover);
-        } else {
-          saveBookObj({
-            id: bookId, type: 'academic', grade: selectedGrade, category: selectedCategory,
-            title: document.getElementById('acadTitle').value, note: document.getElementById('acadNote').value,
-            cover: "", pdfData: base64Pdf
-          }, 'academicForm');
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+        if len(password) >= 8:
+            score += 1
+        else:
+            feedback.append("❌ يجب أن تكون كلمة المرور من 8 أحرف على الأقل.")
+            
+        if re.search(r"[A-Z]", password) and re.search(r"[a-z]", password):
+            score += 1
+        else:
+            feedback.append("❌ يفضل استخدام حروف كبيرة وصغيرة.")
+            
+        if re.search(r"\d", password):
+            score += 1
+        else:
+            feedback.append("❌ يفضل احتواءها على أرقام.")
+            
+        if re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+            score += 1
+        else:
+            feedback.append("❌ يفضل إضافة رموز خاصة مثل (!@#).")
+            
+        if score == 4:
+            st.success("🟢 كلمة المرور قوية جداً وآمنة!")
+        elif score >= 2:
+            st.warning("🟡 كلمة المرور متوسطة، يمكنك تحسينها.")
+        else:
+            st.error("🔴 كلمة المرور ضعيفة جداً!")
+            
+        for f in feedback:
+            st.write(f)
 
-    function renderCulturalBooks() {
-      const grid = document.getElementById('culturalGrid');
-      const filtered = booksData.filter(item => item.type === 'cultural');
-      if(filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px; font-weight: 700;">لا توجد كتب تاريخية أو فلسفية مرفوعة حتى الآن.</p>`;
-        return;
-      }
-      grid.innerHTML = filtered.map(item => `
-        <div class="book-card">
-          ${item.cover ? `<img src="${item.cover}" class="book-cover" alt="غلاف">` : `<div class="book-cover" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;"><i class="fa-solid fa-book-bookmark"></i></div>`}
-          <div class="book-details">
-            <div class="book-title">${item.title}</div>
-            <div class="book-meta">المؤلف: ${item.author || 'غير محدد'}</div>
-            ${item.desc ? `<div class="book-note"><i class="fa-solid fa-circle-info"></i> ${item.desc}</div>` : ''}
-            <div class="book-actions">
-              <button type="button" onclick="openSpecificPdf(${item.id})" class="btn-action btn-view"><i class="fa-solid fa-eye"></i> معاينة</button>
-              <button type="button" onclick="downloadSpecificPdf(${item.id}, '${item.title}')" class="btn-action btn-download"><i class="fa-solid fa-download"></i> تنزيل</button>
-              ${isAdminLoggedIn ? `<button onclick="deleteBook(${item.id})" class="btn-action btn-delete" style="display:flex;"><i class="fa-solid fa-trash"></i> حذف</button>` : ''}
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
+# 2. أداة استخراج الروابط
+elif option == "استخراج الروابط من النص":
+    st.subheader("🌐 مستخرج الروابط الذكي")
+    text_input = st.text_area("ألصق أي نص طويل يحتوي على روابط هنا:")
+    
+    if st.button("استخراج الروابط"):
+        urls = re.findall(r'https?://[^\s]+', text_input)
+        if urls:
+            st.success(f"تم العثور على {len(urls)} رابط:")
+            for i, u in enumerate(urls, 1):
+                st.markdown(f"{i}. [{u}]({u})")
+        else:
+            st.info("لا توجد روابط في هذا النص.")
 
-    function addCulturalBook(e) {
-      e.preventDefault();
-      const file = document.getElementById('cultFile').files[0];
-      const cover = document.getElementById('cultCoverFile').files[0];
-      if (!file) return alert('الرجاء اختيار ملف PDF!');
-
-      const reader = new FileReader();
-      reader.onload = evt => {
-        const base64Pdf = evt.target.result;
-        const bookId = Date.now() + Math.floor(Math.random() * 100000000);
+# 3. مولد التشفير (MD5 / SHA256)
+elif option == "مولد النصوص والتشفير":
+    st.subheader("🔐 تشفير النصوص (Hash Generator)")
+    plain_text = st.text_input("أدخل النص المراد تشفيره:")
+    
+    if plain_text:
+        md5_hash = hashlib.md5(plain_text.encode()).hexdigest()
+        sha_hash = hashlib.sha256(plain_text.encode()).hexdigest()
         
-        if (cover) {
-          const cReader = new FileReader();
-          cReader.onload = cevt => {
-            saveBookObj({
-              id: bookId, type: 'cultural',
-              title: document.getElementById('cultTitle').value, author: document.getElementById('cultAuthor').value,
-              desc: document.getElementById('cultDesc').value, cover: cevt.target.result, pdfData: base64Pdf
-            }, 'culturalForm');
-          };
-          cReader.readAsDataURL(cover);
-        } else {
-          saveBookObj({
-            id: bookId, type: 'cultural',
-            title: document.getElementById('cultTitle').value, author: document.getElementById('cultAuthor').value,
-            desc: document.getElementById('cultDesc').value, cover: "", pdfData: base64Pdf
-          }, 'culturalForm');
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+        st.write("**تشفير MD5:**")
+        st.code(md5_hash)
+        st.write("**تشفير SHA-256:**")
+        st.code(sha_hash)
 
-    function saveBookObj(obj, formId) {
-      booksData.unshift(obj);
-      localStorage.setItem('methaq_pure_books_v3', JSON.stringify(booksData));
-      renderAcademicBooks();
-      renderCulturalBooks();
-      document.getElementById(formId).reset();
-      if(formId === 'academicForm' && !isAdminLoggedIn) document.getElementById('adminAcademicForm').style.display = 'none';
-      alert('تم رفع وحفظ الكتاب بنجاح تام وثابت!');
-    }
+# 4. حاسبة ذكية بسيطة
+elif option == "حاسبة رقمية سريعة":
+    st.subheader("🔢 الحاسبة السريعة")
+    col1, col2 = st.columns(2)
+    with col1:
+        n1 = st.number_input("الرقم الأول", value=0.0)
+    with col2:
+        n2 = st.number_input("الرقم الثاني", مستخدم القيمة=0.0) if 'مستخدم القيمة' in globals() else st.number_input("الرقم الثاني", value=0.0)
+        
+    operation = st.selectbox("العملية الحسابية:", ("جمع (+)", "طرح (-)", "ضرب (×)", "قسمة (÷)"))
+    
+    if st.button("احسب النتيجة"):
+        if operation == "جمع (+)":
+            res = n1 + n2
+        elif operation == "طرح (-)":
+            res = n1 - n2
+        elif operation == "ضرب (×)":
+            res = n1 * n2
+        else:
+            res = n1 / n2 if n2 != 0 else "خطأ: لا يمكن القسمة على صفر!"
+        st.success(f"النتيجة: {res}")
 
-    function deleteBook(id) {
-      if (confirm("هل أنت متأكد من الحذف؟")) {
-        booksData = booksData.filter(b => b.id !== id);
-        localStorage.setItem('methaq_pure_books_v3', JSON.stringify(booksData));
-        renderAcademicBooks();
-        renderCulturalBooks();
-        alert("تم الحذف بنجاح.");
-      }
-    }
-
-    function renderFeedbacks() {
-      document.getElementById('feedbackList').innerHTML = feedbackData.map(f => `
-        <div class="comment-card">
-          <div><div class="comment-author">${f.name}</div><div style="margin: 10px 0;">${f.text}</div><div style="font-size: 0.85rem; color: var(--text-light);">${f.date}</div></div>
-          ${isAdminLoggedIn ? `<button onclick="deleteFeedback(${f.id})" class="btn-action btn-delete" style="flex:unset; padding: 8px 14px; display:flex;"><i class="fa-solid fa-trash"></i></button>` : ''}
-        </div>
-      `).join('');
-    }
-
-    function addFeedback(e) {
-      e.preventDefault();
-      feedbackData.unshift({ id: Date.now(), name: document.getElementById('feedName').value, text: document.getElementById('feedText').value, date: new Date().toISOString().split('T')[0] });
-      localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
-      renderFeedbacks(); document.getElementById('feedbackForm').reset(); alert('شكراً لك!');
-    }
-
-    function deleteFeedback(id) {
-      feedbackData = feedbackData.filter(f => f.id !== id);
-      localStorage.setItem('methaq_feedback', JSON.stringify(feedbackData));
-      renderFeedbacks();
-    }
-
-    function switchTab(tabId, event) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      event.target.classList.add('active');
-    }
-
-    function searchBooks(query) {
-      const q = query.toLowerCase();
-      document.querySelectorAll('.book-card').forEach(card => {
-        const title = card.querySelector('.book-title').innerText.toLowerCase();
-        card.style.display = title.includes(q) ? 'flex' : 'none';
-      });
-    }
-  </script>
-</body>
-</html>
+st.markdown("---")
+st.caption("تم تطوير هذه الأداة عبر بايثون لتكون جاهزة للتحويل إلى تطبيق جوال.")
