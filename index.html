@@ -304,7 +304,6 @@
         }
     }
 
-    // دالة محاكاة Termux: طباعة السطور واحد وراء الآخر بشكل متدفق وواقعي
     function streamTerminalLines(linesArray) {
         const resultBox = document.getElementById('outputResult');
         resultBox.innerText = "";
@@ -315,7 +314,7 @@
                 resultBox.innerText += linesArray[lineIndex] + "\n";
                 lineIndex++;
                 resultBox.scrollTop = resultBox.scrollHeight;
-                setTimeout(printNextLine, 100); // سرعة تدفق السطور
+                setTimeout(printNextLine, 100);
             }
         }
         printNextLine();
