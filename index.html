@@ -90,7 +90,7 @@
             background: var(--accent-green-hover); 
             transform: translateY(-1px);
         }
-        /* شاشة الترمينال السوداء بستايل حقيقي */
+        /* شاشة الترمينال السوداء المتدفقة */
         pre { 
             background: #000000; 
             color: #34d399; 
@@ -305,104 +305,102 @@
         }
     }
 
-    // دالة محاكاة الكتابة المتدفقة (تظهر النص حرفاً بحرف مثل الترمينال الحقيقي)
-    function typeTerminalOutput(text) {
+    // دالة محاكاة Termux: طباعة السطور واحد وراء الآخر بشكل متدفق وواقعي
+    function streamTerminalLines(linesArray) {
         const resultBox = document.getElementById('outputResult');
         resultBox.innerText = "";
-        let i = 0;
-        let speed = 5; // سرعة تدفق الكتابة (كلما قل الرقم زادت السرعة)
+        let lineIndex = 0;
 
-        function typing() {
-            if (i < text.length) {
-                resultBox.innerText += text.charAt(i);
-                i++;
-                setTimeout(typing, speed);
-                resultBox.scrollTop = resultBox.scrollHeight; // التمرير التلقائي لأسفل الترمينال
+        function printNextLine() {
+            if (lineIndex < linesArray.length) {
+                resultBox.innerText += linesArray[lineIndex] + "\n";
+                lineIndex++;
+                resultBox.scrollTop = resultBox.scrollHeight; // التمرير التلقائي للأسفل
+                setTimeout(printNextLine, 120); // سرعة ظهور كل سطر (120 ملي ثانية لتبدو كأنها كتابة حقيقية)
             }
         }
-        typing();
+        printNextLine();
     }
 
     function runCommand(event) {
         event.preventDefault();
         const rawCmd = document.getElementById('cmdInput').value.trim();
         const lowerCmd = rawCmd.toLowerCase();
-        let outputText = "";
+        let lines = [];
 
         if (lowerCmd.includes('/system/resource')) {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
-Uptime: 45d 12h 18m 33s
-Version: 6.49.6 (stable)
-Build-time: Oct/14/2023 11:15:42
-Board-name: RB1100AHx4
-Platform: MikroTik
-Free-memory: 842.1 MiB
-Total-memory: 1024.0 MiB
-CPU: Annapurna Labs Alpine AL214
-CPU-count: 4
-CPU-frequency: 1400 MHz
-CPU-load: 12%
-Free-hdd-space: 128.4 MiB
-Total-hdd-space: 256.0 MiB
-Write-sect-since-reboot: 14258
-Write-sect-total: 359421
-Architecture: arm
-Bad-blocks: 0%`;
-        } else if (lowerCmd.includes('/ip/hotspot/active')) {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
- # USER                 IP-ADDRESS       MAC-ADDRESS       LOGIN-TIME     UPTIME     BYTES-IN/OUT
- 0 mohammed_99          192.168.88.15    E4:5F:01:22:33:44 Nov/01 09:12   2h 14m     145.2 MB / 1.2 GB
- 1 ahmed_net            192.168.88.22    CC:2D:E0:55:66:77 Nov/01 10:05   1h 20m     84.1 MB / 450 MB
- 2 khaled_wifi          192.168.88.45    88:36:6C:88:99:AA Nov/01 11:00   35m        12.4 MB / 95 MB
- 3 ibrahim_2026         192.168.88.60    50:C7:BF:11:22:33 Nov/01 11:15   20m        5.8 MB / 42 MB
- 4 ali_telecom          192.168.88.88    70:85:C2:44:55:66 Nov/01 08:30   3h 45m     512.0 MB / 4.5 GB
- 5, total active users: 5`;
+            lines = [
+                `[Admin@MikroTik] > ${rawCmd}`,
+                `Uptime: 45d 12h 18m 33s`,
+                `Version: 6.49.6 (stable)`,
+                `Build-time: Oct/14/2023 11:15:42`,
+                `Board-name: RB1100AHx4`,
+                `Platform: MikroTik`,
+                `Free-memory: 842.1 MiB`,
+                `Total-memory: 1024.0 MiB`,
+                `CPU: Annapurna Labs Alpine AL214`,
+                `CPU-count: 4`,
+                `CPU-frequency: 1400 MHz`,
+                `CPU-load: 12%`,
+                `Free-hdd-space: 128.4 MiB`,
+                `Total-hdd-space: 256.0 MiB`,
+                `Write-sect-since-reboot: 14258`,
+                `Architecture: arm`,
+                `Status: Resource analysis completed successfully.`
+            ];
+        } else if (lowerCmd.includes('/ip/hotspot/active') || lowerCmd.includes('/ip/address')) {
+            lines = [
+                `[Admin@MikroTik] > ${rawCmd}`,
+                `Fetching active database records...`,
+                ` 0 IP: 11.0.17.65   | MAC: E4:5F:01:22:33:44 | Uptime: 2h 14m | Status: Active`,
+                ` 1 IP: 11.0.18.79   | MAC: CC:2D:E0:55:66:77 | Uptime: 1h 20m | Status: Active`,
+                ` 2 IP: 11.0.19.678  | MAC: 88:36:6C:88:99:AA | Uptime: 35m    | Status: Active`,
+                ` 3 IP: 11.0.15.76   | MAC: 50:C7:BF:11:22:33 | Uptime: 4h 10m | Status: Active`,
+                ` 4 IP: 192.168.88.5 | MAC: 70:85:C2:44:55:66 | Uptime: 15m    | Status: Active`,
+                ` 5 IP: 192.168.88.12| MAC: 11:22:33:44:55:66 | Uptime: 5h 00m | Status: Active`,
+                ` 6 IP: 172.16.10.45 | MAC: AA:BB:CC:DD:EE:FF | Uptime: 45m    | Status: Active`,
+                `Total active items displayed: 7 records found.`
+            ];
         } else if (lowerCmd.includes('/interface')) {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
-FLAGS X - disabled, R - running, S - slave, D - dynamic
- #    NAME                  TYPE       ACTUAL-MTU L2MTU  MAX-L2MTU
- 0 R  ether1-WAN            ether            1500  1514       4076
- 1 R  ether2-LAN            ether            1500  1514       4076
- 2    ether3                ether            1500  1514       4076
- 3    ether4                ether            1500  1514       4076
- 4 R  wlan1-Hotspot         wlan             1500  2290
- 5 R  bridge-local          bridge           1500  1514
- 6 D  pppoe-out1            pppoe            1480`;
-        } else if (lowerCmd.includes('/ip/address')) {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
-FLAGS X - disabled, I - invalid, D - dynamic
- # ADDRESS            NETWORK         INTERFACE
- 0 192.168.88.1/24    192.168.88.0    bridge-local
- 1 10.10.10.2/30      10.10.10.0      ether1-WAN
- 2 172.16.0.1/16      172.16.0.0      wlan1-Hotspot
- 3 D 100.64.20.5/32   100.64.20.5     pppoe-out1`;
+            lines = [
+                `[Admin@MikroTik] > ${rawCmd}`,
+                `FLAGS X - disabled, R - running, S - slave, D - dynamic`,
+                ` 0 R  ether1-WAN            ether            1500  1514`,
+                ` 1 R  ether2-LAN            ether            1500  1514`,
+                ` 2    ether3                ether            1500  1514`,
+                ` 3    ether4                ether            1500  1514`,
+                ` 4 R  wlan1-Hotspot         wlan             1500  2290`,
+                ` 5 R  bridge-local          bridge           1500  1514`,
+                ` 6 D  pppoe-out1            pppoe            1480`,
+                `Interface check completed without errors.`
+            ];
         } else if (lowerCmd.includes('/log/print')) {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
-11:32:01 system,info router rebooted successfully
-11:32:05 hotspot,info,debug user mohammed_99 logged in: IP 192.168.88.15
-11:35:12 firewall,info input: drop ICMP packet from 45.12.33.10
-11:40:22 dhcp,info dhcp2 assigned 192.168.88.60 to 50:C7:BF:11:22:33
-11:45:00 system,info pool dhcp_pool updated successfully
-11:50:15 pppoe,info pppoe-out1 connected, IP: 100.64.20.5`;
+            lines = [
+                `[Admin@MikroTik] > ${rawCmd}`,
+                `11:32:01 system,info router rebooted successfully`,
+                `11:32:05 hotspot,info user logged in: IP 11.0.17.65`,
+                `11:35:12 firewall,info input: drop ICMP packet from 45.12.33.10`,
+                `11:40:22 dhcp,info assigned 11.0.18.79 to CC:2D:E0:55:66:77`,
+                `11:45:00 system,info pool dhcp_pool updated successfully`,
+                `11:50:15 pppoe,info pppoe-out1 connected successfully`,
+                `End of system logs.`
+            ];
         } else {
-            outputText = 
-`[Admin@MikroTik] > ${rawCmd}
-Executing command successfully...
---------------------------------------------------
-Status: OK
-Processed items: 15 records retrieved from database.
-Memory usage during execution: 1.4 MiB.
-Time elapsed: 0.015s
-Result: Command completed without any critical errors. All parameters applied to MikroTik RouterOS successfully.`;
+            lines = [
+                `[Admin@MikroTik] > ${rawCmd}`,
+                `Processing request via secure cloud API bridge...`,
+                `Analyzing input parameters and routing table...`,
+                `Executing command on target gateway node...`,
+                `--------------------------------------------------`,
+                `Status: OK`,
+                `Processed items: 12 records retrieved successfully.`,
+                `Memory allocated: 1.8 MiB.`,
+                `Result: Command completed successfully with zero errors.`
+            ];
         }
 
-        // تشغيل تأثير الكتابة المتدفقة (التفريغ الحرفي مثل الترمينال)
-        typeTerminalOutput(outputText);
+        // تشغيل نظام السطور المتدفقة مثل تريمكس
+        streamTerminalLines(lines);
     }
 
     function logout() {
